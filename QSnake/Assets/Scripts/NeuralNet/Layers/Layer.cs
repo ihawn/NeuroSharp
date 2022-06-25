@@ -13,6 +13,6 @@ namespace NeuroSharp
         public Vector<float> Output { get; set; }
 
         public abstract Vector<float> ForwardPropagation(Vector<float> input);
-        public abstract Vector<float> BackPropagation(Vector<float> outputError, float learningRate);
+        public abstract Vector<float> BackPropagation(Vector<float> outputError);
     }
 }

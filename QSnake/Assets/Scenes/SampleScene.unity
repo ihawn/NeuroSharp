@@ -283,7 +283,7 @@ MonoBehaviour:
   BottomBorder: {fileID: 2141926533}
   DangerOffset: 0.5
   RandomMoveProbability: 0.2
-  Batchsize: 500
+  Batchsize: 250
   GameCount: 0
   DebugMode: 0
   LeftDanger: {fileID: 0}

@@ -64,7 +64,7 @@ namespace NeuroSharp
                     Vector<float> error = LossPrime(yTrain[j], output);
                     for(int k = Layers.Count - 1; k >= 0; k--)
                     {
-                        error = Layers[k].BackPropagation(error, learningRate);
+                        error = Layers[k].BackPropagation(error);
                     }
                 }
 

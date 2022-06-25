@@ -54,17 +54,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\NeuralNet\MathUtils\Utils.cs" />
+    <Compile Include="Assets\Scripts\NewBehaviourScript.cs" />
     <Compile Include="Assets\Scripts\NeuralNet\MathUtils\ActivationFunctions.cs" />
     <Compile Include="Assets\Scripts\NeuralNet\Layers\FullyConnectedLayer.cs" />
+    <Compile Include="Assets\Scripts\QLearning\GameState.cs" />
+    <Compile Include="Assets\Scripts\QLearning\Training.cs" />
+    <Compile Include="Assets\Scripts\SnakeAgent.cs" />
+    <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\NeuralNet\MathUtils\LossFunctions.cs" />
     <Compile Include="Assets\Scripts\NeuralNet\Network.cs" />
     <Compile Include="Assets\Scripts\NeuralNet\Layers\ActivationLayer.cs" />
     <Compile Include="Assets\Scripts\NeuralNet\Layers\Layer.cs" />
-    <Compile Include="Assets\Scripts\GameManager.cs" />
-    <Compile Include="Assets\Scripts\SnakeAgent.cs" />
-    <Compile Include="Assets\Scripts\NewBehaviourScript.cs" />
-    <Compile Include="Assets\Scripts\QLearning\GameState.cs" />
-    <Compile Include="Assets\Scripts\QLearning\Training.cs" />
+    <Compile Include="Assets\Scripts\NeuralNet\MathUtils\Adam.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\Packages\MathNet.Numerics.5.0.0\lib\netstandard2.0\MathNet.Numerics.xml" />
@@ -293,11 +294,11 @@
     <Reference Include="UnityEditor.UnityConnectModule">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2020.2.6f1\Editor\Data\Managed\UnityEngine\UnityEditor.UnityConnectModule.dll</HintPath>
     </Reference>
-    <Reference Include="MathNet.Numerics">
-      <HintPath>Assets\Packages\MathNet.Numerics.5.0.0\lib\netstandard2.0\MathNet.Numerics.dll</HintPath>
-    </Reference>
     <Reference Include="MathNet.Spatial">
       <HintPath>Assets\Packages\MathNet.Spatial.0.6.0\lib\netstandard2.0\MathNet.Spatial.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics">
+      <HintPath>Assets\Packages\MathNet.Numerics.5.0.0\lib\netstandard2.0\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2020.2.6f1\Editor\Data\PlaybackEngines\iOSSupport\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>

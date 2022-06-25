@@ -20,7 +20,7 @@ namespace NeuroSharp.MathUtils
             return ret;
         }
 
-
+        //returns ∂E/∂Y
         public static Vector<float> MeanSquaredErrorPrime(Vector<float> truth, Vector<float> test)
         {
             return 2 * (test - truth) / truth.Count();

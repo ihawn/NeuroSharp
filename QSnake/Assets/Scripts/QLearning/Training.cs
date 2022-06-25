@@ -15,6 +15,8 @@ public class Training
     int MaxQSize { get; set; }
     float DiscountRate { get; set; }
     float LearningRate { get; set; }
+    float Err { get; set; }
+    int DataCount { get; set; }
 
     //current state (11) | action (3) | reward | next state (11) | gameOver
     List<(Vector<float>, Vector<float>, float, Vector<float>, bool)> QTable { get; set; }
@@ -56,6 +58,7 @@ public class Training
         directionArray[(int)directionTaken] = 1;
         Vector<float> categoricalDirectionTaken = Vector<float>.Build.DenseOfArray(directionArray);
         Vector<float> nextState = GameState.StateVector;
+
         var currentBigState = (originState, categoricalDirectionTaken, rewardObtained, nextState, diedThisTurn);
         QTable.Add(currentBigState);
 
@@ -71,12 +74,13 @@ public class Training
             System.Random r = new System.Random();
             trainData = QTable.OrderBy(x => r.Next()).Take(Mathf.Min(QTable.Count, BatchSize)).ToList();
             trainData.Add(currentBigState);
+
+            Err /= DataCount;
+            DataCount = 0;
+            Debug.Log("Error: " + Err);
         }
 
-        List<Vector<float>> targets = new List<Vector<float>>();
-        List<Vector<float>> predictions = new List<Vector<float>>();
 
-        float err = 0;
         for (int i = 0; i < trainData.Count; i++)
         {
             var memoryObject = new { CurrentState = trainData[i].Item1, Action = trainData[i].Item2, Reward = trainData[i].Item3, NextState = trainData[i].Item4, GameOver = trainData[i].Item5 };
@@ -92,28 +96,15 @@ public class Training
             }
 
             target[memoryObject.Action.MaximumIndex()] = qNew;
-
-            targets.Add(target);
-            predictions.Add(prediction);
-        }
-
-
-        for(int i = 0; i < targets.Count; i++)
-        {
-            Vector<float> yTrain = targets[i];
-            Vector<float> output = predictions[i];
-
-            err += Network.Loss(yTrain, output);
+            Err += Network.Loss(target, prediction);
+            DataCount++;
 
             //back propagation
-            Vector<float> error = Network.LossPrime(yTrain, output);
+            Vector<float> error = Network.LossPrime(target, prediction);
             for (int k = Network.Layers.Count - 1; k >= 0; k--)
             {
-                error = Network.Layers[k].BackPropagation(error, LearningRate);
+                error = Network.Layers[k].BackPropagation(error);
             }
         }
-
-        err /= targets.Count;
-        Debug.Log("Error: " + err);
     }
 }

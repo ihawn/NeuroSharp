@@ -1,0 +1,17 @@
+C:\Users\Isaac\Documents\C#\NeuroSharp\Adam\bin\Debug\net6.0\Adam.exe
+C:\Users\Isaac\Documents\C#\NeuroSharp\Adam\bin\Debug\net6.0\Adam.deps.json
+C:\Users\Isaac\Documents\C#\NeuroSharp\Adam\bin\Debug\net6.0\Adam.runtimeconfig.json
+C:\Users\Isaac\Documents\C#\NeuroSharp\Adam\bin\Debug\net6.0\Adam.dll
+C:\Users\Isaac\Documents\C#\NeuroSharp\Adam\bin\Debug\net6.0\ref\Adam.dll
+C:\Users\Isaac\Documents\C#\NeuroSharp\Adam\bin\Debug\net6.0\Adam.pdb
+C:\Users\Isaac\Documents\C#\NeuroSharp\Adam\bin\Debug\net6.0\MathNet.Numerics.dll
+C:\Users\Isaac\Documents\C#\NeuroSharp\Adam\obj\Debug\net6.0\Adam.csproj.AssemblyReference.cache
+C:\Users\Isaac\Documents\C#\NeuroSharp\Adam\obj\Debug\net6.0\Adam.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Isaac\Documents\C#\NeuroSharp\Adam\obj\Debug\net6.0\Adam.AssemblyInfoInputs.cache
+C:\Users\Isaac\Documents\C#\NeuroSharp\Adam\obj\Debug\net6.0\Adam.AssemblyInfo.cs
+C:\Users\Isaac\Documents\C#\NeuroSharp\Adam\obj\Debug\net6.0\Adam.csproj.CoreCompileInputs.cache
+C:\Users\Isaac\Documents\C#\NeuroSharp\Adam\obj\Debug\net6.0\Adam.csproj.CopyComplete
+C:\Users\Isaac\Documents\C#\NeuroSharp\Adam\obj\Debug\net6.0\Adam.dll
+C:\Users\Isaac\Documents\C#\NeuroSharp\Adam\obj\Debug\net6.0\ref\Adam.dll
+C:\Users\Isaac\Documents\C#\NeuroSharp\Adam\obj\Debug\net6.0\Adam.pdb
+C:\Users\Isaac\Documents\C#\NeuroSharp\Adam\obj\Debug\net6.0\Adam.genruntimeconfig.cache

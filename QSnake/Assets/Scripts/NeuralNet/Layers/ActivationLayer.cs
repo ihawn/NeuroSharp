@@ -28,12 +28,13 @@ namespace NeuroSharp
             return Output;
         }
 
-        public override Vector<float> BackPropagation(Vector<float> outputError, float learningRate)
+        public override Vector<float> BackPropagation(Vector<float> outputError)
         {
             Vector<float> vec = Vector<float>.Build.Dense(Input.Count);
             for (int i = 0; i < Input.Count; i++)
                 vec[i] = ActivationPrime(Input[i]);
-            return vec.PointwiseMultiply(outputError);
+            var output = vec.PointwiseMultiply(outputError);
+            return output;
         }
     }
 }

@@ -82,7 +82,7 @@ public class GameManager : MonoBehaviour
             //got food
             else if (Food.transform.position == Snake.Segments[0].transform.position)
             {
-                Training.UpdateNetwork(originState: lastState, directionTaken: NextDirection, rewardObtained: 10, trainShortMemory: false, diedThisTurn: false);
+                Training.UpdateNetwork(originState: lastState, directionTaken: NextDirection, rewardObtained: 10, trainShortMemory: true, diedThisTurn: false);
                 SpawnFood();
                 Snake.AddSegment();
             }
