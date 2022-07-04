@@ -10,7 +10,34 @@ namespace NeuroSharp
         static void Main(string[] args)
         {
             //XOR_Test();
-            Mnist_Digits_Test();
+            //Mnist_Digits_Test();
+
+            float[,] f = new float[,]
+            {
+                {1, 0, 1 },
+                {0, 1, 0 },
+                {1, 0, 1 }
+            };
+            Matrix<float> filter = Matrix<float>.Build.DenseOfArray(f);
+
+            float[] d = new float[] { 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0 };
+
+            Vector<float> flat = Vector<float>.Build.DenseOfArray(d);
+
+
+            var o = ConvolutionalLayer.Convolution(flat, filter, 0);
+
+
+            float[] f2 = new float[]
+            {
+                1, 2, 1, 4,
+                0, 0, 3, 0,
+                1, 2, 0, 0,
+                0, 0, 0, 0 
+            };
+
+            Vector<float> flat2 = Vector<float>.Build.DenseOfArray(f2);
+            var o2 = ConvolutionalLayer.MaxPool(flat2, stride: 2);
         }
 
         static void XOR_Test()

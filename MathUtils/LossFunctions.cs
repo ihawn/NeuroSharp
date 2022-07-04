@@ -23,5 +23,7 @@ namespace NeuroSharp.MathUtils
             }
             return 2 * (test - truth) / truth.Count();
         }
+
+        // todo: categorical cross-entropy
     }
 }
