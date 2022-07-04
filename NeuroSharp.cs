@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MathNet.Numerics.LinearAlgebra;
+﻿using MathNet.Numerics.LinearAlgebra;
 using NeuroSharp.MathUtils;
 using NeuroSharp.Data;
+using NeuroSharp.Enumerations;
 
 namespace NeuroSharp
 {
@@ -13,14 +9,14 @@ namespace NeuroSharp
     {
         static void Main(string[] args)
         {
-            Mnist_Test();
             //XOR_Test();
+            Mnist_Digits_Test();
         }
 
         static void XOR_Test()
         {
             float[][] xx =
-{
+            {
                 new float[]{ 0, 0 },
                 new float[]{ 0, 1 },
                 new float[]{ 1, 0 },
@@ -44,28 +40,33 @@ namespace NeuroSharp
 
             Network network = new Network();
             network.Add(new FullyConnectedLayer(2, 3));
-            network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
+            network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
+            //network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
             network.Add(new FullyConnectedLayer(3, 1));
-            network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
+            //network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
+            //network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
 
             //train
             network.UseLoss(LossFunctions.MeanSquaredError, LossFunctions.MeanSquaredErrorPrime);
-            network.BatchTrain(xTrain, yTrain, epochs: 1000, learningRate: 0.1f);
+            network.Train(xTrain, yTrain, epochs: 1000, optimizerType: OptimizerType.Adam, learningRate: 0.1f);
 
             //test
-            var output = network.Predict(xTrain);
-            foreach (var o in output)
-                Console.WriteLine((float)o[0]);
+            foreach(var test in xTrain)
+            {
+                var output = network.Predict(test);
+                foreach (var o in output)
+                    Console.WriteLine((float)o);
+            }
         }
 
-        static void Mnist_Test()
+        static void Mnist_Digits_Test()
         {
             //training data
             List<Vector<float>> xTrain = new List<Vector<float>>();
             List<Vector<float>> yTrain = new List<Vector<float>>();
 
             var trainData = MnistReader.ReadTrainingData().ToList();
-            for(int n = 0; n < 20000;/* trainData.Count;*/ n++)
+            for(int n = 0; n < 10000/*trainData.Count*/; n++)
             {
                 var image = trainData[n];
 
@@ -83,7 +84,7 @@ namespace NeuroSharp
             List<Vector<float>> yTest = new List<Vector<float>>();
 
             var testData = MnistReader.ReadTestData().ToList();
-            for (int n = 0; n < testData.Count; n++)
+            for (int n = 0; n < 1024/*testData.Count*/; n++)
             {
                 var image = testData[n];
 
@@ -95,10 +96,15 @@ namespace NeuroSharp
                 yTest.Add(Vector<float>.Build.DenseOfArray(categorical));
             }
 
+           /* for(int n = 0; n < xTrain.Count; n++)
+                xTrain[n] = PCA.GetPrincipleComponents(xTrain[n], 28);
+            for (int n = 0; n < xTest.Count; n++)
+                xTest[n] = PCA.GetPrincipleComponents(xTest[n], 28);*/
+
             //build network
             Network network = new Network();
-            network.Add(new FullyConnectedLayer(28 * 28, 100));
-           //network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
+            network.Add(new FullyConnectedLayer(28*28, 100));
+            //network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
             network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
             network.Add(new FullyConnectedLayer(100, 50));
             //network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
@@ -109,15 +115,15 @@ namespace NeuroSharp
             network.UseLoss(LossFunctions.MeanSquaredError, LossFunctions.MeanSquaredErrorPrime);
 
             //train
-            network.AdamTrain(xTrain, yTrain, epochs: 15);
+            network.MinibatchTrain(xTrain, yTrain, epochs: 5, OptimizerType.Adam, batchSize: 256);
 
             //test
             int i = 0;
             int wrongCount = 0;
             foreach(var test in xTest)
             {
-                var output = network.Predict(new List<Vector<float>>() { test });
-                int prediction = output[0].ToList().IndexOf(output[0].Max());
+                var output = network.Predict(test);
+                int prediction = output.ToList().IndexOf(output.Max());
                 int actual = yTest[i].ToList().IndexOf(yTest[i].Max());
                 Console.WriteLine("Prediction: " + prediction);
                 Console.WriteLine("Actual: " + actual + "\n");

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MathNet.Numerics.LinearAlgebra;
-using NeuroSharp.Optimizers;
+﻿using MathNet.Numerics.LinearAlgebra;
+using NeuroSharp.Enumerations;
 
 namespace NeuroSharp
 {
@@ -14,6 +9,6 @@ namespace NeuroSharp
         public Vector<float> Output { get; set; }
 
         public abstract Vector<float> ForwardPropagation(Vector<float> input);
-        public abstract Vector<float> BackPropagation(Vector<float> outputError, float learningRate = 0.001f, int sampleIndex = 1);
+        public abstract Vector<float> BackPropagation(Vector<float> outputError, OptimizerType optimzerType, int sampleIndex, float learningRate = 0.001f);
     }
 }

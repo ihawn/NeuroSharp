@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MathNet.Numerics.LinearAlgebra;
+﻿using MathNet.Numerics.LinearAlgebra;
 using NeuroSharp.Optimizers;
+using NeuroSharp.Enumerations;
 
 namespace NeuroSharp
 {
@@ -12,8 +8,6 @@ namespace NeuroSharp
     {
         public Matrix<float> Weights { get; set; }
         public Vector<float> Bias { get; set; }
-        public Matrix<float> WeightGradient { get; set; }
-        public Vector<float> BiasGradient { get; set; }
 
         //Adam containers
         public Matrix<float> MeanWeightGradient { get; set; }
@@ -46,22 +40,28 @@ namespace NeuroSharp
             return Output;
         }
 
-        public override Vector<float> BackPropagation(Vector<float> outputError, float learningRate = 0.001f, int sampleIndex = 1)
+        public override Vector<float> BackPropagation(Vector<float> outputError, OptimizerType optimzerType, int sampleIndex, float learningRate)
         {
             Vector<float> inputError = outputError * Weights.Transpose();
             Matrix<float> weightsError = Input.OuterProduct(outputError);
 
-            AdamOutput a = Adam.Step(Weights, Bias, weightsError, outputError, sampleIndex + 1, MeanWeightGradient, MeanBiasGradient, VarianceWeightGradient, VarianceBiasGradientt, eta: learningRate);
-            Weights = a.Weights;
-            Bias = a.Bias;
-            MeanWeightGradient = a.MeanWeightGradient;
-            MeanBiasGradient = a.MeanBiasGradient;
-            VarianceWeightGradient = a.VarianceWeightGradient;
-            VarianceBiasGradientt = a.VarianceBiasGradient;
+            switch (optimzerType)
+            {
+                case OptimizerType.GradientDescent:
+                    Weights -= learningRate * weightsError;
+                    Bias -= learningRate * outputError;
+                    break;
 
-            //gradient descent without minibatching
-            //Weights -= learningRate * weightsError;
-            //Bias -= learningRate * outputError;
+                case OptimizerType.Adam:
+                    AdamOutput a = Adam.Step(Weights, Bias, weightsError, outputError, sampleIndex + 1, MeanWeightGradient, MeanBiasGradient, VarianceWeightGradient, VarianceBiasGradientt, eta: learningRate);
+                    Weights = a.Weights;
+                    Bias = a.Bias;
+                    MeanWeightGradient = a.MeanWeightGradient;
+                    MeanBiasGradient = a.MeanBiasGradient;
+                    VarianceWeightGradient = a.VarianceWeightGradient;
+                    VarianceBiasGradientt = a.VarianceBiasGradient;
+                    break;
+            }
 
             return inputError;
         }

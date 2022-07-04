@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MathNet.Numerics.LinearAlgebra;
+﻿using MathNet.Numerics.LinearAlgebra;
+using NeuroSharp.Enumerations;
 
 namespace NeuroSharp
 {
@@ -28,7 +24,7 @@ namespace NeuroSharp
             return Output;
         }
 
-        public override Vector<float> BackPropagation(Vector<float> outputError, float learningRate = 0.001f, int sampleIndex = 1)
+        public override Vector<float> BackPropagation(Vector<float> outputError, OptimizerType optimzerType, int sampleIndex, float learningRate = 0.001f)
         {
             Vector<float> vec = Vector<float>.Build.Dense(Input.Count);
             for (int i = 0; i < Input.Count; i++)
