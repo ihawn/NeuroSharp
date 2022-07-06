@@ -14,7 +14,6 @@ namespace NeuroSharp
         public Vector<float> MeanBiasGradient { get; set; }
         public Matrix<float> VarianceWeightGradient { get; set; }
         public Vector<float> VarianceBiasGradientt { get; set; }
-        public int BatchCount { get; set; }
 
         public FullyConnectedLayer(int inputSize, int outputSize)
         {

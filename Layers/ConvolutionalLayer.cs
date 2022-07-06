@@ -7,35 +7,32 @@ namespace NeuroSharp
 {
     public class ConvolutionalLayer : Layer
     {
-        public Matrix<float> Filter { get; set; }
         public Matrix<float> Weights { get; set; }
         public Vector<float> Bias { get; set; }
 
-        private int _dimension;
+        //Adam containers
+        public Matrix<float> MeanWeightGradient { get; set; }
+        public Vector<float> MeanBiasGradient { get; set; }
+        public Matrix<float> VarianceWeightGradient { get; set; }
+        public Vector<float> VarianceBiasGradientt { get; set; }
 
         public ConvolutionalLayer(int inputSize, int outputSize, int convolutionSize)
         {
-            Weights = Matrix<float>.Build.Random(inputSize, outputSize);
+            Weights = Matrix<float>.Build.Random(convolutionSize, convolutionSize);
             Bias = Vector<float>.Build.Random(outputSize);
-            _dimension = (int)Math.Round(Math.Sqrt(inputSize));
 
-            for (int i = 0; i < inputSize; i++)
-                for (int j = 0; j < outputSize; j++)
+            for (int i = 0; i < convolutionSize; i++)
+                for (int j = 0; j < convolutionSize; j++)
                     Weights[i, j] = MathUtils.Utils.NextFloat(-0.5f, 0.5f);
             for (int i = 0; i < outputSize; i++)
                 Bias[i] = MathUtils.Utils.NextFloat(-0.5f, 0.5f);
-
-            Filter = Matrix<float>.Build.Random(convolutionSize, convolutionSize);
-            for (int x = 0; x < convolutionSize; x++)
-                for (int y = 0; y < convolutionSize; y++)
-                    Filter[x, y] = MathUtils.Utils.NextFloat(-0.5f, 0.5f);
         }
 
         public override Vector<float> ForwardPropagation(Vector<float> input)
         {
             Input = input;
             Output = Input;
-            Output = Convolution(Output, Filter);
+            Output = Convolution(Output, Weights).Item1;
             return Output;
         }
 
@@ -49,21 +46,28 @@ namespace NeuroSharp
                     outGradientMatrix[j, i] = outputError[i * dim + j];
 
             // ∂L/∂O -> Loss Gradient.   Equals gradient from previous layer, outGradientMatrix in this case
-            // ∂L/∂F -> Filter Gradient. Equals convolution(Input, ∂L/∂O)
-            // ∂L/∂X -> Input Gradient.  Equals full_convolution(FilterTranspose, ∂L/∂O)
+            // ∂L/∂F -> Weights Gradient. Equals convolution(Input, ∂L/∂O)
+            // ∂L/∂X -> Input Gradient.  Equals full_convolution(WeightsTranspose, ∂L/∂O)
 
-            Vector<float> filterGradient = Convolution(Input, outGradientMatrix, 0);
-            Vector<float> inputGradient = FullConvolution(Flatten(OrthoMatrix(Filter)), outGradientMatrix);
+            var weightsGradient = Convolution(Input, outGradientMatrix, 0);
+            Vector<float> inputGradient = BackwardsConvolution(Flatten(OrthoMatrix(Weights)), outGradientMatrix);
 
-            // todo: do the update step here
+            AdamOutput a = Adam.Step(Weights, Bias, weightsGradient.Item2, outputError, sampleIndex + 1, MeanWeightGradient, MeanBiasGradient, VarianceWeightGradient, VarianceBiasGradientt, eta: learningRate);
+            Weights = a.Weights;
+            Bias = a.Bias;
+            MeanWeightGradient = a.MeanWeightGradient;
+            MeanBiasGradient = a.MeanBiasGradient;
+            VarianceWeightGradient = a.VarianceWeightGradient;
+            VarianceBiasGradientt = a.VarianceBiasGradient;
 
             return inputGradient;
         }
 
-        public static Vector<float> Convolution(Vector<float> flattenedImage, Matrix<float> filter, /*float bias,*/ int stride = 1)
+        // returns both flattened and unflattened gradient
+        public static (Vector<float>, Matrix<float>) Convolution(Vector<float> flattenedImage, Matrix<float> Weights, /*float bias,*/ int stride = 1)
         {
             int dim = (int)Math.Round(Math.Sqrt(flattenedImage.Count));
-            int outDim = (int)Math.Floor((dim - (float)filter.RowCount) / stride) + 1;
+            int outDim = (int)Math.Floor((dim - (float)Weights.RowCount) / stride) + 1;
 
             Matrix<float> image = Matrix<float>.Build.Dense(dim, dim);
             for(int i = 0; i < dim; i++)
@@ -74,18 +78,18 @@ namespace NeuroSharp
 
             int y = 0;
             int outY = 0;
-            while (y + filter.RowCount <= dim)
+            while (y + Weights.RowCount <= dim)
             {
                 int x = 0;
                 int outX = 0;
-                while (x + filter.ColumnCount <= dim)
+                while (x + Weights.ColumnCount <= dim)
                 {
                     float sum = 0;
-                    for (int n = 0; n < filter.RowCount; n++)
+                    for (int n = 0; n < Weights.RowCount; n++)
                     {
-                        for (int m = 0; m < filter.RowCount; m++)
+                        for (int m = 0; m < Weights.RowCount; m++)
                         {
-                            sum += filter[m, n] * image[x + m, y + n]/* + bias*/;
+                            sum += Weights[m, n] * image[x + m, y + n]/* + bias*/;
                         }
                     }
 
@@ -98,18 +102,16 @@ namespace NeuroSharp
                 outY++;
             }
 
-            List<float> rawOutput = new List<float>();
-            for (int i = 0; i < dim; i++)
-                for (int j = 0; j < dim; j++)
-                    rawOutput.Add(output[i, j]);
 
-            return Vector<float>.Build.DenseOfArray(rawOutput.ToArray());
+            return (Flatten(output), output);
         }
 
-        public static Vector<float> FullConvolution(Vector<float> flattenedImage, Matrix<float> filter, int stride = 1)
+        public static Vector<float> BackwardsConvolution(Vector<float> flattenedImage, Matrix<float> Weights, int stride = 1)
         {
             int dim = (int)Math.Round(Math.Sqrt(flattenedImage.Count));
-            int outDim = dim + 2*(filter.RowCount - 1);
+            int WeightsDim = Weights.RowCount;
+            int outDim = dim + WeightsDim - 1;
+            int paddedDim = dim + 2*(WeightsDim - 1);
 
             Matrix<float> image = Matrix<float>.Build.Dense(dim, dim);
             for (int i = 0; i < dim; i++)
@@ -118,15 +120,35 @@ namespace NeuroSharp
 
             Matrix<float> output = Matrix<float>.Build.Dense(outDim, outDim);
 
-
-            for(int i = 0; i < outDim; i++)
+            // build padding matrix. This will form the backwards convolution
+            Matrix<float> padding = Matrix<float>.Build.Dense(paddedDim, paddedDim);
+            int offset = outDim - dim;
+            for (int i = 0; i < dim; i++)
             {
-                for(int j = 0; j < outDim; j++)
+                for (int j = 0; j < dim; j++)
                 {
-                    // todo: left to right/bottom to top sliding convolution
+                    padding[i + offset, j + offset] = image[i, j];
                 }
             }
 
+            // backward overlapping slide operation
+            for (int i = outDim - 1; i >= 0; i--)
+            {
+                for(int j = outDim - 1; j >= 0; j--)
+                {
+                    float sum = 0;
+                    for(int x = 0; x < WeightsDim; x++)
+                    {
+                        for(int y = 0; y < WeightsDim; y++)
+                        {
+                            sum += padding[y + j, x + i] * Weights[x, y];
+                        }
+                    }
+                    output[outDim - i - 1, outDim - j - 1] = sum;
+                }
+            }
+
+            output = output.Transpose();
 
             return Flatten(output);
         }
