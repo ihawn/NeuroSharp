@@ -34,6 +34,9 @@ namespace NeuroSharp.MathUtils
             Matrix<float> covariance = GetCovarianceMatrix(mtx);
             Matrix<float> featureMtx = EigenSort(covariance, componentCount);
 
+            //take inner product of each feature matrix column (original images (mtx)) with the principle vectors (columns of featureMtx)
+            // this is just transpose(featureMtx) * cenered original images (mtx)
+
             List<float> features = new List<float>();
             for (int i = 0; i < featureMtx.RowCount; i++)
                 for(int j = 0; j < featureMtx.ColumnCount; j++)

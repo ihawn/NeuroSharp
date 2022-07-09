@@ -10,26 +10,29 @@ namespace NeuroSharp
         static void Main(string[] args)
         {
             //XOR_Test();
-            Mnist_Digits_Test();
-            //Mnist_Digits_Test_Conv();
+            //Mnist_Digits_Test();
+            Mnist_Digits_Test_Conv();
 
             #region testing
-            /* float[,] filt = new float[,]
+             /*float[,] filt = new float[,]
              {
                  {1, 2 },
                  {3, 4 }
              };
              Matrix<float> filter = Matrix<float>.Build.DenseOfArray(filt);
 
-             float[] flat = new float[]
+             float[,] mtxarr = new float[,]
              {
-                 1, 2, 3,
-                 5, 5, 3,
-                 1, 2, 7,
+                 { 1, 2, 3, 9 },
+                 { 5, 5, 6, 10 },
+                 { 1, 2, 7, 2 },
+                 { 8, 3, 0, 2 }
              };
 
-             Vector<float> flat2 = Vector<float>.Build.DenseOfArray(flat);
-             var o = ConvolutionalLayer.BackwardsConvolution(flat2, filter);*/
+            MaxPoolingLayer m = new MaxPoolingLayer(4, 2, 2);
+
+            Matrix<float> mtx = Matrix<float>.Build.DenseOfArray(mtxarr);
+            var o = m.MaxPool(mtx, 2, 2);*/
             #endregion
         }
 
@@ -86,7 +89,7 @@ namespace NeuroSharp
             List<Vector<float>> yTrain = new List<Vector<float>>();
 
             var trainData = MnistReader.ReadTrainingData().ToList();
-            for(int n = 0; n < 10000/*trainData.Count*/; n++)
+            for(int n = 0; n < 3000/*trainData.Count*/; n++)
             {
                 var image = trainData[n];
 
@@ -104,7 +107,7 @@ namespace NeuroSharp
             List<Vector<float>> yTest = new List<Vector<float>>();
 
             var testData = MnistReader.ReadTestData().ToList();
-            for (int n = 0; n < 1024/*testData.Count*/; n++)
+            for (int n = 0; n < 500/*testData.Count*/; n++)
             {
                 var image = testData[n];
 
@@ -130,9 +133,10 @@ namespace NeuroSharp
             //network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
             network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
             network.Add(new FullyConnectedLayer(50, 10));
-            //network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
-            network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
-            network.UseLoss(LossFunctions.MeanSquaredError, LossFunctions.MeanSquaredErrorPrime);
+            //network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
+            network.Add(new SoftmaxActivationLayer());
+            //network.UseLoss(LossFunctions.MeanSquaredError, LossFunctions.MeanSquaredErrorPrime);
+            network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
 
             //train
             //network.MinibatchTrain(xTrain, yTrain, epochs: 5, OptimizerType.Adam, batchSize: 256);
@@ -164,7 +168,7 @@ namespace NeuroSharp
             List<Vector<float>> yTrain = new List<Vector<float>>();
 
             var trainData = MnistReader.ReadTrainingData().ToList();
-            for (int n = 0; n < 10000/*trainData.Count*/; n++)
+            for (int n = 0; n < 60000/*trainData.Count*/; n++)
             {
                 var image = trainData[n];
 
@@ -182,7 +186,7 @@ namespace NeuroSharp
             List<Vector<float>> yTest = new List<Vector<float>>();
 
             var testData = MnistReader.ReadTestData().ToList();
-            for (int n = 0; n < 1024/*testData.Count*/; n++)
+            for (int n = 0; n < 10000/*testData.Count*/; n++)
             {
                 var image = testData[n];
 
@@ -201,16 +205,19 @@ namespace NeuroSharp
 
             //build network
             Network network = new Network();
-            network.Add(new ConvolutionalLayer(28 * 28, 100, 2));
+            network.Add(new ConvolutionalLayer(28 * 28, 100, 3));
             network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
-            network.Add(new FullyConnectedLayer(729, 50));
+            network.Add(new MaxPoolingLayer(676, 2));
+            network.Add(new FullyConnectedLayer(625, 100));
             network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
-            network.Add(new FullyConnectedLayer(50, 10));
-            network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
-            network.UseLoss(LossFunctions.MeanSquaredError, LossFunctions.MeanSquaredErrorPrime);
+            network.Add(new FullyConnectedLayer(100, 10));
+            //network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
+            network.Add(new SoftmaxActivationLayer());
+            //network.UseLoss(LossFunctions.MeanSquaredError, LossFunctions.MeanSquaredErrorPrime);
+            network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
 
             //train
-            network.Train(xTrain, yTrain, epochs: 5, OptimizerType.Adam);
+            network.Train(xTrain, yTrain, epochs: 15, OptimizerType.Adam);
 
             //test
             int i = 0;

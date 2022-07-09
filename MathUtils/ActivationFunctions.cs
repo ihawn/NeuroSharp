@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using MathNet.Numerics.LinearAlgebra;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NeuroSharp
 {
@@ -26,6 +23,32 @@ namespace NeuroSharp
         public static float ReluPrime(float x)
         {
             return x <= 0 ? 0 : 1;
+        }
+
+        public static Vector<float> Softmax(Vector<float> x)
+        {
+            Vector<float> result = Vector<float>.Build.Dense(x.Count);
+            float expSum = x.Sum(f => MathF.Exp(f));
+            for(int i = 0; i < x.Count; i++)
+                result[i] = MathF.Exp(x[i])/expSum;
+            return result;
+        }
+
+        public static float PointwiseSoftmax(float x, float expSum)
+        {
+            return MathF.Exp(x) / expSum;
+        }
+
+        public static Matrix<float> SoftmaxPrime(Vector<float> x)
+        {
+            Matrix<float> result = Matrix<float>.Build.Dense(x.Count, x.Count);
+            float expSum = x.Sum(f => MathF.Exp(f));
+            for (int i = 0; i < x.Count; i++)
+                for(int j = 0; j < x.Count; j++)
+                    result[i, j] = i == j ? PointwiseSoftmax(x[i], expSum) * (1 - PointwiseSoftmax(x[j], expSum)) : 
+                                           -PointwiseSoftmax(x[j], expSum) * PointwiseSoftmax(x[i], expSum);
+
+            return result;
         }
     }
 }

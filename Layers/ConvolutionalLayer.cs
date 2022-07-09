@@ -19,13 +19,10 @@ namespace NeuroSharp
         public ConvolutionalLayer(int inputSize, int outputSize, int convolutionSize)
         {
             Weights = Matrix<float>.Build.Random(convolutionSize, convolutionSize);
-            Bias = Vector<float>.Build.Random(outputSize);
 
             for (int i = 0; i < convolutionSize; i++)
                 for (int j = 0; j < convolutionSize; j++)
                     Weights[i, j] = MathUtils.Utils.NextFloat(-0.5f, 0.5f);
-            for (int i = 0; i < outputSize; i++)
-                Bias[i] = MathUtils.Utils.NextFloat(-0.5f, 0.5f);
         }
 
         public override Vector<float> ForwardPropagation(Vector<float> input)
@@ -89,7 +86,7 @@ namespace NeuroSharp
                     {
                         for (int m = 0; m < Weights.RowCount; m++)
                         {
-                            sum += Weights[m, n] * image[x + m, y + n]/* + bias*/;
+                            sum += Weights[m, n] * image[x + m, y + n];
                         }
                     }
 
@@ -174,48 +171,6 @@ namespace NeuroSharp
                 for (int j = 0; j < mtx.ColumnCount; j++)
                     f.Add(mtx[i, j]);
             return Vector<float>.Build.DenseOfArray(f.ToArray());
-        }
-
-        public static Matrix<float> MaxPool(Vector<float> flattenedImage, int kernel = 2, int stride = 1)
-        {
-            int dim = (int)Math.Round(Math.Sqrt(flattenedImage.Count));
-            int outDim = (int)Math.Floor((dim - (float)kernel) / stride) + 1;
-
-            Matrix<float> image = Matrix<float>.Build.Dense(dim, dim);
-            for (int i = 0; i < dim; i++)
-                for (int j = 0; j < dim; j++)
-                    image[j, i] = flattenedImage[i * dim + j];
-
-            Matrix<float> output = Matrix<float>.Build.Dense(outDim, outDim);
-
-            int y = 0;
-            int outY = 0;
-            while (y + kernel <= dim)
-            {
-                int x = 0;
-                int outX = 0;
-                while (x + kernel <= dim)
-                {
-                    float max = float.MinValue;
-                    for (int n = 0; n < kernel; n++)
-                    {
-                        for (int m = 0; m < kernel; m++)
-                        {
-                            if(image[x + m, y + n] > max)
-                                max = image[x + m, y + n];
-                        }
-                    }
-
-                    output[outX, outY] = max;
-                    x += stride;
-                    outX++;
-                }
-
-                y += stride;
-                outY++;
-            }
-
-            return output;
         }
     }
 }
