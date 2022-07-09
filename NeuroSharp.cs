@@ -10,8 +10,8 @@ namespace NeuroSharp
         static void Main(string[] args)
         {
             //XOR_Test();
-            //Mnist_Digits_Test();
-            Mnist_Digits_Test_Conv();
+            Mnist_Digits_Test();
+            //Mnist_Digits_Test_Conv();
 
             #region testing
             /* float[,] filt = new float[,]
@@ -135,7 +135,8 @@ namespace NeuroSharp
             network.UseLoss(LossFunctions.MeanSquaredError, LossFunctions.MeanSquaredErrorPrime);
 
             //train
-            network.MinibatchTrain(xTrain, yTrain, epochs: 5, OptimizerType.Adam, batchSize: 256);
+            //network.MinibatchTrain(xTrain, yTrain, epochs: 5, OptimizerType.Adam, batchSize: 256);
+            network.Train(xTrain, yTrain, epochs: 5, OptimizerType.Adam);
 
             //test
             int i = 0;
@@ -202,14 +203,14 @@ namespace NeuroSharp
             Network network = new Network();
             network.Add(new ConvolutionalLayer(28 * 28, 100, 2));
             network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
-            network.Add(new FullyConnectedLayer(100, 50));
+            network.Add(new FullyConnectedLayer(729, 50));
             network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
             network.Add(new FullyConnectedLayer(50, 10));
             network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
             network.UseLoss(LossFunctions.MeanSquaredError, LossFunctions.MeanSquaredErrorPrime);
 
             //train
-            network.MinibatchTrain(xTrain, yTrain, epochs: 5, OptimizerType.Adam, batchSize: 256);
+            network.Train(xTrain, yTrain, epochs: 5, OptimizerType.Adam);
 
             //test
             int i = 0;

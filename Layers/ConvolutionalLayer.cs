@@ -7,7 +7,7 @@ namespace NeuroSharp
 {
     public class ConvolutionalLayer : Layer
     {
-        public Matrix<float> Weights { get; set; }
+        public Matrix<float> Weights { get; set; } //filter
         public Vector<float> Bias { get; set; }
 
         //Adam containers
@@ -45,14 +45,14 @@ namespace NeuroSharp
                 for (int j = 0; j < dim; j++)
                     outGradientMatrix[j, i] = outputError[i * dim + j];
 
-            // ∂L/∂O -> Loss Gradient.   Equals gradient from previous layer, outGradientMatrix in this case
-            // ∂L/∂F -> Weights Gradient. Equals convolution(Input, ∂L/∂O)
+            // ∂L/∂Y -> Loss Gradient.   Equals gradient from previous layer, outGradientMatrix in this case
+            // ∂L/∂W -> Weights Gradient. Equals convolution(Input, ∂L/∂O)
             // ∂L/∂X -> Input Gradient.  Equals full_convolution(WeightsTranspose, ∂L/∂O)
 
-            var weightsGradient = Convolution(Input, outGradientMatrix, 0);
+            var weightsGradient = Convolution(Input, outGradientMatrix);
             Vector<float> inputGradient = BackwardsConvolution(Flatten(OrthoMatrix(Weights)), outGradientMatrix);
 
-            AdamOutput a = Adam.Step(Weights, Bias, weightsGradient.Item2, outputError, sampleIndex + 1, MeanWeightGradient, MeanBiasGradient, VarianceWeightGradient, VarianceBiasGradientt, eta: learningRate);
+            AdamOutput a = Adam.Step(Weights, Bias, weightsGradient.Item2, outputError, sampleIndex + 1, MeanWeightGradient, MeanBiasGradient, VarianceWeightGradient, VarianceBiasGradientt, eta: learningRate, includeBias: false);
             Weights = a.Weights;
             Bias = a.Bias;
             MeanWeightGradient = a.MeanWeightGradient;
@@ -63,7 +63,7 @@ namespace NeuroSharp
             return inputGradient;
         }
 
-        // returns both flattened and unflattened gradient
+        // returns both flattened and unflattened convolution
         public static (Vector<float>, Matrix<float>) Convolution(Vector<float> flattenedImage, Matrix<float> Weights, /*float bias,*/ int stride = 1)
         {
             int dim = (int)Math.Round(Math.Sqrt(flattenedImage.Count));
