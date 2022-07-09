@@ -89,7 +89,7 @@ namespace NeuroSharp
             List<Vector<float>> yTrain = new List<Vector<float>>();
 
             var trainData = MnistReader.ReadTrainingData().ToList();
-            for(int n = 0; n < 3000/*trainData.Count*/; n++)
+            for(int n = 0; n < 500/*trainData.Count*/; n++)
             {
                 var image = trainData[n];
 
@@ -126,16 +126,12 @@ namespace NeuroSharp
 
             //build network
             Network network = new Network();
-            network.Add(new FullyConnectedLayer(28*28, 100));
-            //network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
+            network.Add(new FullyConnectedLayer(28*28, 250));
             network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
-            network.Add(new FullyConnectedLayer(100, 50));
-            //network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
+            network.Add(new FullyConnectedLayer(250, 100));
             network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
-            network.Add(new FullyConnectedLayer(50, 10));
-            //network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
+            network.Add(new FullyConnectedLayer(100, 10));
             network.Add(new SoftmaxActivationLayer());
-            //network.UseLoss(LossFunctions.MeanSquaredError, LossFunctions.MeanSquaredErrorPrime);
             network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
 
             //train
@@ -168,7 +164,7 @@ namespace NeuroSharp
             List<Vector<float>> yTrain = new List<Vector<float>>();
 
             var trainData = MnistReader.ReadTrainingData().ToList();
-            for (int n = 0; n < 60000/*trainData.Count*/; n++)
+            for (int n = 0; n < 5000/*trainData.Count*/; n++)
             {
                 var image = trainData[n];
 
@@ -186,7 +182,7 @@ namespace NeuroSharp
             List<Vector<float>> yTest = new List<Vector<float>>();
 
             var testData = MnistReader.ReadTestData().ToList();
-            for (int n = 0; n < 10000/*testData.Count*/; n++)
+            for (int n = 0; n < 500/*testData.Count*/; n++)
             {
                 var image = testData[n];
 
@@ -206,18 +202,18 @@ namespace NeuroSharp
             //build network
             Network network = new Network();
             network.Add(new ConvolutionalLayer(28 * 28, 100, 3));
+            network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
+            network.Add(new ConvolutionalLayer(26 * 26, 100, 2));
+            network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
+            network.Add(new MaxPoolingLayer(625, 2));
+            network.Add(new FullyConnectedLayer(576, 150));
             network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
-            network.Add(new MaxPoolingLayer(676, 2));
-            network.Add(new FullyConnectedLayer(625, 100));
-            network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
-            network.Add(new FullyConnectedLayer(100, 10));
-            //network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
+            network.Add(new FullyConnectedLayer(150, 10));
             network.Add(new SoftmaxActivationLayer());
-            //network.UseLoss(LossFunctions.MeanSquaredError, LossFunctions.MeanSquaredErrorPrime);
             network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
 
             //train
-            network.Train(xTrain, yTrain, epochs: 15, OptimizerType.Adam);
+            network.Train(xTrain, yTrain, epochs: 5, OptimizerType.Adam);
 
             //test
             int i = 0;
