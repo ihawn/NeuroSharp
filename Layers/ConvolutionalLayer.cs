@@ -6,20 +6,14 @@ using NeuroSharp.MathUtils;
 
 namespace NeuroSharp
 {
-    public class ConvolutionalLayer : Layer
+    public class ConvolutionalLayer : ParameterizedLayer
     {
-        public Matrix<float> Weights { get; set; } //filter
-        public Vector<float> Bias { get; set; }
-
-        //Adam containers
-        public Matrix<float> MeanWeightGradient { get; set; }
-        public Vector<float> MeanBiasGradient { get; set; }
-        public Matrix<float> VarianceWeightGradient { get; set; }
-        public Vector<float> VarianceBiasGradientt { get; set; }
+        private Adam _adam;
 
         public ConvolutionalLayer(int inputSize, int outputSize, int convolutionSize)
         {
             Weights = Matrix<float>.Build.Random(convolutionSize, convolutionSize);
+            _adam = new Adam(convolutionSize, convolutionSize);
 
             for (int i = 0; i < convolutionSize; i++)
                 for (int j = 0; j < convolutionSize; j++)
@@ -40,14 +34,9 @@ namespace NeuroSharp
 
             var weightsGradient = Convolution(Input, outGradientMatrix);
             Vector<float> inputGradient = BackwardsConvolution(Utils.Flatten(OrthoMatrix(Weights)), outGradientMatrix);
+            WeightGradient = weightsGradient.Item2;
 
-            AdamOutput a = Adam.Step(Weights, Bias, weightsGradient.Item2, outputError, sampleIndex + 1, MeanWeightGradient, MeanBiasGradient, VarianceWeightGradient, VarianceBiasGradientt, eta: learningRate, includeBias: false);
-            Weights = a.Weights;
-            Bias = a.Bias;
-            MeanWeightGradient = a.MeanWeightGradient;
-            MeanBiasGradient = a.MeanBiasGradient;
-            VarianceWeightGradient = a.VarianceWeightGradient;
-            VarianceBiasGradientt = a.VarianceBiasGradient;
+            _adam.Step(this, sampleIndex + 1, eta: learningRate, includeBias: false);
 
             return inputGradient;
         }

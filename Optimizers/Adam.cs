@@ -2,54 +2,48 @@
 
 namespace NeuroSharp.Optimizers
 {
-    public static class Adam
+    public class Adam
     {
-        public static AdamOutput Step(Matrix<float> weight, Vector<float> bias, Matrix<float> weightGradient, Vector<float> biasGradient, int t,
-            Matrix<float> meanWeightGradient, Vector<float> meanBiasGradient, Matrix<float> varianceWeightGradient, Vector<float> varianceBiasGradient,
-            float eta = 0.001f, float beta1 = 0.9f, float beta2 = 0.999f, float epsilon = 0.0000001f, bool includeBias = true)
+        private Matrix<float> _meanWeightGradient;
+        private Vector<float> _meanBiasGradient;
+
+        private Matrix<float> _varianceWeightGradient;
+        private Vector<float> _varianceBiasGradient;
+
+        private Matrix<float> _meanWeightGradCorrection;
+        private Vector<float> _meanBiasGradCorrection;
+
+        private Matrix<float> _varianceWeightGradCorrection;
+        private Vector<float> _varianceBiasGradCorrection;
+
+        public Adam(int inputSize, int outputSize)
         {
-            int i = weightGradient.RowCount;
-            int j = weightGradient.ColumnCount;
+            _meanWeightGradient = Matrix<float>.Build.Dense(inputSize, outputSize);
+            _meanBiasGradient = Vector<float>.Build.Dense(outputSize);
+            _varianceWeightGradient = Matrix<float>.Build.Dense(inputSize, outputSize);
+            _varianceBiasGradient = Vector<float>.Build.Dense(outputSize);
+        }
 
-            meanWeightGradient = meanWeightGradient ?? Matrix<float>.Build.Dense(i, j);
+        public void Step(ParameterizedLayer layer, int t, float eta = 0.001f, float beta1 = 0.9f, float beta2 = 0.999f, float epsilon = 0.0000001f, bool includeBias = true)
+        {
+            _meanWeightGradient = beta1 * _meanWeightGradient + (1 - beta1) * layer.WeightGradient;
             if(includeBias)
-                meanBiasGradient = meanBiasGradient ?? Vector<float>.Build.Dense(j);
-            varianceWeightGradient = varianceWeightGradient ?? Matrix<float>.Build.Dense(i, j);
-            if(includeBias)
-                varianceBiasGradient = varianceBiasGradient ?? Vector<float>.Build.Dense(j);
-            
-            //
-            // Adam step
-            //
-            meanWeightGradient = beta1 * meanWeightGradient + (1 - beta1) * weightGradient;
-            if(includeBias)
-                meanBiasGradient = beta1 * meanBiasGradient + (1 - beta1) * biasGradient;
+                _meanBiasGradient = beta1 * _meanBiasGradient + (1 - beta1) * layer.BiasGradient;
 
-            varianceWeightGradient = beta2 * varianceWeightGradient + (1 - beta2) * weightGradient.PointwisePower(2);
+            _varianceWeightGradient = beta2 * _varianceWeightGradient + (1 - beta2) * layer.WeightGradient.PointwisePower(2);
             if(includeBias)
-                varianceBiasGradient = beta2 * varianceBiasGradient + (1 - beta2) * biasGradient.PointwisePower(2);
+                _varianceBiasGradient = beta2 * _varianceBiasGradient + (1 - beta2) * layer.BiasGradient.PointwisePower(2);
 
-            Matrix<float> meanWeightGradCorrection = meanWeightGradient / (1 - MathF.Pow(beta1, t));           
-            Matrix<float> varianceWeightGradCorrection = varianceWeightGradient / (1 - MathF.Pow(beta2, t));
-            weight -= eta * (meanWeightGradCorrection.PointwiseDivide(varianceWeightGradCorrection.PointwiseSqrt() + Matrix<float>.Build.One * epsilon));
+            _meanWeightGradCorrection = _meanWeightGradient / (1 - MathF.Pow(beta1, t));           
+            _varianceWeightGradCorrection = _varianceWeightGradient / (1 - MathF.Pow(beta2, t));
+            layer.Weights -= eta * (_meanWeightGradCorrection.PointwiseDivide(_varianceWeightGradCorrection.PointwiseSqrt() + Matrix<float>.Build.One * epsilon));
 
             if(includeBias)
             {
-                Vector<float> meanBiasGradCorrection = meanBiasGradient / (1 - MathF.Pow(beta1, t));
-                Vector<float> varianceBiasGradCorrection = varianceBiasGradient / (1 - MathF.Pow(beta2, t));
-                bias -= eta * (meanBiasGradCorrection.PointwiseDivide(varianceBiasGradCorrection.PointwiseSqrt() + Vector<float>.Build.One * epsilon));
+                _meanBiasGradCorrection = _meanBiasGradient / (1 - MathF.Pow(beta1, t));
+                _varianceBiasGradCorrection = _varianceBiasGradient / (1 - MathF.Pow(beta2, t));
+                layer.Bias -= eta * (_meanBiasGradCorrection.PointwiseDivide(_varianceBiasGradCorrection.PointwiseSqrt() + Vector<float>.Build.One * epsilon));
             }
-
-            return new AdamOutput()
-            {
-                Weights = weight,
-                Bias = bias,
-                MeanWeightGradient = meanWeightGradient,
-                MeanBiasGradient = meanBiasGradient,
-                VarianceWeightGradient = varianceWeightGradient,
-                VarianceBiasGradient = varianceBiasGradient
-            };
-
         }
     }
 

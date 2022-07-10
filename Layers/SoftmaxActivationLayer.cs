@@ -14,8 +14,8 @@ namespace NeuroSharp
 
         public override Vector<float> BackPropagation(Vector<float> outputError, OptimizerType optimzerType, int sampleIndex, float learningRate = 0.001f)
         {
-            Matrix<float> jac = ActivationFunctions.SoftmaxPrime(Input);
-            return jac * outputError;
+            Matrix<float> jacobian = ActivationFunctions.SoftmaxPrime(Input);
+            return jacobian * outputError;
         }
     }
 }
