@@ -10,8 +10,9 @@ namespace NeuroSharp
         static void Main(string[] args)
         {
             //XOR_Test();
-            //Mnist_Digits_Test();
-            Mnist_Digits_Test_Conv();
+            Mnist_Digits_Test(500, 100);
+            //Mnist_Digits_Test_Conv(500, 100);
+            //Conv_Vs_Non_Conv(20000, 5000, 25);
 
             #region testing
              /*float[,] filt = new float[,]
@@ -82,14 +83,14 @@ namespace NeuroSharp
             }
         }
 
-        static void Mnist_Digits_Test()
+        static float Mnist_Digits_Test(int trainSize, int testSize)
         {
             //training data
             List<Vector<float>> xTrain = new List<Vector<float>>();
             List<Vector<float>> yTrain = new List<Vector<float>>();
 
             var trainData = MnistReader.ReadTrainingData().ToList();
-            for(int n = 0; n < 500/*trainData.Count*/; n++)
+            for(int n = 0; n < trainSize; n++)
             {
                 var image = trainData[n];
 
@@ -107,7 +108,7 @@ namespace NeuroSharp
             List<Vector<float>> yTest = new List<Vector<float>>();
 
             var testData = MnistReader.ReadTestData().ToList();
-            for (int n = 0; n < 500/*testData.Count*/; n++)
+            for (int n = 0; n < testSize; n++)
             {
                 var image = testData[n];
 
@@ -154,17 +155,19 @@ namespace NeuroSharp
 
                 i++;
             }
-            Console.WriteLine("Accuracy: " + (1f - ((float)wrongCount)/((float)i)));
+            float acc = (1f - ((float)wrongCount) / ((float)i));
+            Console.WriteLine("Accuracy: " + acc);
+            return acc;
         }
 
-        static void Mnist_Digits_Test_Conv()
+        static float Mnist_Digits_Test_Conv(int trainSize, int testSize)
         {
             //training data
             List<Vector<float>> xTrain = new List<Vector<float>>();
             List<Vector<float>> yTrain = new List<Vector<float>>();
 
             var trainData = MnistReader.ReadTrainingData().ToList();
-            for (int n = 0; n < 5000/*trainData.Count*/; n++)
+            for (int n = 0; n < trainSize; n++)
             {
                 var image = trainData[n];
 
@@ -182,7 +185,7 @@ namespace NeuroSharp
             List<Vector<float>> yTest = new List<Vector<float>>();
 
             var testData = MnistReader.ReadTestData().ToList();
-            for (int n = 0; n < 500/*testData.Count*/; n++)
+            for (int n = 0; n < testSize; n++)
             {
                 var image = testData[n];
 
@@ -203,10 +206,8 @@ namespace NeuroSharp
             Network network = new Network();
             network.Add(new ConvolutionalLayer(28 * 28, 100, 3));
             network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
-            network.Add(new ConvolutionalLayer(26 * 26, 100, 2));
-            network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
-            network.Add(new MaxPoolingLayer(625, 2));
-            network.Add(new FullyConnectedLayer(576, 150));
+            network.Add(new MaxPoolingLayer(26*26, 2));
+            network.Add(new FullyConnectedLayer(25*25, 150));
             network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
             network.Add(new FullyConnectedLayer(150, 10));
             network.Add(new SoftmaxActivationLayer());
@@ -231,7 +232,27 @@ namespace NeuroSharp
 
                 i++;
             }
-            Console.WriteLine("Accuracy: " + (1f - ((float)wrongCount) / ((float)i)));
+            float acc = (1f - ((float)wrongCount) / ((float)i));
+            Console.WriteLine("Accuracy: " + acc);
+            return acc;
+        }
+
+        static void Conv_Vs_Non_Conv(int trainSize, int testSize, int testsToRun)
+        {
+            float denseNetAcc = 0;
+            float convNetAcc = 0;
+
+            for(int i = 0; i < testsToRun; i++)
+            {
+                denseNetAcc += Mnist_Digits_Test(trainSize, testSize);
+                convNetAcc += Mnist_Digits_Test_Conv(trainSize, testSize);
+            }
+
+            denseNetAcc /= testsToRun;
+            convNetAcc /= testsToRun;
+            
+            Console.WriteLine("Dense Network Average Accuracy: " + denseNetAcc);
+            Console.WriteLine("Convolutional Network Average Accuracy: " + convNetAcc);
         }
     }
 }

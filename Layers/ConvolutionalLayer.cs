@@ -2,6 +2,7 @@
 using MathNet.Numerics.Distributions;
 using NeuroSharp.Optimizers;
 using NeuroSharp.Enumerations;
+using NeuroSharp.MathUtils;
 
 namespace NeuroSharp
 {
@@ -35,19 +36,10 @@ namespace NeuroSharp
 
         public override Vector<float> BackPropagation(Vector<float> outputError, OptimizerType optimzerType, int sampleIndex, float learningRate)
         {
-            //for now assume next layer has input which is a perfect square
-            int dim = (int)Math.Round(Math.Sqrt(outputError.Count));
-            Matrix<float> outGradientMatrix = Matrix<float>.Build.Dense(dim, dim);
-            for (int i = 0; i < dim; i++)
-                for (int j = 0; j < dim; j++)
-                    outGradientMatrix[j, i] = outputError[i * dim + j];
-
-            // ∂L/∂Y -> Loss Gradient.   Equals gradient from previous layer, outGradientMatrix in this case
-            // ∂L/∂W -> Weights Gradient. Equals convolution(Input, ∂L/∂O)
-            // ∂L/∂X -> Input Gradient.  Equals full_convolution(WeightsTranspose, ∂L/∂O)
+            Matrix<float> outGradientMatrix = Utils.Unflatten(outputError);
 
             var weightsGradient = Convolution(Input, outGradientMatrix);
-            Vector<float> inputGradient = BackwardsConvolution(Flatten(OrthoMatrix(Weights)), outGradientMatrix);
+            Vector<float> inputGradient = BackwardsConvolution(Utils.Flatten(OrthoMatrix(Weights)), outGradientMatrix);
 
             AdamOutput a = Adam.Step(Weights, Bias, weightsGradient.Item2, outputError, sampleIndex + 1, MeanWeightGradient, MeanBiasGradient, VarianceWeightGradient, VarianceBiasGradientt, eta: learningRate, includeBias: false);
             Weights = a.Weights;
@@ -61,16 +53,12 @@ namespace NeuroSharp
         }
 
         // returns both flattened and unflattened convolution
-        public static (Vector<float>, Matrix<float>) Convolution(Vector<float> flattenedImage, Matrix<float> Weights, /*float bias,*/ int stride = 1)
+        public static (Vector<float>, Matrix<float>) Convolution(Vector<float> flattenedImage, Matrix<float> Weights, int stride = 1)
         {
             int dim = (int)Math.Round(Math.Sqrt(flattenedImage.Count));
             int outDim = (int)Math.Floor((dim - (float)Weights.RowCount) / stride) + 1;
 
-            Matrix<float> image = Matrix<float>.Build.Dense(dim, dim);
-            for(int i = 0; i < dim; i++)
-                for(int j = 0; j < dim; j++)
-                    image[j, i] = flattenedImage[i*dim + j];
-
+            Matrix<float> image = Utils.Unflatten(flattenedImage);
             Matrix<float> output = Matrix<float>.Build.Dense(outDim, outDim);
 
             int y = 0;
@@ -100,7 +88,7 @@ namespace NeuroSharp
             }
 
 
-            return (Flatten(output), output);
+            return (Utils.Flatten(output), output);
         }
 
         public static Vector<float> BackwardsConvolution(Vector<float> flattenedImage, Matrix<float> Weights, int stride = 1)
@@ -110,11 +98,7 @@ namespace NeuroSharp
             int outDim = dim + WeightsDim - 1;
             int paddedDim = dim + 2*(WeightsDim - 1);
 
-            Matrix<float> image = Matrix<float>.Build.Dense(dim, dim);
-            for (int i = 0; i < dim; i++)
-                for (int j = 0; j < dim; j++)
-                    image[j, i] = flattenedImage[i * dim + j];
-
+            Matrix<float> image = Utils.Unflatten(flattenedImage);
             Matrix<float> output = Matrix<float>.Build.Dense(outDim, outDim);
 
             // build padding matrix. This will form the backwards convolution
@@ -147,7 +131,7 @@ namespace NeuroSharp
 
             output = output.Transpose();
 
-            return Flatten(output);
+            return Utils.Flatten(output);
         }
 
         // "rotates" matrix 180 degrees
@@ -162,15 +146,6 @@ namespace NeuroSharp
                 for (int j = 0; j < mtx.ColumnCount; j++)
                     output[i, j] = temp[mtx.RowCount - i - 1, j];
             return output;
-        }
-
-        public static Vector<float> Flatten(Matrix<float> mtx)
-        {
-            List<float> f = new List<float>();
-            for (int i = 0; i < mtx.RowCount; i++)
-                for (int j = 0; j < mtx.ColumnCount; j++)
-                    f.Add(mtx[i, j]);
-            return Vector<float>.Build.DenseOfArray(f.ToArray());
         }
     }
 }

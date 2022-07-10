@@ -1,5 +1,5 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
-using NeuroSharp.Optimizers;
+using NeuroSharp.MathUtils;
 using NeuroSharp.Enumerations;
 
 namespace NeuroSharp
@@ -33,7 +33,7 @@ namespace NeuroSharp
                 for (int j = 0; j < dim; j++)
                     inputMatrix[j, i] = input[i * dim + j];
 
-            Output = ConvolutionalLayer.Flatten(MaxPool(inputMatrix, _poolSize, _stride));
+            Output = Utils.Flatten(MaxPool(inputMatrix, _poolSize, _stride));
             return Output;
         }
 
@@ -47,7 +47,7 @@ namespace NeuroSharp
                 backwardsGradient[coord.x, coord.y] = outputError[i];
             }
 
-            return ConvolutionalLayer.Flatten(backwardsGradient);
+            return Utils.Flatten(backwardsGradient);
         }
 
         public Matrix<float> MaxPool(Matrix<float> mtx, int poolSize, int stride)
