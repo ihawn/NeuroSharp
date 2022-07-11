@@ -1,6 +1,7 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using NeuroSharp.Optimizers;
 using NeuroSharp.Enumerations;
+using NeuroSharp.MathUtils;
 
 namespace NeuroSharp
 {
@@ -16,9 +17,9 @@ namespace NeuroSharp
 
             for (int i = 0; i < inputSize; i++)
                 for (int j = 0; j < outputSize; j++)
-                    Weights[i, j] = MathUtils.Utils.NextFloat(-0.5f, 0.5f);
+                    Weights[i, j] = Utils.GetInitialWeight(inputSize);
             for (int i = 0; i < outputSize; i++)
-                Bias[i] = MathUtils.Utils.NextFloat(-0.5f, 0.5f);
+                Bias[i] = Utils.GetInitialWeight(inputSize);
         }
 
         public override Vector<float> ForwardPropagation(Vector<float> input)

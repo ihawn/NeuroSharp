@@ -1,4 +1,5 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.Distributions;
 
 namespace NeuroSharp.MathUtils
 {
@@ -26,6 +27,12 @@ namespace NeuroSharp.MathUtils
                 for (int j = 0; j < dim; j++)
                     mtx[j, i] = vec[i * dim + j];
             return mtx;
+        }
+
+        public static float GetInitialWeight(int layerInputSize)
+        {
+            float sigma = MathF.Sqrt(2f/layerInputSize);
+            return (float)new Normal(0, sigma).Sample();
         }
     }
 }

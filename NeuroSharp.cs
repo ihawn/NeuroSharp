@@ -10,8 +10,8 @@ namespace NeuroSharp
         static void Main(string[] args)
         {
             //XOR_Test();
-            //Mnist_Digits_Test(500, 100);
-            Mnist_Digits_Test_Conv(500, 100);
+            //Mnist_Digits_Test(500, 500);
+            Mnist_Digits_Test_Conv(500, 500);
             //Conv_Vs_Non_Conv(20000, 5000, 25);
 
             #region testing
@@ -205,7 +205,7 @@ namespace NeuroSharp
 
             //build network
             Network network = new Network();
-            network.Add(new ConvolutionalLayer(28*28, 26*26, 3));
+            network.Add(new ConvolutionalLayer(28*28, 26*26, 3, stride: 1));
             network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
             network.Add(new MaxPoolingLayer(26*26, 2));
             network.Add(new FullyConnectedLayer(25*25, 150));

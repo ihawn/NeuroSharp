@@ -9,22 +9,24 @@ namespace NeuroSharp
     public class ConvolutionalLayer : ParameterizedLayer
     {
         private Adam _adam;
+        private int _stride;
 
-        public ConvolutionalLayer(int inputSize, int outputSize, int convolutionSize)
+        public ConvolutionalLayer(int inputSize, int outputSize, int convolutionSize, int stride = 1)
         {
             Weights = Matrix<float>.Build.Random(convolutionSize, convolutionSize);
             _adam = new Adam(convolutionSize, convolutionSize);
+            _stride = stride;
 
             for (int i = 0; i < convolutionSize; i++)
                 for (int j = 0; j < convolutionSize; j++)
-                    Weights[i, j] = MathUtils.Utils.NextFloat(-0.5f, 0.5f);
+                    Weights[i, j] = Utils.GetInitialWeight(inputSize);
         }
 
         public override Vector<float> ForwardPropagation(Vector<float> input)
         {
             Input = input;
             Output = Input;
-            Output = Convolution(Output, Weights).Item1;
+            Output = Convolution(Output, Weights, _stride).Item1;
             return Output;
         }
 
@@ -32,8 +34,8 @@ namespace NeuroSharp
         {
             Matrix<float> outGradientMatrix = Utils.Unflatten(outputError);
 
-            var weightsGradient = Convolution(Input, outGradientMatrix);
-            Vector<float> inputGradient = BackwardsConvolution(Utils.Flatten(OrthoMatrix(Weights)), outGradientMatrix);
+            var weightsGradient = Convolution(Input, outGradientMatrix, _stride);
+            Vector<float> inputGradient = BackwardsConvolution(Utils.Flatten(OrthoMatrix(Weights)), outGradientMatrix, _stride);
             WeightGradient = weightsGradient.Item2;
 
             _adam.Step(this, sampleIndex + 1, eta: learningRate, includeBias: false);
@@ -42,7 +44,7 @@ namespace NeuroSharp
         }
 
         // returns both flattened and unflattened convolution
-        public static (Vector<float>, Matrix<float>) Convolution(Vector<float> flattenedImage, Matrix<float> Weights, int stride = 1)
+        public static (Vector<float>, Matrix<float>) Convolution(Vector<float> flattenedImage, Matrix<float> Weights, int stride)
         {
             int dim = (int)Math.Round(Math.Sqrt(flattenedImage.Count));
             int outDim = (int)Math.Floor((dim - (float)Weights.RowCount) / stride) + 1;
@@ -80,7 +82,7 @@ namespace NeuroSharp
             return (Utils.Flatten(output), output);
         }
 
-        public static Vector<float> BackwardsConvolution(Vector<float> flattenedImage, Matrix<float> Weights, int stride = 1)
+        public static Vector<float> BackwardsConvolution(Vector<float> flattenedImage, Matrix<float> Weights, int stride)
         {
             int dim = (int)Math.Round(Math.Sqrt(flattenedImage.Count));
             int WeightsDim = Weights.RowCount;
@@ -102,21 +104,21 @@ namespace NeuroSharp
             }
 
             // backward overlapping slide operation
-            for (int i = outDim - 1; i >= 0; i--)
+            Parallel.For(0, outDim, i =>
             {
-                for(int j = outDim - 1; j >= 0; j--)
+                for (int j = outDim - 1; j >= 0; j -= stride)
                 {
                     float sum = 0;
-                    for(int x = 0; x < WeightsDim; x++)
+                    for (int x = 0; x < WeightsDim; x++)
                     {
-                        for(int y = 0; y < WeightsDim; y++)
+                        for (int y = 0; y < WeightsDim; y++)
                         {
                             sum += padding[y + j, x + i] * Weights[x, y];
                         }
                     }
                     output[outDim - i - 1, outDim - j - 1] = sum;
                 }
-            }
+            });
 
             output = output.Transpose();
 
