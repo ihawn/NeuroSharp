@@ -11,7 +11,7 @@ namespace NeuroSharp
         {
             //XOR_Test();
             //Mnist_Digits_Test(500, 500);
-            Mnist_Digits_Test_Conv(500, 500);
+            Mnist_Digits_Test_Conv(5000, 500);
             //Conv_Vs_Non_Conv(20000, 5000, 25);
 
             #region testing
@@ -138,7 +138,7 @@ namespace NeuroSharp
 
             //train
             //network.MinibatchTrain(xTrain, yTrain, epochs: 5, OptimizerType.Adam, batchSize: 256);
-            network.Train(xTrain, yTrain, epochs: 5, OptimizerType.Adam);
+            network.Train(xTrain, yTrain, epochs: 8, OptimizerType.Adam);
 
             //test
             int i = 0;
@@ -215,7 +215,7 @@ namespace NeuroSharp
             network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
 
             //train
-            network.Train(xTrain, yTrain, epochs: 5, OptimizerType.Adam);
+            network.Train(xTrain, yTrain, epochs: 8, OptimizerType.Adam);
 
             //test
             int i = 0;

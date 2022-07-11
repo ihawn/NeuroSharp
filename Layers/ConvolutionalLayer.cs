@@ -95,13 +95,13 @@ namespace NeuroSharp
             // build padding matrix. This will form the backwards convolution
             Matrix<float> padding = Matrix<float>.Build.Dense(paddedDim, paddedDim);
             int offset = outDim - dim;
-            for (int i = 0; i < dim; i++)
+            Parallel.For(0, dim, i =>
             {
                 for (int j = 0; j < dim; j++)
                 {
                     padding[i + offset, j + offset] = image[i, j];
                 }
-            }
+            });
 
             // backward overlapping slide operation
             Parallel.For(0, outDim, i =>
