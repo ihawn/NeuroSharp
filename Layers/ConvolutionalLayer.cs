@@ -38,34 +38,43 @@ namespace NeuroSharp
             Vector<float> inputGradient = BackwardsConvolution(Utils.Flatten(OrthoMatrix(Weights)), outGradientMatrix, _stride);
             WeightGradient = weightsGradient.Item2;
 
-            _adam.Step(this, sampleIndex + 1, eta: learningRate, includeBias: false);
+            switch (optimzerType)
+            {
+                case OptimizerType.GradientDescent:
+                    Weights -= learningRate * WeightGradient;
+                    break;
+
+                case OptimizerType.Adam:
+                    _adam.Step(this, sampleIndex + 1, eta: learningRate, includeBias: false);
+                    break;
+            }
 
             return inputGradient;
         }
 
         // returns both flattened and unflattened convolution
-        public static (Vector<float>, Matrix<float>) Convolution(Vector<float> flattenedImage, Matrix<float> Weights, int stride)
+        public static (Vector<float>, Matrix<float>) Convolution(Vector<float> flattenedImage, Matrix<float> weights, int stride)
         {
             int dim = (int)Math.Round(Math.Sqrt(flattenedImage.Count));
-            int outDim = (int)Math.Floor((dim - (float)Weights.RowCount) / stride) + 1;
+            int outDim = (int)Math.Floor((dim - (float)weights.RowCount) / stride) + 1;
 
             Matrix<float> image = Utils.Unflatten(flattenedImage);
             Matrix<float> output = Matrix<float>.Build.Dense(outDim, outDim);
 
             int y = 0;
             int outY = 0;
-            while (y + Weights.RowCount <= dim)
+            while (y + weights.RowCount <= dim)
             {
                 int x = 0;
                 int outX = 0;
-                while (x + Weights.ColumnCount <= dim)
+                while (x + weights.ColumnCount <= dim)
                 {
                     float sum = 0;
-                    for (int n = 0; n < Weights.RowCount; n++)
+                    for (int n = 0; n < weights.RowCount; n++)
                     {
-                        for (int m = 0; m < Weights.RowCount; m++)
+                        for (int m = 0; m < weights.RowCount; m++)
                         {
-                            sum += Weights[m, n] * image[x + m, y + n];
+                            sum += weights[m, n] * image[x + m, y + n];
                         }
                     }
 
@@ -82,10 +91,10 @@ namespace NeuroSharp
             return (Utils.Flatten(output), output);
         }
 
-        public static Vector<float> BackwardsConvolution(Vector<float> flattenedImage, Matrix<float> Weights, int stride)
+        public static Vector<float> BackwardsConvolution(Vector<float> flattenedImage, Matrix<float> weights, int stride)
         {
             int dim = (int)Math.Round(Math.Sqrt(flattenedImage.Count));
-            int WeightsDim = Weights.RowCount;
+            int WeightsDim = weights.RowCount;
             int outDim = dim + WeightsDim - 1;
             int paddedDim = dim + 2*(WeightsDim - 1);
 
@@ -95,15 +104,17 @@ namespace NeuroSharp
             // build padding matrix. This will form the backwards convolution
             Matrix<float> padding = Matrix<float>.Build.Dense(paddedDim, paddedDim);
             int offset = outDim - dim;
-            Parallel.For(0, dim, i =>
+            for (int i = 0; i < dim; i++)
+            //Parallel.For(0, dim, i =>
             {
                 for (int j = 0; j < dim; j++)
                 {
                     padding[i + offset, j + offset] = image[i, j];
                 }
-            });
+            }//);
 
             // backward overlapping slide operation
+            //for (int i = outDim - 1; i >= 0; i -= stride)
             Parallel.For(0, outDim, i =>
             {
                 for (int j = outDim - 1; j >= 0; j -= stride)
@@ -113,7 +124,7 @@ namespace NeuroSharp
                     {
                         for (int y = 0; y < WeightsDim; y++)
                         {
-                            sum += padding[y + j, x + i] * Weights[x, y];
+                            sum += padding[y + j, x + i] * weights[x, y];
                         }
                     }
                     output[outDim - i - 1, outDim - j - 1] = sum;

@@ -12,25 +12,42 @@ namespace NeuroSharp.Data
 
     public static class MnistReader
     {
-        private const string TrainImages = "MnistDigits/train-images.idx3-ubyte";
-        private const string TrainLabels = "MnistDigits/train-labels.idx1-ubyte";
-        private const string TestImages = "MnistDigits/t10k-images.idx3-ubyte";
-        private const string TestLabels = "MnistDigits/t10k-labels.idx1-ubyte";
+        private const string TrainImages_digits = "MnistDigits/train-images.idx3-ubyte";
+        private const string TrainLabels_digits = "MnistDigits/train-labels.idx1-ubyte";
+        private const string TestImages_digits = "MnistDigits/t10k-images.idx3-ubyte";
+        private const string TestLabels_digits = "MnistDigits/t10k-labels.idx1-ubyte";
 
-        public static IEnumerable<Image> ReadTrainingData()
+        private const string TrainImages_fashion = "MnistFashion/train-images-idx3-ubyte-fashion";
+        private const string TrainLabels_fashion = "MnistFashion/train-labels-idx1-ubyte-fashion";
+        private const string TestImages_fashion = "MnistFashion/t10k-images-idx3-ubyte-fashion";
+        private const string TestLabels_fashion = "MnistFashion/t10k-labels-idx1-ubyte-fashion";
+
+        public static IEnumerable<Image> ReadTrainingData(string data)
         {
-            foreach (var item in Read(TrainImages, TrainLabels))
-            {
-                yield return item;
-            }
+            if(data == "digits")
+                foreach (var item in Read(TrainImages_digits, TrainLabels_digits))
+                {
+                    yield return item;
+                }
+            else if(data == "fashion")
+                foreach (var item in Read(TrainImages_fashion, TrainLabels_fashion))
+                {
+                    yield return item;
+                }
         }
 
-        public static IEnumerable<Image> ReadTestData()
+        public static IEnumerable<Image> ReadTestData(string data)
         {
-            foreach (var item in Read(TestImages, TestLabels))
-            {
-                yield return item;
-            }
+            if (data == "digits")
+                foreach (var item in Read(TestImages_digits, TestLabels_digits))
+                {
+                    yield return item;
+                }
+            else if (data == "fashion")
+                foreach (var item in Read(TestImages_fashion, TestLabels_fashion))
+                {
+                    yield return item;
+                }
         }
 
         private static IEnumerable<Image> Read(string imagesPath, string labelsPath)

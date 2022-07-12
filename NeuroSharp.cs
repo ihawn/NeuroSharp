@@ -10,9 +10,9 @@ namespace NeuroSharp
         static void Main(string[] args)
         {
             //XOR_Test();
-            //Mnist_Digits_Test(500, 500);
-            Mnist_Digits_Test_Conv(5000, 500);
-            //Conv_Vs_Non_Conv(20000, 5000, 25);
+            Mnist_Digits_Test(500, 500, 5, "fashion");
+            //Mnist_Digits_Test_Conv(500, 500, 5, "digits");
+            //Conv_Vs_Non_Conv(2500, 5000, 40, 10, "digits");
 
             #region testing
              /*float[,] filt = new float[,]
@@ -83,13 +83,13 @@ namespace NeuroSharp
             }
         }
 
-        static float Mnist_Digits_Test(int trainSize, int testSize)
+        static float Mnist_Digits_Test(int trainSize, int testSize, int epochs, string data)
         {
             //training data
             List<Vector<float>> xTrain = new List<Vector<float>>();
             List<Vector<float>> yTrain = new List<Vector<float>>();
 
-            var trainData = MnistReader.ReadTrainingData().ToList();
+            var trainData = MnistReader.ReadTrainingData(data).ToList();
             for(int n = 0; n < trainSize; n++)
             {
                 var image = trainData[n];
@@ -107,7 +107,7 @@ namespace NeuroSharp
             List<Vector<float>> xTest = new List<Vector<float>>();
             List<Vector<float>> yTest = new List<Vector<float>>();
 
-            var testData = MnistReader.ReadTestData().ToList();
+            var testData = MnistReader.ReadTestData(data).ToList();
             for (int n = 0; n < testSize; n++)
             {
                 var image = testData[n];
@@ -137,8 +137,10 @@ namespace NeuroSharp
             network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
 
             //train
-            //network.MinibatchTrain(xTrain, yTrain, epochs: 5, OptimizerType.Adam, batchSize: 256);
-            network.Train(xTrain, yTrain, epochs: 8, OptimizerType.Adam);
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            //network.Train(xTrain, yTrain, epochs: 5, OptimizerType.Adam);
+            network.MinibatchTrain(xTrain, yTrain, epochs: epochs, OptimizerType.Adam, batchSize: 256);
+            var elapsedMs = watch.ElapsedMilliseconds;
 
             //test
             int i = 0;
@@ -158,16 +160,17 @@ namespace NeuroSharp
             }
             float acc = (1f - ((float)wrongCount) / ((float)i));
             Console.WriteLine("Accuracy: " + acc);
+            Console.WriteLine("Training Runtime: " + (elapsedMs / 1000f).ToString() + "s");
             return acc;
         }
 
-        static float Mnist_Digits_Test_Conv(int trainSize, int testSize)
+        static float Mnist_Digits_Test_Conv(int trainSize, int testSize, int epochs, string data)
         {
             //training data
             List<Vector<float>> xTrain = new List<Vector<float>>();
             List<Vector<float>> yTrain = new List<Vector<float>>();
 
-            var trainData = MnistReader.ReadTrainingData().ToList();
+            var trainData = MnistReader.ReadTrainingData(data).ToList();
             for (int n = 0; n < trainSize; n++)
             {
                 var image = trainData[n];
@@ -185,7 +188,7 @@ namespace NeuroSharp
             List<Vector<float>> xTest = new List<Vector<float>>();
             List<Vector<float>> yTest = new List<Vector<float>>();
 
-            var testData = MnistReader.ReadTestData().ToList();
+            var testData = MnistReader.ReadTestData(data).ToList();
             for (int n = 0; n < testSize; n++)
             {
                 var image = testData[n];
@@ -205,17 +208,20 @@ namespace NeuroSharp
 
             //build network
             Network network = new Network();
-            network.Add(new ConvolutionalLayer(28*28, 26*26, 3, stride: 1));
+            network.Add(new ConvolutionalLayer(28 * 28, 27 * 27, 2, stride: 1));
             network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
-            network.Add(new MaxPoolingLayer(26*26, 2));
-            network.Add(new FullyConnectedLayer(25*25, 150));
+            network.Add(new MaxPoolingLayer(27 * 27, 2));
+            network.Add(new FullyConnectedLayer(26 * 26, 150));
             network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
             network.Add(new FullyConnectedLayer(150, 10));
             network.Add(new SoftmaxActivationLayer());
             network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
 
             //train
-            network.Train(xTrain, yTrain, epochs: 8, OptimizerType.Adam);
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            //network.Train(xTrain, yTrain, epochs: 5, OptimizerType.Adam);
+            network.MinibatchTrain(xTrain, yTrain, epochs: epochs, OptimizerType.Adam, batchSize: 256, learningRate: 0.001f);
+            var elapsedMs = watch.ElapsedMilliseconds;
 
             //test
             int i = 0;
@@ -235,18 +241,19 @@ namespace NeuroSharp
             }
             float acc = (1f - ((float)wrongCount) / ((float)i));
             Console.WriteLine("Accuracy: " + acc);
+            Console.WriteLine("Training Runtime: " + (elapsedMs / 1000f).ToString() + "s");
             return acc;
         }
 
-        static void Conv_Vs_Non_Conv(int trainSize, int testSize, int testsToRun)
+        static void Conv_Vs_Non_Conv(int trainSize, int testSize, int testsToRun, int epochs, string data)
         {
             float denseNetAcc = 0;
             float convNetAcc = 0;
 
             for(int i = 0; i < testsToRun; i++)
             {
-                denseNetAcc += Mnist_Digits_Test(trainSize, testSize);
-                convNetAcc += Mnist_Digits_Test_Conv(trainSize, testSize);
+                denseNetAcc += Mnist_Digits_Test(trainSize, testSize, epochs, data);
+                convNetAcc += Mnist_Digits_Test_Conv(trainSize, testSize, epochs, data);
             }
 
             denseNetAcc /= testsToRun;
