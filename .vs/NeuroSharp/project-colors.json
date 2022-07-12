@@ -5,7 +5,17 @@
       "ProjectGuid": "0a671abc-1b57-4382-b6ca-a19fa118d542",
       "DisplayName": "NeuroSharp",
       "ColorIndex": 0
+    },
+    "8b7aa03c-2c26-4fda-80fb-8a8b253d483a": {
+      "ProjectGuid": "8b7aa03c-2c26-4fda-80fb-8a8b253d483a",
+      "DisplayName": "UnitTests",
+      "ColorIndex": 1
+    },
+    "7e783010-cc4c-460f-b640-e6e922909fdf": {
+      "ProjectGuid": "7e783010-cc4c-460f-b640-e6e922909fdf",
+      "DisplayName": "UnitTests",
+      "ColorIndex": 2
     }
   },
-  "NextColorIndex": 1
+  "NextColorIndex": 3
 }
