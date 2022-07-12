@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\NeuroSharp.csproj": {}
+    "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\NeuroSharp\\NeuroSharp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\NeuroSharp.csproj": {
+    "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\NeuroSharp\\NeuroSharp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\NeuroSharp.csproj",
+        "projectUniqueName": "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\NeuroSharp\\NeuroSharp.csproj",
         "projectName": "NeuroSharp",
-        "projectPath": "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\NeuroSharp.csproj",
+        "projectPath": "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\NeuroSharp\\NeuroSharp.csproj",
         "packagesPath": "C:\\Users\\Isaac\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\obj\\",
+        "outputPath": "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\NeuroSharp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

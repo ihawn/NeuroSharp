@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "wkAcHQ7KcB5pOuHEzvCe/s9k+RVQXUeRbCxXsCmHN5bAjjAcVSo6rq50LKmqs2dxfbWZIGVti+FV1hBQfieyTQ==",
+  "dgSpecHash": "ssfDm3RpNlUHfpkxTu3tMnPi5r5/L9aNzcKdGZiHQcsWhiTNdQH+UoKQsv2HukjPR91B8Ae0QGPaRevMTXaihg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\NeuroSharp.csproj",
+  "projectFilePath": "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\NeuroSharp\\NeuroSharp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Isaac\\.nuget\\packages\\mathnet.numerics\\5.0.0\\mathnet.numerics.5.0.0.nupkg.sha512",
     "C:\\Users\\Isaac\\.nuget\\packages\\mathnet.spatial\\0.6.0\\mathnet.spatial.0.6.0.nupkg.sha512",

@@ -61,32 +61,11 @@ namespace NeuroSharp
             Matrix<float> image = Utils.Unflatten(flattenedImage);
             Matrix<float> output = Matrix<float>.Build.Dense(outDim, outDim);
 
-            int y = 0;
-            int outY = 0;
-            while (y + weights.RowCount <= dim)
-            {
-                int x = 0;
-                int outX = 0;
-                while (x + weights.ColumnCount <= dim)
-                {
-                    float sum = 0;
-                    for (int n = 0; n < weights.RowCount; n++)
-                    {
-                        for (int m = 0; m < weights.RowCount; m++)
-                        {
-                            sum += weights[m, n] * image[x + m, y + n];
-                        }
-                    }
-
-                    output[outX, outY] = sum;
-                    x += stride;
-                    outX++;
-                }
-
-                y += stride;
-                outY++;
-            }
-
+            for(int i = 0; i < outDim; i++)
+                for(int j = 0; j < outDim; j++)
+                    for(int a = 0; a < weights.RowCount; a++)
+                        for(int b = 0; b < weights.RowCount; b++)
+                            output[i, j] += image[j * stride + b, i * stride + a] * weights[a, b];
 
             return (Utils.Flatten(output), output);
         }
