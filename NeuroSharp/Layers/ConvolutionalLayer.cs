@@ -34,8 +34,12 @@ namespace NeuroSharp
         {
             Matrix<float> outGradientMatrix = Utils.Unflatten(outputError);
 
+            // ∂L/∂Y -> Loss Gradient.   Equals gradient from previous layer, outGradientMatrix in this case
+            // ∂L/∂W -> Weights Gradient. Equals convolution(Input, ∂L/∂O)
             var weightsGradient = Convolution(Input, outGradientMatrix, _stride);
-            Vector<float> inputGradient = BackwardsConvolution(Utils.Flatten(OrthoMatrix(Weights)), outGradientMatrix, _stride);
+
+            // ∂L/∂X -> Input Gradient.  Equals full_convolution(WeightsTranspose, ∂L/∂O)
+            Vector<float> inputGradient = BackwardsConvolution(OrthoMatrix(Weights), outGradientMatrix, _stride);
             WeightGradient = weightsGradient.Item2;
 
             switch (optimzerType)
@@ -70,49 +74,35 @@ namespace NeuroSharp
             return (Utils.Flatten(output), output);
         }
 
-        public static Vector<float> BackwardsConvolution(Vector<float> flattenedImage, Matrix<float> weights, int stride)
+        public static Vector<float> BackwardsConvolution(Matrix<float> rotatedWeight, Matrix<float> gradient, int stride)
         {
-            int dim = (int)Math.Round(Math.Sqrt(flattenedImage.Count));
-            int WeightsDim = weights.RowCount;
-            int outDim = dim + WeightsDim - 1;
-            int paddedDim = dim + 2*(WeightsDim - 1);
+            Matrix<float> paddedDilatedGradient = PadAndDilate(gradient, stride, rotatedWeight.RowCount);
+            return Convolution(Utils.Flatten(paddedDilatedGradient), rotatedWeight, stride).Item1;
+        }
 
-            Matrix<float> image = Utils.Unflatten(flattenedImage);
-            Matrix<float> output = Matrix<float>.Build.Dense(outDim, outDim);
+        public static Matrix<float> PadAndDilate(Matrix<float> passedGradient, int stride, int kernel)
+        {
+            int weightsDim = passedGradient.RowCount;
+            int dilation = stride - 1;
+            int padding = kernel - 1;
+            int unpaddedSize = weightsDim + dilation * (weightsDim - 1);
+            int outDim = 2 * padding + unpaddedSize;
 
-            // build padding matrix. This will form the backwards convolution
-            Matrix<float> padding = Matrix<float>.Build.Dense(paddedDim, paddedDim);
-            int offset = outDim - dim;
-            for (int i = 0; i < dim; i++)
-            //Parallel.For(0, dim, i =>
+            Matrix<float> paddedMtx = Matrix<float>.Build.Dense(outDim, outDim);
+
+            int x = 0;
+            for (int i = padding; i < outDim - padding; i += stride)
             {
-                for (int j = 0; j < dim; j++)
+                int y = 0;
+                for (int j = padding; j < outDim - padding; j += stride)
                 {
-                    padding[i + offset, j + offset] = image[i, j];
+                    paddedMtx[i, j] = passedGradient[x, y];
+                    y++;
                 }
-            }//);
+                x++;
+            }
 
-            // backward overlapping slide operation
-            //for (int i = outDim - 1; i >= 0; i -= stride)
-            Parallel.For(0, outDim, i =>
-            {
-                for (int j = outDim - 1; j >= 0; j -= stride)
-                {
-                    float sum = 0;
-                    for (int x = 0; x < WeightsDim; x++)
-                    {
-                        for (int y = 0; y < WeightsDim; y++)
-                        {
-                            sum += padding[y + j, x + i] * weights[x, y];
-                        }
-                    }
-                    output[outDim - i - 1, outDim - j - 1] = sum;
-                }
-            });
-
-            output = output.Transpose();
-
-            return Utils.Flatten(output);
+            return paddedMtx;
         }
 
         // "rotates" matrix 180 degrees
