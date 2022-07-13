@@ -208,7 +208,7 @@ namespace NeuroSharp
 
             //build network
             Network network = new Network();
-            network.Add(new ConvolutionalLayer(28 * 28, 13 * 13, 2, stride: 2));
+            network.Add(new ConvolutionalLayer(28 * 28, 14 * 14, 2, stride: 2));
             network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
             network.Add(new MaxPoolingLayer(14 * 14, 2));
             network.Add(new FullyConnectedLayer(13 * 13, 10));

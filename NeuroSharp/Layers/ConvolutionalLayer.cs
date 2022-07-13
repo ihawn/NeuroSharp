@@ -77,7 +77,7 @@ namespace NeuroSharp
         public static Vector<float> BackwardsConvolution(Matrix<float> rotatedWeight, Matrix<float> gradient, int stride)
         {
             Matrix<float> paddedDilatedGradient = PadAndDilate(gradient, stride, rotatedWeight.RowCount);
-            return Convolution(Utils.Flatten(paddedDilatedGradient), rotatedWeight, stride).Item1;
+            return Convolution(Utils.Flatten(paddedDilatedGradient), rotatedWeight, stride: 1).Item1;
         }
 
         public static Matrix<float> PadAndDilate(Matrix<float> passedGradient, int stride, int kernel)

@@ -336,25 +336,26 @@ namespace UnitTests
 
             exp = new float[,]
             {
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 4, 0, 3, 0, 5, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 2, 0, 1, 0, 9, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 6, 0, 8, 0, 2, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 4, 0, 0, 3, 0, 0, 5, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 2, 0, 0, 1, 0, 0, 9, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 6, 0, 0, 8, 0, 0, 2, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
             };
 
             Matrix<float> grad3 = Matrix<float>.Build.DenseOfArray(grad);
             Matrix<float> expected3 = Matrix<float>.Build.DenseOfArray(exp);
             #endregion
 
-
-
             Assert.AreEqual(expected1, ConvolutionalLayer.PadAndDilate(grad1, 2, 3));
             Assert.AreEqual(expected2, ConvolutionalLayer.PadAndDilate(grad2, 2, 3));
+            Assert.AreEqual(expected3, ConvolutionalLayer.PadAndDilate(grad3, 3, 3));
         }
 
         /*[Test]
