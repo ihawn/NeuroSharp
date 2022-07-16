@@ -1,0 +1,16 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "0a671abc-1b57-4382-b6ca-a19fa118d542": {
+      "ProjectGuid": "0a671abc-1b57-4382-b6ca-a19fa118d542",
+      "DisplayName": "NeuroSharp",
+      "ColorIndex": 0
+    },
+    "7e783010-cc4c-460f-b640-e6e922909fdf": {
+      "ProjectGuid": "7e783010-cc4c-460f-b640-e6e922909fdf",
+      "DisplayName": "UnitTests",
+      "ColorIndex": 1
+    }
+  },
+  "NextColorIndex": 2
+}

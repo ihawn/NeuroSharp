@@ -10,9 +10,9 @@ namespace NeuroSharp
         static void Main(string[] args)
         {
             //XOR_Test();
-            //Mnist_Digits_Test(500, 500, 5, "fashion");
-            Mnist_Digits_Test_Conv(500, 100, 10, "digits");
-            //Conv_Vs_Non_Conv(2500, 5000, 40, 10, "digits");
+            //Mnist_Digits_Test(4096, 500, 10, "digits");
+            Mnist_Digits_Test_Conv(1000, 100, 10, "digits");
+            //Conv_Vs_Non_Conv(1000, 100, 20, 10, "digits");
 
             #region testing
              /*float[,] filt = new float[,]
@@ -208,18 +208,18 @@ namespace NeuroSharp
 
             //build network
             Network network = new Network();
-            network.Add(new ConvolutionalLayer(28 * 28, 14 * 14, 2, stride: 2));
+            network.Add(new ConvolutionalLayer(28 * 28, kernel: 2, stride: 2));
             network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
             network.Add(new MaxPoolingLayer(14 * 14, 2));
-            network.Add(new FullyConnectedLayer(13 * 13, 10));
-            /*network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
-            network.Add(new FullyConnectedLayer(150, 10));*/
+            network.Add(new FullyConnectedLayer(13 * 13, 150));
+            network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
+            network.Add(new FullyConnectedLayer(150, 10));
             network.Add(new SoftmaxActivationLayer());
             network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
 
             //train
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            //network.Train(xTrain, yTrain, epochs: 5, OptimizerType.Adam);
+            //network.Train(xTrain, yTrain, epochs: epochs, OptimizerType.Adam);
             network.MinibatchTrain(xTrain, yTrain, epochs: epochs, OptimizerType.Adam, batchSize: 256, learningRate: 0.001f);
             var elapsedMs = watch.ElapsedMilliseconds;
 
