@@ -11,7 +11,7 @@ namespace NeuroSharp
         {
             //XOR_Test();
             //Mnist_Digits_Test(4096, 500, 10, "digits");
-            Mnist_Digits_Test_Conv(10000, 1000, 20, "digits");
+            Mnist_Digits_Test_Conv(60000, 10000, 25, "digits");
             //Conv_Vs_Non_Conv(20000, 2000, 25, 20, "digits");
 
             #region testing
@@ -208,10 +208,10 @@ namespace NeuroSharp
 
             //build network
             Network network = new Network();
-            network.Add(new ConvolutionalLayer(28 * 28, kernel: 2, filters: 4, stride: 2));
+            network.Add(new ConvolutionalLayer(28 * 28, kernel: 2, filters: 8, stride: 2));
             network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
-            network.Add(new MaxPoolingLayer(4 * 14 * 14, prevFilterCount: 4, poolSize: 2));
-            network.Add(new FullyConnectedLayer(4 * 13 * 13, 150));
+            network.Add(new MaxPoolingLayer(8 * 14 * 14, prevFilterCount: 8, poolSize: 2));
+            network.Add(new FullyConnectedLayer(8 * 13 * 13, 150));
             network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
             network.Add(new FullyConnectedLayer(150, 10));
             network.Add(new SoftmaxActivationLayer());

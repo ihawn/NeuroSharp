@@ -38,12 +38,13 @@ namespace NeuroSharp
         {
             Input = input;
             Output = Vector<double>.Build.Dense(_outputSize);
-            for(int i = 0; i < _filters; i++)
+            Parallel.For(0, _filters, i =>
+            //for (int i = 0; i < _filters; i++)
             {
                 Vector<double> singleFilterOutput = Convolution(Input, Weights[i], _stride).Item1;
-                for(int j = 0; j < singleFilterOutput.Count; j++)
-                    Output[i*singleFilterOutput.Count + j] = singleFilterOutput[j];
-            }
+                for (int j = 0; j < singleFilterOutput.Count; j++)
+                    Output[i * singleFilterOutput.Count + j] = singleFilterOutput[j];
+            });
             return Output;
         }
 
@@ -51,8 +52,8 @@ namespace NeuroSharp
         {
             Vector<double> inputGradient = Vector<double>.Build.Dense(_inputSize);
 
-            //Parallel.For(0, _filters, i =>
-            for (int i = 0; i < _filters; i++)
+            Parallel.For(0, _filters, i =>
+            //for (int i = 0; i < _filters; i++)
             {
                 Vector<double> jacobianSlice = Vector<double>.Build.Dense(outputError.Count / _filters); // ∂L/∂Y
                 for (int j = 0; j < jacobianSlice.Count; j++)
@@ -62,7 +63,7 @@ namespace NeuroSharp
                 Vector<double> singleGradient = ComputeInputGradient(Weights[i], Utils.Unflatten(jacobianSlice), _stride);
                 for (int j = 0; j < singleGradient.Count; j++)
                     inputGradient[i * singleGradient.Count + j] = singleGradient[j];
-            }//);
+            });
 
             switch (optimzerType)
             {
@@ -89,11 +90,15 @@ namespace NeuroSharp
             Matrix<double> image = Utils.Unflatten(flattenedImage);
             Matrix<double> output = Matrix<double>.Build.Dense(outDim, outDim);
 
-            for(int i = 0; i < outDim; i++)
-                for(int j = 0; j < outDim; j++)
-                    for(int a = 0; a < weights.RowCount; a++)
-                        for(int b = 0; b < weights.RowCount; b++)
+            Parallel.For(0, outDim, i =>
+            //for(int i = 0; i < outDim; i++)
+            {
+                for (int j = 0; j < outDim; j++)
+                    for (int a = 0; a < weights.RowCount; a++)
+                        for (int b = 0; b < weights.RowCount; b++)
                             output[i, j] += image[j * stride + b, i * stride + a] * weights[a, b];
+            });
+
 
             return (Utils.Flatten(output), output);
         }

@@ -32,13 +32,14 @@ namespace NeuroSharp
 
             List<Matrix<double>> featureMaps = SliceFlattenedMatrixIntoSquares(input, _filters);
             List<double> rawOutput = new List<double>();
+            //Parallel.For(0, featureMaps.Count, i =>
             for(int i = 0; i < featureMaps.Count; i++)
             {
                 var maxPoolResult = MaxPool(featureMaps[i], _poolSize, _stride);
                 MaxPoolPositions.Add(maxPoolResult.Item2);
-                foreach(double d in Utils.Flatten(maxPoolResult.Item1))
+                foreach (double d in Utils.Flatten(maxPoolResult.Item1))
                     rawOutput.Add(d);
-            }
+            }//);
 
 
             Output = Vector<double>.Build.DenseOfEnumerable(rawOutput);
@@ -50,6 +51,7 @@ namespace NeuroSharp
             int dim = (int)Math.Round(Math.Sqrt(_inputSize/_filters));
             List<double> rawBackpropData = new List<double>();
 
+            //Parallel.For(0, _filters, k =>
             for(int k = 0; k < _filters; k++)
             {
                 Matrix<double> backwardsGradient = Matrix<double>.Build.Dense(dim, dim);
@@ -58,9 +60,9 @@ namespace NeuroSharp
                     var coord = new { x = MaxPoolPositions[k][i].Item1, y = MaxPoolPositions[k][i].Item2 };
                     backwardsGradient[coord.x, coord.y] = outputError[i];
                 }
-                foreach(double d in Utils.Flatten(backwardsGradient))
+                foreach (double d in Utils.Flatten(backwardsGradient))
                     rawBackpropData.Add(d);
-            }
+            }//);
 
 
             return Vector<double>.Build.DenseOfEnumerable(rawBackpropData);
@@ -107,18 +109,19 @@ namespace NeuroSharp
         {
             int dim = (int)Math.Round(Math.Sqrt(vec.Count / slices));
             List<Matrix<double>> featureMaps = new List<Matrix<double>>();
-            for(int i = 0; i < slices; i++)
+            //Parallel.For(0, slices, i =>
+            for (int i = 0; i < slices; i++)
             {
                 Matrix<double> mtx = Matrix<double>.Build.Dense(dim, dim);
-                for(int x = 0; x < dim; x++)
+                for (int x = 0; x < dim; x++)
                 {
-                    for(int y = 0; y < dim; y++)
+                    for (int y = 0; y < dim; y++)
                     {
-                        mtx[x, y] = vec[ i * dim * dim + x * dim + y];
+                        mtx[x, y] = vec[i * dim * dim + x * dim + y];
                     }
                 }
                 featureMaps.Add(mtx);
-            }
+            }//);
             return featureMaps;
         }
     }
