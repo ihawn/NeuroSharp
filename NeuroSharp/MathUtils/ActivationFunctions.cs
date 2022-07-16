@@ -5,44 +5,44 @@ namespace NeuroSharp
 {
     public static class ActivationFunctions
     {
-        public static float Tanh(float x)
+        public static double Tanh(double x)
         {
-            return MathF.Tanh(x);
+            return Math.Tanh(x);
         }
 
-        public static float TanhPrime(float x)
+        public static double TanhPrime(double x)
         {
-            return 1 - MathF.Pow(MathF.Tanh(x), 2);
+            return 1 - Math.Pow(Math.Tanh(x), 2);
         }
 
-        public static float Relu(float x)
+        public static double Relu(double x)
         {
-            return MathF.Max(0, x);
+            return Math.Max(0, x);
         }
 
-        public static float ReluPrime(float x)
+        public static double ReluPrime(double x)
         {
             return x <= 0 ? 0 : 1;
         }
 
-        public static Vector<float> Softmax(Vector<float> x)
+        public static Vector<double> Softmax(Vector<double> x)
         {
-            Vector<float> result = Vector<float>.Build.Dense(x.Count);
-            float expSum = x.Sum(f => MathF.Exp(f));
+            Vector<double> result = Vector<double>.Build.Dense(x.Count);
+            double expSum = x.Sum(f => Math.Exp(f));
             for(int i = 0; i < x.Count; i++)
-                result[i] = MathF.Exp(x[i])/expSum;
+                result[i] = Math.Exp(x[i])/expSum;
             return result;
         }
 
-        public static float PointwiseSoftmax(float x, float expSum)
+        public static double PointwiseSoftmax(double x, double expSum)
         {
-            return MathF.Exp(x) / expSum;
+            return Math.Exp(x) / expSum;
         }
 
-        public static Matrix<float> SoftmaxPrime(Vector<float> x)
+        public static Matrix<double> SoftmaxPrime(Vector<double> x)
         {
-            Matrix<float> result = Matrix<float>.Build.Dense(x.Count, x.Count);
-            float expSum = x.Sum(f => MathF.Exp(f));
+            Matrix<double> result = Matrix<double>.Build.Dense(x.Count, x.Count);
+            double expSum = x.Sum(f => Math.Exp(f));
             for (int i = 0; i < x.Count; i++)
                 for(int j = 0; j < x.Count; j++)
                     result[i, j] = i == j ? PointwiseSoftmax(x[i], expSum) * (1 - PointwiseSoftmax(x[j], expSum)) : 

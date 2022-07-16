@@ -19,16 +19,16 @@ namespace NeuroSharp
             _poolSize = poolSize;
             _inputSize = inputSize;
             int dim = (int)Math.Round(Math.Sqrt(inputSize));
-            _outputSize = (int)Math.Floor(((float)dim - poolSize) / stride + 1);
+            _outputSize = (int)Math.Floor(((double)dim - poolSize) / stride + 1);
             _stride = stride;
         }
 
-        public override Vector<float> ForwardPropagation(Vector<float> input)
+        public override Vector<double> ForwardPropagation(Vector<double> input)
         {
             Input = input;
 
             int dim = (int)Math.Round(Math.Sqrt(input.Count));
-            Matrix<float> inputMatrix = Matrix<float>.Build.Dense(dim, dim);
+            Matrix<double> inputMatrix = Matrix<double>.Build.Dense(dim, dim);
             for (int i = 0; i < dim; i++)
                 for (int j = 0; j < dim; j++)
                     inputMatrix[j, i] = input[i * dim + j];
@@ -37,10 +37,10 @@ namespace NeuroSharp
             return Output;
         }
 
-        public override Vector<float> BackPropagation(Vector<float> outputError, OptimizerType optimzerType, int sampleIndex, float learningRate)
+        public override Vector<double> BackPropagation(Vector<double> outputError, OptimizerType optimzerType, int sampleIndex, double learningRate)
         {
             int dim = (int)Math.Round(Math.Sqrt(_inputSize));
-            Matrix<float> backwardsGradient = Matrix<float>.Build.Dense(dim, dim);
+            Matrix<double> backwardsGradient = Matrix<double>.Build.Dense(dim, dim);
             for(int i = 0; i < MaxPoolPositions.Count; i++)
             {
                 var coord = new { x = MaxPoolPositions[i].Item1, y = MaxPoolPositions[i].Item2 };
@@ -50,10 +50,10 @@ namespace NeuroSharp
             return Utils.Flatten(backwardsGradient);
         }
 
-        public Matrix<float> MaxPool(Matrix<float> mtx, int poolSize, int stride)
+        public Matrix<double> MaxPool(Matrix<double> mtx, int poolSize, int stride)
         {
-            int outDim = (int)Math.Floor(((float)mtx.RowCount - poolSize) / stride + 1);
-            Matrix<float> output = Matrix<float>.Build.Dense(outDim, outDim);
+            int outDim = (int)Math.Floor(((double)mtx.RowCount - poolSize) / stride + 1);
+            Matrix<double> output = Matrix<double>.Build.Dense(outDim, outDim);
             MaxPoolPositions.Clear();
 
             int outX = 0;
@@ -62,7 +62,7 @@ namespace NeuroSharp
                 int outY = 0;
                 for (int j = 0; j <= mtx.ColumnCount - poolSize; j += stride)
                 {
-                    float max = float.MinValue;
+                    double max = double.MinValue;
                     (int, int) argMax = (0, 0);
                     for(int y = j; y < j + poolSize; y++)
                     {

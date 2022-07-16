@@ -12,8 +12,8 @@ namespace NeuroSharp
     public class Network
     {
         public List<Layer> Layers { get; set; }
-        public Func<Vector<float>, Vector<float>, float> Loss { get; set; }
-        public Func<Vector<float>, Vector<float>, Vector<float>> LossPrime { get; set; }
+        public Func<Vector<double>, Vector<double>, double> Loss { get; set; }
+        public Func<Vector<double>, Vector<double>, Vector<double>> LossPrime { get; set; }
 
         public Network()
         {
@@ -25,22 +25,22 @@ namespace NeuroSharp
             Layers.Add(layer);
         }
 
-        public void UseLoss(Func<Vector<float>, Vector<float>, float> loss, Func<Vector<float>, Vector<float>, Vector<float>> lossPrime)
+        public void UseLoss(Func<Vector<double>, Vector<double>, double> loss, Func<Vector<double>, Vector<double>, Vector<double>> lossPrime)
         {
             Loss = loss;
             LossPrime = lossPrime;
         }
 
-        public Vector<float> Predict(Vector<float> inputData)
+        public Vector<double> Predict(Vector<double> inputData)
         {
-            Vector<float> output = inputData;
+            Vector<double> output = inputData;
             foreach (var layer in Layers)
                 output = layer.ForwardPropagation(output);
 
             return output;
         }
 
-        public void Train(List<Vector<float>> xTrain, List<Vector<float>> yTrain, int epochs, OptimizerType optimizerType, float learningRate = 0.001f)
+        public void Train(List<Vector<double>> xTrain, List<Vector<double>> yTrain, int epochs, OptimizerType optimizerType, double learningRate = 0.001f)
         {
             int samples = xTrain.Count;
 
@@ -48,23 +48,23 @@ namespace NeuroSharp
             {
                 Console.WriteLine("\nEpoch: " + (i + 1));
 
-                float err = 0;
+                double err = 0;
                 int lastProgress = 0;
                 for (int j = 0; j < samples; j++)
                 {
-                    Vector<float> output = xTrain[j];
+                    Vector<double> output = xTrain[j];
                     foreach (var layer in Layers)
                         output = layer.ForwardPropagation(output);
 
                     err += Loss(yTrain[j], output);
 
-                    Vector<float> error = LossPrime(yTrain[j], output);
+                    Vector<double> error = LossPrime(yTrain[j], output);
                     for (int k = Layers.Count - 1; k >= 0; k--)
                     {
                         error = Layers[k].BackPropagation(error, optimizerType, j, learningRate);
                     }
 
-                    int progress = (int)MathF.Round(100f * j / samples);
+                    int progress = (int)Math.Round(100f * j / samples);
                     if (lastProgress != progress && progress % 5 == 0)
                         Console.Write("..." + progress + "%");
                     lastProgress = progress;
@@ -75,9 +75,9 @@ namespace NeuroSharp
             }
         }
 
-        public void MinibatchTrain(List<Vector<float>> xTrain, List<Vector<float>> yTrain, int epochs, OptimizerType optimizerType, int batchSize, float learningRate = 0.001f)
+        public void MinibatchTrain(List<Vector<double>> xTrain, List<Vector<double>> yTrain, int epochs, OptimizerType optimizerType, int batchSize, double learningRate = 0.001f)
         {
-            var dataTuples = new List<(Vector<float>, Vector<float>)>();
+            var dataTuples = new List<(Vector<double>, Vector<double>)>();
             for(int i = 0; i < xTrain.Count; i++)
                 dataTuples.Add((xTrain[i], yTrain[i]));
 
@@ -90,7 +90,7 @@ namespace NeuroSharp
             {
                 Console.WriteLine("\nEpoch: " + (i + 1));
 
-                float err = 0;
+                double err = 0;
 
                 for (int b = 0; b <= batchCount; b++)
                 //Parallel.For(0, batchCount, b =>
@@ -99,9 +99,9 @@ namespace NeuroSharp
 
                     for (int j = 0; j < minibatch.Count; j++)
                     {
-                        Vector<float> xTrainItem = minibatch[j].Item1;
-                        Vector<float> yTrainItem = minibatch[j].Item2;
-                        Vector<float> output = xTrainItem;
+                        Vector<double> xTrainItem = minibatch[j].Item1;
+                        Vector<double> yTrainItem = minibatch[j].Item2;
+                        Vector<double> output = xTrainItem;
 
                         foreach (var layer in Layers)
                             output = layer.ForwardPropagation(output);
@@ -109,7 +109,7 @@ namespace NeuroSharp
                         err += Loss(yTrainItem, output);
                         
 
-                        Vector<float> error = LossPrime(yTrainItem, output);
+                        Vector<double> error = LossPrime(yTrainItem, output);
                         for (int k = Layers.Count - 1; k >= 0; k--)
                         {
                             error = Layers[k].BackPropagation(error, optimizerType, j, learningRate);

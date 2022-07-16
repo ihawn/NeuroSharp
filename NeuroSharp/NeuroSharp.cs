@@ -15,14 +15,14 @@ namespace NeuroSharp
             //Conv_Vs_Non_Conv(1000, 100, 20, 10, "digits");
 
             #region testing
-             /*float[,] filt = new float[,]
+             /*double[,] filt = new double[,]
              {
                  {1, 2 },
                  {3, 4 }
              };
-             Matrix<float> filter = Matrix<float>.Build.DenseOfArray(filt);
+             Matrix<double> filter = Matrix<double>.Build.DenseOfArray(filt);
 
-             float[,] mtxarr = new float[,]
+             double[,] mtxarr = new double[,]
              {
                  { 1, 2, 3, 9 },
                  { 5, 5, 6, 10 },
@@ -32,34 +32,34 @@ namespace NeuroSharp
 
             MaxPoolingLayer m = new MaxPoolingLayer(4, 2, 2);
 
-            Matrix<float> mtx = Matrix<float>.Build.DenseOfArray(mtxarr);
+            Matrix<double> mtx = Matrix<double>.Build.DenseOfArray(mtxarr);
             var o = m.MaxPool(mtx, 2, 2);*/
             #endregion
         }
 
         static void XOR_Test()
         {
-            float[][] xx =
+            double[][] xx =
             {
-                new float[]{ 0, 0 },
-                new float[]{ 0, 1 },
-                new float[]{ 1, 0 },
-                new float[]{ 1, 1 }
+                new double[]{ 0, 0 },
+                new double[]{ 0, 1 },
+                new double[]{ 1, 0 },
+                new double[]{ 1, 1 }
             };
-            List<Vector<float>> xTrain = new List<Vector<float>>();
+            List<Vector<double>> xTrain = new List<Vector<double>>();
             foreach (var x in xx)
-                xTrain.Add(Vector<float>.Build.DenseOfArray(x));
+                xTrain.Add(Vector<double>.Build.DenseOfArray(x));
 
-            float[][] yy =
+            double[][] yy =
             {
-                new float[]{ 0 },
-                new float[]{ 1 },
-                new float[]{ 1 },
-                new float[]{ 0 }
+                new double[]{ 0 },
+                new double[]{ 1 },
+                new double[]{ 1 },
+                new double[]{ 0 }
             };
-            List<Vector<float>> yTrain = new List<Vector<float>>();
+            List<Vector<double>> yTrain = new List<Vector<double>>();
             foreach (var y in yy)
-                yTrain.Add(Vector<float>.Build.DenseOfArray(y));
+                yTrain.Add(Vector<double>.Build.DenseOfArray(y));
 
 
             Network network = new Network();
@@ -79,45 +79,45 @@ namespace NeuroSharp
             {
                 var output = network.Predict(test);
                 foreach (var o in output)
-                    Console.WriteLine((float)o);
+                    Console.WriteLine((double)o);
             }
         }
 
-        static float Mnist_Digits_Test(int trainSize, int testSize, int epochs, string data)
+        static double Mnist_Digits_Test(int trainSize, int testSize, int epochs, string data)
         {
             //training data
-            List<Vector<float>> xTrain = new List<Vector<float>>();
-            List<Vector<float>> yTrain = new List<Vector<float>>();
+            List<Vector<double>> xTrain = new List<Vector<double>>();
+            List<Vector<double>> yTrain = new List<Vector<double>>();
 
             var trainData = MnistReader.ReadTrainingData(data).ToList();
             for(int n = 0; n < trainSize; n++)
             {
                 var image = trainData[n];
 
-                float[] flattenedNormalized = image.Data.Cast<byte>().Select(t => t/256f).ToArray();
-                xTrain.Add(Vector<float>.Build.DenseOfArray(flattenedNormalized));
+                double[] flattenedNormalized = image.Data.Cast<byte>().Select(t => t/256d).ToArray();
+                xTrain.Add(Vector<double>.Build.DenseOfArray(flattenedNormalized));
 
-                float[] categorical = new float[10];
+                double[] categorical = new double[10];
                 categorical[image.Label] = 1;
-                yTrain.Add(Vector<float>.Build.DenseOfArray(categorical));
+                yTrain.Add(Vector<double>.Build.DenseOfArray(categorical));
             }
 
 
             //testing data
-            List<Vector<float>> xTest = new List<Vector<float>>();
-            List<Vector<float>> yTest = new List<Vector<float>>();
+            List<Vector<double>> xTest = new List<Vector<double>>();
+            List<Vector<double>> yTest = new List<Vector<double>>();
 
             var testData = MnistReader.ReadTestData(data).ToList();
             for (int n = 0; n < testSize; n++)
             {
                 var image = testData[n];
 
-                float[] flattenedNormalized = image.Data.Cast<byte>().Select(t => t / 256f).ToArray();
-                xTest.Add(Vector<float>.Build.DenseOfArray(flattenedNormalized));
+                double[] flattenedNormalized = image.Data.Cast<byte>().Select(t => t / 256d).ToArray();
+                xTest.Add(Vector<double>.Build.DenseOfArray(flattenedNormalized));
 
-                float[] categorical = new float[10];
+                double[] categorical = new double[10];
                 categorical[image.Label] = 1;
-                yTest.Add(Vector<float>.Build.DenseOfArray(categorical));
+                yTest.Add(Vector<double>.Build.DenseOfArray(categorical));
             }
 
            /* for(int n = 0; n < xTrain.Count; n++)
@@ -158,47 +158,47 @@ namespace NeuroSharp
 
                 i++;
             }
-            float acc = (1f - ((float)wrongCount) / ((float)i));
+            double acc = (1f - ((double)wrongCount) / ((double)i));
             Console.WriteLine("Accuracy: " + acc);
             Console.WriteLine("Training Runtime: " + (elapsedMs / 1000f).ToString() + "s");
             return acc;
         }
 
-        static float Mnist_Digits_Test_Conv(int trainSize, int testSize, int epochs, string data)
+        static double Mnist_Digits_Test_Conv(int trainSize, int testSize, int epochs, string data)
         {
             //training data
-            List<Vector<float>> xTrain = new List<Vector<float>>();
-            List<Vector<float>> yTrain = new List<Vector<float>>();
+            List<Vector<double>> xTrain = new List<Vector<double>>();
+            List<Vector<double>> yTrain = new List<Vector<double>>();
 
             var trainData = MnistReader.ReadTrainingData(data).ToList();
             for (int n = 0; n < trainSize; n++)
             {
                 var image = trainData[n];
 
-                float[] flattenedNormalized = image.Data.Cast<byte>().Select(t => t / 256f).ToArray();
-                xTrain.Add(Vector<float>.Build.DenseOfArray(flattenedNormalized));
+                double[] flattenedNormalized = image.Data.Cast<byte>().Select(t => t / 256d).ToArray();
+                xTrain.Add(Vector<double>.Build.DenseOfArray(flattenedNormalized));
 
-                float[] categorical = new float[10];
+                double[] categorical = new double[10];
                 categorical[image.Label] = 1;
-                yTrain.Add(Vector<float>.Build.DenseOfArray(categorical));
+                yTrain.Add(Vector<double>.Build.DenseOfArray(categorical));
             }
 
 
             //testing data
-            List<Vector<float>> xTest = new List<Vector<float>>();
-            List<Vector<float>> yTest = new List<Vector<float>>();
+            List<Vector<double>> xTest = new List<Vector<double>>();
+            List<Vector<double>> yTest = new List<Vector<double>>();
 
             var testData = MnistReader.ReadTestData(data).ToList();
             for (int n = 0; n < testSize; n++)
             {
                 var image = testData[n];
 
-                float[] flattenedNormalized = image.Data.Cast<byte>().Select(t => t / 256f).ToArray();
-                xTest.Add(Vector<float>.Build.DenseOfArray(flattenedNormalized));
+                double[] flattenedNormalized = image.Data.Cast<byte>().Select(t => t / 256d).ToArray();
+                xTest.Add(Vector<double>.Build.DenseOfArray(flattenedNormalized));
 
-                float[] categorical = new float[10];
+                double[] categorical = new double[10];
                 categorical[image.Label] = 1;
-                yTest.Add(Vector<float>.Build.DenseOfArray(categorical));
+                yTest.Add(Vector<double>.Build.DenseOfArray(categorical));
             }
 
             /* for(int n = 0; n < xTrain.Count; n++)
@@ -239,7 +239,7 @@ namespace NeuroSharp
 
                 i++;
             }
-            float acc = (1f - ((float)wrongCount) / ((float)i));
+            double acc = (1f - ((double)wrongCount) / ((double)i));
             Console.WriteLine("Accuracy: " + acc);
             Console.WriteLine("Training Runtime: " + (elapsedMs / 1000f).ToString() + "s");
             return acc;
@@ -247,8 +247,8 @@ namespace NeuroSharp
 
         static void Conv_Vs_Non_Conv(int trainSize, int testSize, int testsToRun, int epochs, string data)
         {
-            float denseNetAcc = 0;
-            float convNetAcc = 0;
+            double denseNetAcc = 0;
+            double convNetAcc = 0;
 
             for(int i = 0; i < testsToRun; i++)
             {

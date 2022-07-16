@@ -13,50 +13,50 @@ namespace NeuroSharp.MathUtils
 {
     public static class PCA
     {
-        public static Vector<float> GetPrincipleComponents(Vector<float> input, int componentCount)
+        public static Vector<double> GetPrincipleComponents(Vector<double> input, int componentCount)
         {
             int dim = (int)Math.Round(Math.Sqrt(input.Count));
-            Matrix<float> mtx = Matrix<float>.Build.Dense(dim, dim);
+            Matrix<double> mtx = Matrix<double>.Build.Dense(dim, dim);
             for (int i = 0; i < dim; i++)
                 for (int j = 0; j < dim; j++)
                     mtx[i, j] = input[dim * i + j];
 
             // columnwise mean
-            Vector<float> colMean = mtx.ColumnSums() / mtx.ColumnCount;
+            Vector<double> colMean = mtx.ColumnSums() / mtx.ColumnCount;
 
             // normalize using columnwise mean
-            var ones = Vector<float>.Build.Dense(colMean.Count);
+            var ones = Vector<double>.Build.Dense(colMean.Count);
             for (int i = 0; i < colMean.Count; i++)
                 ones[i] = 1;
             mtx -= ones * colMean;
 
             // compute covariance and truncate it's rows with smaller eigenvaleus
-            Matrix<float> covariance = GetCovarianceMatrix(mtx);
-            Matrix<float> featureMtx = EigenSort(covariance, componentCount);
+            Matrix<double> covariance = Matrix<double>.Build.Dense(1, 1);// GetCovarianceMatrix(mtx);
+            Matrix<double> featureMtx = EigenSort(covariance, componentCount);
 
             //take inner product of each feature matrix column (original images (mtx)) with the principle vectors (columns of featureMtx)
             // this is just transpose(featureMtx) * cenered original images (mtx)
 
-            List<float> features = new List<float>();
+            List<double> features = new List<double>();
             for (int i = 0; i < featureMtx.RowCount; i++)
                 for(int j = 0; j < featureMtx.ColumnCount; j++)
                     features.Add(featureMtx[i, j]);
 
-            return Vector<float>.Build.DenseOfArray(features.ToArray());
+            return Vector<double>.Build.DenseOfArray(features.ToArray());
         }
 
-        static Matrix<float> EigenSort(Matrix<float> mtx, int componentCount)
+        static Matrix<double> EigenSort(Matrix<double> mtx, int componentCount)
         {
-            List<(float, Vector<float>)> eigValsVecs = new List<(float, Vector<float>)>();
+            List<(double, Vector<double>)> eigValsVecs = new List<(double, Vector<double>)>();
 
-            Evd<float> evdDecomp = mtx.Evd();
+            Evd<double> evdDecomp = mtx.Evd();
             for(int i = 0; i < evdDecomp.EigenValues.Count; i++)
             {
-                eigValsVecs.Add(((float)evdDecomp.EigenValues[i].Real, Vector<float>.Build.DenseOfEnumerable(evdDecomp.EigenVectors.Column(i))));
+                eigValsVecs.Add(((double)evdDecomp.EigenValues[i].Real, Vector<double>.Build.DenseOfEnumerable(evdDecomp.EigenVectors.Column(i))));
             }
             
             eigValsVecs = eigValsVecs.OrderByDescending(x => x.Item1).Take(componentCount).ToList();
-            Matrix<float> eigenColumns = Matrix<float>.Build.Dense(eigValsVecs.Count, eigValsVecs[0].Item2.Count);
+            Matrix<double> eigenColumns = Matrix<double>.Build.Dense(eigValsVecs.Count, eigValsVecs[0].Item2.Count);
             for(int i = 0; i < eigValsVecs.Count; i++)
             {
                 for(int j = 0; j < eigValsVecs[0].Item2.Count; j++)
@@ -69,13 +69,16 @@ namespace NeuroSharp.MathUtils
         }
 
         //https://stackoverflow.com/questions/32256998/find-covariance-of-math-net-matrix
-        static Matrix<float> GetCovarianceMatrix(Matrix<float> mtx)
+
+        //need to figure how to get this to work with double precision arithmetic
+        /*static Matrix<double> GetCovarianceMatrix(Matrix<double> mtx)
         {
             var columnAverages = mtx.ColumnSums() / mtx.RowCount;
             var centeredColumns = mtx.EnumerateColumns().Zip(columnAverages, (col, avg) => col - avg);
             var centered = DenseMatrix.OfColumnVectors(centeredColumns);
             var normalizationFactor = mtx.RowCount == 1 ? 1 : mtx.RowCount - 1;
             return centered.TransposeThisAndMultiply(centered) / normalizationFactor;
-        }
+        }*/
+
     }
 }

@@ -10,25 +10,25 @@ namespace NeuroSharp.MathUtils
 {
     public static class LossFunctions
     {
-        public static float MeanSquaredError(Vector<float> truth, Vector<float> test)
+        public static double MeanSquaredError(Vector<double> truth, Vector<double> test)
         {
-            return (float)Statistics.Mean((truth - test).PointwisePower(2));
+            return (double)Statistics.Mean((truth - test).PointwisePower(2));
         }
 
-        public static Vector<float> MeanSquaredErrorPrime(Vector<float> truth, Vector<float> test)
+        public static Vector<double> MeanSquaredErrorPrime(Vector<double> truth, Vector<double> test)
         {
             return 2 * (test - truth) / truth.Count();
         }
 
-        public static float CategoricalCrossentropy(Vector<float> truth, Vector<float> test)
+        public static double CategoricalCrossentropy(Vector<double> truth, Vector<double> test)
         {
-            float sum = 0;
+            double sum = 0;
             for(int i = 0; i < truth.Count; i++)
-                sum += truth[i]*MathF.Log10(test[i]);
+                sum += truth[i]*Math.Log10(test[i]);
             return -sum;
         }
 
-        public static Vector<float> CategoricalCrossentropyPrime(Vector<float> truth, Vector<float> test)
+        public static Vector<double> CategoricalCrossentropyPrime(Vector<double> truth, Vector<double> test)
         {
             return test - truth;
         }

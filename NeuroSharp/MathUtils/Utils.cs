@@ -6,34 +6,34 @@ namespace NeuroSharp.MathUtils
 {
     public static class Utils
     {
-        public static float Nextfloat(float min, float max)
+        public static double Nextdouble(double min, double max)
         {
             System.Random random = new System.Random();
-            float val = (float)(random.NextDouble() * (max - min) + min);
-            return (float)val;
+            double val = (double)(random.NextDouble() * (max - min) + min);
+            return (double)val;
         }
-        public static Vector<float> Flatten(Matrix<float> mtx)
+        public static Vector<double> Flatten(Matrix<double> mtx)
         {
-            List<float> f = new List<float>();
+            List<double> f = new List<double>();
             for (int i = 0; i < mtx.RowCount; i++)
                 for (int j = 0; j < mtx.ColumnCount; j++)
                     f.Add(mtx[i, j]);
-            return Vector<float>.Build.DenseOfArray(f.ToArray());
+            return Vector<double>.Build.DenseOfArray(f.ToArray());
         }
-        public static Matrix<float> Unflatten(Vector<float> vec)
+        public static Matrix<double> Unflatten(Vector<double> vec)
         {
             int dim = (int)Math.Round(Math.Sqrt(vec.Count));
-            Matrix<float> mtx = Matrix<float>.Build.Dense(dim, dim);
+            Matrix<double> mtx = Matrix<double>.Build.Dense(dim, dim);
             for (int i = 0; i < dim; i++)
                 for (int j = 0; j < dim; j++)
                     mtx[j, i] = vec[i * dim + j];
             return mtx;
         }
 
-        public static float GetInitialWeight(int layerInputSize)
+        public static double GetInitialWeight(int layerInputSize)
         {
-            float sigma = MathF.Sqrt(2f/layerInputSize);
-            return (float)new Normal(0, sigma).Sample();
+            double sigma = Math.Sqrt(2f/layerInputSize);
+            return (double)new Normal(0, sigma).Sample();
         }
 
         public static Vector<double> FiniteDifferencesGradient(Func<Vector<double>, Vector<double>> f, Vector<double> x, double h = 0.000001f)

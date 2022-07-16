@@ -5,10 +5,10 @@ namespace NeuroSharp
 {
     public abstract class Layer
     {
-        public Vector<float> Input { get; set; }
-        public Vector<float> Output { get; set; }
+        public Vector<double> Input { get; set; }
+        public Vector<double> Output { get; set; }
 
-        public abstract Vector<float> ForwardPropagation(Vector<float> input);
-        public abstract Vector<float> BackPropagation(Vector<float> outputError, OptimizerType optimzerType, int sampleIndex, float learningRate = 0.001f);
+        public abstract Vector<double> ForwardPropagation(Vector<double> input);
+        public abstract Vector<double> BackPropagation(Vector<double> outputError, OptimizerType optimzerType, int sampleIndex, double learningRate = 0.001f);
     }
 }

@@ -15,18 +15,18 @@ namespace NeuroSharp
 
         public ConvolutionalLayer(int inputSize, int kernel, int stride = 1)
         {
-            Weights = Matrix<float>.Build.Random(kernel, kernel);
+            Weights = Matrix<double>.Build.Random(kernel, kernel);
             _adam = new Adam(kernel, kernel);
             _stride = stride;
             _inputSize = inputSize;
-            _outputSize = (int)Math.Floor((inputSize - (float)kernel) / stride + 1);
+            _outputSize = (int)Math.Floor((inputSize - (double)kernel) / stride + 1);
 
             for (int i = 0; i < kernel; i++)
                 for (int j = 0; j < kernel; j++)
                     Weights[i, j] = Utils.GetInitialWeight(inputSize);
         }
 
-        public override Vector<float> ForwardPropagation(Vector<float> input)
+        public override Vector<double> ForwardPropagation(Vector<double> input)
         {
             Input = input;
             Output = Input;
@@ -34,11 +34,11 @@ namespace NeuroSharp
             return Output;
         }
 
-        public override Vector<float> BackPropagation(Vector<float> outputError, OptimizerType optimzerType, int sampleIndex, float learningRate)
+        public override Vector<double> BackPropagation(Vector<double> outputError, OptimizerType optimzerType, int sampleIndex, double learningRate)
         {
-            Matrix<float> outputJacobian = Utils.Unflatten(outputError); // ∂L/∂Y
+            Matrix<double> outputJacobian = Utils.Unflatten(outputError); // ∂L/∂Y
             WeightGradient = ComputeWeightGradient(Input, outputJacobian, _stride);
-            Vector<float> inputGradient = ComputeInputGradient(Weights, outputJacobian, _stride);
+            Vector<double> inputGradient = ComputeInputGradient(Weights, outputJacobian, _stride);
 
             switch (optimzerType)
             {
@@ -56,13 +56,13 @@ namespace NeuroSharp
 
 
         #region Operator Methods
-        public static (Vector<float>, Matrix<float>) Convolution(Vector<float> flattenedImage, Matrix<float> weights, int stride)
+        public static (Vector<double>, Matrix<double>) Convolution(Vector<double> flattenedImage, Matrix<double> weights, int stride)
         {
             int dim = (int)Math.Round(Math.Sqrt(flattenedImage.Count));
-            int outDim = (int)Math.Floor(((float)dim - weights.RowCount) / stride) + 1;
+            int outDim = (int)Math.Floor(((double)dim - weights.RowCount) / stride) + 1;
 
-            Matrix<float> image = Utils.Unflatten(flattenedImage);
-            Matrix<float> output = Matrix<float>.Build.Dense(outDim, outDim);
+            Matrix<double> image = Utils.Unflatten(flattenedImage);
+            Matrix<double> output = Matrix<double>.Build.Dense(outDim, outDim);
 
             for(int i = 0; i < outDim; i++)
                 for(int j = 0; j < outDim; j++)
@@ -74,22 +74,22 @@ namespace NeuroSharp
         }
 
         // ∂L/∂W
-        public static Matrix<float> ComputeWeightGradient(Vector<float> input, Matrix<float> outputJacobian, int stride)
+        public static Matrix<double> ComputeWeightGradient(Vector<double> input, Matrix<double> outputJacobian, int stride)
         {
-            Matrix<float> dilatedGradient = Dilate(outputJacobian, stride);
+            Matrix<double> dilatedGradient = Dilate(outputJacobian, stride);
             return Convolution(input, dilatedGradient, stride: 1).Item2;
         }
 
         // ∂L/∂X
-        public static Vector<float> ComputeInputGradient(Matrix<float> weight, Matrix<float> outputJacobian, int stride)
+        public static Vector<double> ComputeInputGradient(Matrix<double> weight, Matrix<double> outputJacobian, int stride)
         {
-            Matrix<float> rotatedWeight = Rotate180(weight);
-            Matrix<float> paddedDilatedGradient = PadAndDilate(outputJacobian, stride, rotatedWeight.RowCount);
+            Matrix<double> rotatedWeight = Rotate180(weight);
+            Matrix<double> paddedDilatedGradient = PadAndDilate(outputJacobian, stride, rotatedWeight.RowCount);
             return Convolution(Utils.Flatten(paddedDilatedGradient), rotatedWeight, stride: 1).Item1;
         }
 
 
-        public static Matrix<float> PadAndDilate(Matrix<float> passedGradient, int stride, int kernel)
+        public static Matrix<double> PadAndDilate(Matrix<double> passedGradient, int stride, int kernel)
         {
             int weightsDim = passedGradient.RowCount;
             int dilation = stride - 1;
@@ -97,7 +97,7 @@ namespace NeuroSharp
             int unpaddedSize = weightsDim + dilation * (weightsDim - 1);
             int outDim = 2 * padding + unpaddedSize;
 
-            Matrix<float> paddedDilatedMatrix = Matrix<float>.Build.Dense(outDim, outDim);
+            Matrix<double> paddedDilatedMatrix = Matrix<double>.Build.Dense(outDim, outDim);
 
             int x = 0;
             for (int i = padding; i < outDim - padding; i += stride)
@@ -115,13 +115,13 @@ namespace NeuroSharp
         }
 
 
-        public static Matrix<float> Dilate(Matrix<float> passedGradient, int stride)
+        public static Matrix<double> Dilate(Matrix<double> passedGradient, int stride)
         {
             int dilation = stride - 1;
             int gradientDim = passedGradient.RowCount;
             int outDim = gradientDim + dilation * (gradientDim - 1);
 
-            Matrix<float> dilatedMatrix = Matrix<float>.Build.Dense(outDim, outDim);
+            Matrix<double> dilatedMatrix = Matrix<double>.Build.Dense(outDim, outDim);
 
             int x = 0;
             for(int i = 0; i < outDim; i += stride)
@@ -139,13 +139,13 @@ namespace NeuroSharp
         }
 
 
-        public static Matrix<float> Rotate180(Matrix<float> mtx)
+        public static Matrix<double> Rotate180(Matrix<double> mtx)
         {
-            Matrix<float> temp = Matrix<float>.Build.Dense(mtx.RowCount, mtx.ColumnCount);
+            Matrix<double> temp = Matrix<double>.Build.Dense(mtx.RowCount, mtx.ColumnCount);
             for (int i = 0; i < mtx.RowCount; i++)
                 for (int j = 0; j < mtx.ColumnCount; j++)
                     temp[i, j] = mtx[i, mtx.ColumnCount - j - 1];
-            Matrix<float> output = Matrix<float>.Build.Dense(mtx.RowCount, mtx.ColumnCount);
+            Matrix<double> output = Matrix<double>.Build.Dense(mtx.RowCount, mtx.ColumnCount);
             for (int i = 0; i < mtx.RowCount; i++)
                 for (int j = 0; j < mtx.ColumnCount; j++)
                     output[i, j] = temp[mtx.RowCount - i - 1, j];

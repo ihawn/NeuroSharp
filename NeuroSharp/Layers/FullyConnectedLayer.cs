@@ -11,8 +11,8 @@ namespace NeuroSharp
 
         public FullyConnectedLayer(int inputSize, int outputSize)
         {
-            Weights = Matrix<float>.Build.Random(inputSize, outputSize);
-            Bias = Vector<float>.Build.Random(outputSize);
+            Weights = Matrix<double>.Build.Random(inputSize, outputSize);
+            Bias = Vector<double>.Build.Random(outputSize);
             _adam = new Adam(inputSize, outputSize);
 
             for (int i = 0; i < inputSize; i++)
@@ -22,16 +22,16 @@ namespace NeuroSharp
                 Bias[i] = Utils.GetInitialWeight(inputSize);
         }
 
-        public override Vector<float> ForwardPropagation(Vector<float> input)
+        public override Vector<double> ForwardPropagation(Vector<double> input)
         {
             Input = input;
             Output = Input * Weights + Bias;
             return Output;
         }
 
-        public override Vector<float> BackPropagation(Vector<float> outputError, OptimizerType optimzerType, int sampleIndex, float learningRate)
+        public override Vector<double> BackPropagation(Vector<double> outputError, OptimizerType optimzerType, int sampleIndex, double learningRate)
         {
-            Vector<float> inputError = outputError * Weights.Transpose();
+            Vector<double> inputError = outputError * Weights.Transpose();
             WeightGradient = Input.OuterProduct(outputError);
             BiasGradient = outputError;
 
