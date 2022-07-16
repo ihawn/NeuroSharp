@@ -12,38 +12,63 @@ namespace NeuroSharp
         private int _stride;
         private int _outputSize;
         private int _inputSize;
+        private int _filters;
 
-        public ConvolutionalLayer(int inputSize, int kernel, int stride = 1)
+        public ConvolutionalLayer(int inputSize, int kernel, int filters, int stride = 1)
         {
-            Weights = Matrix<double>.Build.Random(kernel, kernel);
-            _adam = new Adam(kernel, kernel);
-            _stride = stride;
-            _inputSize = inputSize;
-            _outputSize = (int)Math.Floor((inputSize - (double)kernel) / stride + 1);
+            WeightGradient = new Matrix<double>[filters];
+            Weights = new Matrix<double>[filters];
 
-            for (int i = 0; i < kernel; i++)
-                for (int j = 0; j < kernel; j++)
-                    Weights[i, j] = Utils.GetInitialWeight(inputSize);
+            for (int i = 0; i < filters; i++)
+            {
+                Weights[i] = Matrix<double>.Build.Random(kernel, kernel);
+                for (int x = 0; x < kernel; x++)
+                    for (int y = 0; y < kernel; y++)
+                        Weights[i][x, y] = Utils.GetInitialWeight(inputSize);
+            }
+
+            _adam = new Adam(kernel, kernel, weightCount: filters);
+            _stride = stride;
+            _inputSize = filters * inputSize;
+            _outputSize = filters * (int)Math.Pow((int)Math.Floor((Math.Sqrt(inputSize) - (double)kernel) / stride + 1), 2);
+            _filters = filters;
         }
 
         public override Vector<double> ForwardPropagation(Vector<double> input)
         {
             Input = input;
-            Output = Input;
-            Output = Convolution(Output, Weights, _stride).Item1;
+            Output = Vector<double>.Build.Dense(_outputSize);
+            for(int i = 0; i < _filters; i++)
+            {
+                Vector<double> singleFilterOutput = Convolution(Input, Weights[i], _stride).Item1;
+                for(int j = 0; j < singleFilterOutput.Count; j++)
+                    Output[i*singleFilterOutput.Count + j] = singleFilterOutput[j];
+            }
             return Output;
         }
 
         public override Vector<double> BackPropagation(Vector<double> outputError, OptimizerType optimzerType, int sampleIndex, double learningRate)
         {
-            Matrix<double> outputJacobian = Utils.Unflatten(outputError); // ∂L/∂Y
-            WeightGradient = ComputeWeightGradient(Input, outputJacobian, _stride);
-            Vector<double> inputGradient = ComputeInputGradient(Weights, outputJacobian, _stride);
+            Vector<double> inputGradient = Vector<double>.Build.Dense(_inputSize);
+
+            //Parallel.For(0, _filters, i =>
+            for (int i = 0; i < _filters; i++)
+            {
+                Vector<double> jacobianSlice = Vector<double>.Build.Dense(outputError.Count / _filters); // ∂L/∂Y
+                for (int j = 0; j < jacobianSlice.Count; j++)
+                    jacobianSlice[j] = outputError[i * _filters + j];
+                WeightGradient[i] = ComputeWeightGradient(Input, Utils.Unflatten(jacobianSlice), _stride);
+
+                Vector<double> singleGradient = ComputeInputGradient(Weights[i], Utils.Unflatten(jacobianSlice), _stride);
+                for (int j = 0; j < singleGradient.Count; j++)
+                    inputGradient[i * singleGradient.Count + j] = singleGradient[j];
+            }//);
 
             switch (optimzerType)
             {
                 case OptimizerType.GradientDescent:
-                    Weights -= learningRate * WeightGradient;
+                    for(int i = 0; i < _filters; i++)
+                        Weights[i] -= learningRate * WeightGradient[i];
                     break;
 
                 case OptimizerType.Adam:

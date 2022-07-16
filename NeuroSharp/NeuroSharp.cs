@@ -11,29 +11,29 @@ namespace NeuroSharp
         {
             //XOR_Test();
             //Mnist_Digits_Test(4096, 500, 10, "digits");
-            //Mnist_Digits_Test_Conv(1000, 100, 10, "digits");
-            Conv_Vs_Non_Conv(20000, 2000, 25, 20, "digits");
+            Mnist_Digits_Test_Conv(10000, 1000, 20, "digits");
+            //Conv_Vs_Non_Conv(20000, 2000, 25, 20, "digits");
 
             #region testing
-             /*double[,] filt = new double[,]
-             {
-                 {1, 2 },
-                 {3, 4 }
-             };
-             Matrix<double> filter = Matrix<double>.Build.DenseOfArray(filt);
+            /*double[,] filt = new double[,]
+            {
+                {1, 2 },
+                {3, 4 }
+            };
+            Matrix<double> filter = Matrix<double>.Build.DenseOfArray(filt);
 
-             double[,] mtxarr = new double[,]
-             {
-                 { 1, 2, 3, 9 },
-                 { 5, 5, 6, 10 },
-                 { 1, 2, 7, 2 },
-                 { 8, 3, 0, 2 }
-             };
+            double[,] mtxarr = new double[,]
+            {
+                { 1, 2, 3, 9 },
+                { 5, 5, 6, 10 },
+                { 1, 2, 7, 2 },
+                { 8, 3, 0, 2 }
+            };
 
-            MaxPoolingLayer m = new MaxPoolingLayer(4, 2, 2);
+           MaxPoolingLayer m = new MaxPoolingLayer(4, 2, 2);
 
-            Matrix<double> mtx = Matrix<double>.Build.DenseOfArray(mtxarr);
-            var o = m.MaxPool(mtx, 2, 2);*/
+           Matrix<double> mtx = Matrix<double>.Build.DenseOfArray(mtxarr);
+           var o = m.MaxPool(mtx, 2, 2);*/
             #endregion
         }
 
@@ -208,10 +208,10 @@ namespace NeuroSharp
 
             //build network
             Network network = new Network();
-            network.Add(new ConvolutionalLayer(28 * 28, kernel: 2, stride: 2));
+            network.Add(new ConvolutionalLayer(28 * 28, kernel: 2, filters: 4, stride: 2));
             network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
-            network.Add(new MaxPoolingLayer(14 * 14, 2));
-            network.Add(new FullyConnectedLayer(13 * 13, 150));
+            network.Add(new MaxPoolingLayer(4 * 14 * 14, prevFilterCount: 4, poolSize: 2));
+            network.Add(new FullyConnectedLayer(4 * 13 * 13, 150));
             network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
             network.Add(new FullyConnectedLayer(150, 10));
             network.Add(new SoftmaxActivationLayer());

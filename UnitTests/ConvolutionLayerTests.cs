@@ -296,10 +296,10 @@ namespace UnitTests
         public void ComputeInputGradient_ReturnsCorrectInputGrad_WhenPassedWeightGradStride()
         {
             #region Weight Gradient Setup 1
-            ConvolutionalLayer c1 = new ConvolutionalLayer(4, kernel: 2, stride: 1);
+            ConvolutionalLayer c1 = new ConvolutionalLayer(4, kernel: 2, filters: 1, stride: 1);
             Matrix<double> randJacobian1 = Matrix<double>.Build.Random(1, 1);
             Vector<double> randInput1 = Vector<double>.Build.Random(4);
-            Vector<double> testGrad1 = ConvolutionalLayer.ComputeInputGradient(c1.Weights, randJacobian1, stride: 1);
+            Vector<double> testGrad1 = ConvolutionalLayer.ComputeInputGradient(c1.Weights[0], randJacobian1, stride: 1);
             Vector<double> trueGrad1 = Utils.Flatten(randJacobian1 * Utils.FiniteDifferencesGradient(c1.ForwardPropagation, randInput1).ToRowMatrix()); // chain rule to mimic passed gradient from connected layer
             #endregion
             /*#region Weight Gradient Setup 2
