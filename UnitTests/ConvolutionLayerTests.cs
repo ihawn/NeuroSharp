@@ -2,6 +2,7 @@ using NUnit.Framework;
 using NeuroSharp;
 using NeuroSharp.MathUtils;
 using MathNet.Numerics.LinearAlgebra;
+using System;
 
 namespace UnitTests
 {
@@ -279,39 +280,38 @@ namespace UnitTests
             Assert.AreEqual(expected10, ConvolutionalLayer.Convolution(mtx10, filt10, 3).Item2);
         }
 
-        [Test]
-        public void ComputeWeightGradient_ReturnsCorrectWeightGradMatrix_WhenPassedLayerInputPrevGradStride()
+        /*[Test]
+        public void ComputeWeightGradient_ReturnsCorrectWeightGrad_WhenPassedPrevLayerInputAndJacobianAndStride()
         {
             #region Weight Gradient Setup 1
             ConvolutionalLayer c1 = new ConvolutionalLayer(4, kernel: 2, stride: 1);
-
-           /* Vector<double> f1(Vector<double> input)
-            {
-                
-            }*/
-
-            double[,] input = new double[,]
-            {
-                { 4, 3 },
-                { 2, 1 }
-            };
-
-            double[,] outGrad = new double[,]
-            {
-                { 4, 3 },
-                { 2, 1 }
-            };
-
-            double[,] exp = new double[,]
-            {
-                { 4, 0, 3 },
-                { 0, 0, 0 },
-                { 2, 0, 1 },
-            };
-
-            Matrix<double> outGrad1 = Matrix<double>.Build.DenseOfArray(outGrad);
-            Matrix<double> expected1 = Matrix<double>.Build.DenseOfArray(exp);
+            Matrix<double> randJacobian1 = Matrix<double>.Build.Random(1, 1);
+            Vector<double> randInput1 = Vector<double>.Build.Random(4);
+            Matrix<double> testGrad1 = ConvolutionalLayer.ComputeWeightGradient(c1.Input, randJacobian1, stride: 1);
+            Vector<double> trueGrad1 = Utils.Flatten(randJacobian1 * Utils.FiniteDifferencesGradient(c1.ForwardPropagation, randInput1).ToRowMatrix()); // chain rule to mimic passed gradient from connected layer
             #endregion
+        }*/
+
+        [Test]
+        public void ComputeInputGradient_ReturnsCorrectInputGrad_WhenPassedWeightGradStride()
+        {
+            #region Weight Gradient Setup 1
+            ConvolutionalLayer c1 = new ConvolutionalLayer(4, kernel: 2, stride: 1);
+            Matrix<double> randJacobian1 = Matrix<double>.Build.Random(1, 1);
+            Vector<double> randInput1 = Vector<double>.Build.Random(4);
+            Vector<double> testGrad1 = ConvolutionalLayer.ComputeInputGradient(c1.Weights, randJacobian1, stride: 1);
+            Vector<double> trueGrad1 = Utils.Flatten(randJacobian1 * Utils.FiniteDifferencesGradient(c1.ForwardPropagation, randInput1).ToRowMatrix()); // chain rule to mimic passed gradient from connected layer
+            #endregion
+            /*#region Weight Gradient Setup 2
+            ConvolutionalLayer c2 = new ConvolutionalLayer(9, kernel: 2, stride: 1);
+            Matrix<double> randJacobian2 = Matrix<double>.Build.Random(2, 2);
+            Vector<double> randInput2 = Vector<double>.Build.Random(9);
+            Vector<double> testGrad2 = ConvolutionalLayer.ComputeInputGradient(c2.Weights, randJacobian2, stride: 1);
+            Vector<double> trueGrad2 = Utils.FiniteDifferencesGradient(c2.ForwardPropagation, randInput2);
+            #endregion*/
+
+            Assert.IsTrue((trueGrad1 - testGrad1).L2Norm()/Math.Max(trueGrad1.L2Norm(), testGrad1.L2Norm()) < 0.00001d);
+           // Assert.IsTrue((trueGrad2 - testGrad2).L2Norm() < 0.00001d);
         }
 
         [Test]

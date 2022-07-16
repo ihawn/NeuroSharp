@@ -38,10 +38,17 @@ namespace NeuroSharp.MathUtils
 
         public static Vector<double> FiniteDifferencesGradient(Func<Vector<double>, Vector<double>> f, Vector<double> x, double h = 0.000001f)
         {
+            Vector<double> grad = Vector<double>.Build.Dense(x.Count);
             Vector<double> hvec = Vector<double>.Build.Dense(x.Count);
             for (int i = 0; i < x.Count; i++)
+            {
                 hvec[i] = h;
-            return (f(x + hvec) - f(x - hvec)) / (2 * hvec);
+                Vector<double> diffQuot = (f(x + hvec) - f(x - hvec)) / (2 * h);
+                grad[i] = diffQuot.FirstOrDefault(t => t != 0);
+                hvec = Vector<double>.Build.Dense(x.Count);
+            }
+
+            return grad;
         }
     }
 }

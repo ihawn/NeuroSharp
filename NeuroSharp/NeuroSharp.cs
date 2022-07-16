@@ -11,8 +11,8 @@ namespace NeuroSharp
         {
             //XOR_Test();
             //Mnist_Digits_Test(4096, 500, 10, "digits");
-            Mnist_Digits_Test_Conv(1000, 100, 10, "digits");
-            //Conv_Vs_Non_Conv(1000, 100, 20, 10, "digits");
+            //Mnist_Digits_Test_Conv(1000, 100, 10, "digits");
+            Conv_Vs_Non_Conv(20000, 2000, 25, 20, "digits");
 
             #region testing
              /*double[,] filt = new double[,]
