@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using NeuroSharp;
+using NeuroSharp.MathUtils;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace UnitTests
@@ -279,6 +280,44 @@ namespace UnitTests
         }
 
         [Test]
+        public void ComputeWeightGradient_ReturnsCorrectWeightGradMatrix_WhenPassedLayerInputPrevGradStride()
+        {
+            Vector<double> f(Vector<double> x)
+            {
+                double[] vec = new double[] { x[0] * x[0], x[1] * x[1] };
+                return Vector<double>.Build.Dense(vec);
+            }
+            double[] vec = new double[] { 2d, 3d };
+            Vector<double> testInput = Vector<double>.Build.Dense(vec);
+
+            Vector<double> testGrad = Utils.FiniteDifferencesGradient(f, testInput);
+
+            #region Weight Gradient Setup 1
+            float[,] input = new float[,]
+            {
+                { 4, 3 },
+                { 2, 1 }
+            };
+
+            float[,] outGrad = new float[,]
+            {
+                { 4, 3 },
+                { 2, 1 }
+            };
+
+            float[,] exp = new float[,]
+            {
+                { 4, 0, 3 },
+                { 0, 0, 0 },
+                { 2, 0, 1 },
+            };
+
+            Matrix<float> outGrad1 = Matrix<float>.Build.DenseOfArray(outGrad);
+            Matrix<float> expected1 = Matrix<float>.Build.DenseOfArray(exp);
+            #endregion
+        }
+
+        [Test]
         public void Dilate_ReturnsDilatedFilterGradient_WhenPassedPreviousLayerGradient()
         {
             #region Dilation Setup 1
@@ -445,6 +484,80 @@ namespace UnitTests
             Assert.AreEqual(expected3, ConvolutionalLayer.PadAndDilate(grad3, 3, 3));
         }
 
-      
+        [Test]
+        public void Rotate180_ReturnsMatrixFlipped180Degrees_WhenPassedMatrix()
+        {
+            #region Rotate 180 Setup 1
+            float[,] mtx = new float[,]
+            {
+                { 4, 3 },
+                { 2, 1 }
+            };
+
+            float[,] exp = new float[,]
+            {
+                { 1, 2 },
+                { 3, 4 }
+            };
+
+            Matrix<float> mtx1 = Matrix<float>.Build.DenseOfArray(mtx);
+            Matrix<float> expected1 = Matrix<float>.Build.DenseOfArray(exp);
+            #endregion
+            #region Rotate 180 Setup 2
+            mtx = new float[,]
+            {
+                { 4, 3, 8 },
+                { 2, 1, 7 },
+                { 7, 2, 5 },
+            };
+
+            exp = new float[,]
+            {
+                { 5, 2, 7 },
+                { 7, 1, 2 },
+                { 8, 3, 4 },
+            };
+
+            Matrix<float> mtx2 = Matrix<float>.Build.DenseOfArray(mtx);
+            Matrix<float> expected2 = Matrix<float>.Build.DenseOfArray(exp);
+            #endregion
+            #region Rotate 180 Setup 3
+            mtx = new float[,]
+            {
+                { 4, 3, 8, 1 },
+                { 2, 1, 7, 3 },
+                { 7, 2, 5, 9 },
+                { 4, 6, 4, 7 }
+            };
+            exp = new float[,]
+            {
+                { 7, 4, 6, 4 },
+                { 9, 5, 2, 7 },
+                { 3, 7, 1, 2 },             
+                { 1, 8, 3, 4 },
+            };
+
+            Matrix<float> mtx3 = Matrix<float>.Build.DenseOfArray(mtx);
+            Matrix<float> expected3 = Matrix<float>.Build.DenseOfArray(exp);
+            #endregion
+            #region Rotate 180 Setup 4
+            mtx = new float[,]
+            {
+                { 4 }
+            };
+            exp = new float[,]
+            {
+                { 4 }
+            };
+
+            Matrix<float> mtx4 = Matrix<float>.Build.DenseOfArray(mtx);
+            Matrix<float> expected4 = Matrix<float>.Build.DenseOfArray(exp);
+            #endregion
+
+            Assert.AreEqual(expected1, ConvolutionalLayer.Rotate180(mtx1));
+            Assert.AreEqual(expected2, ConvolutionalLayer.Rotate180(mtx2));
+            Assert.AreEqual(expected3, ConvolutionalLayer.Rotate180(mtx3));
+            Assert.AreEqual(expected4, ConvolutionalLayer.Rotate180(mtx4));
+        }
     }
 }

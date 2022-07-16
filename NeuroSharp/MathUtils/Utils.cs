@@ -1,14 +1,15 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.Distributions;
+using System.Linq;
 
 namespace NeuroSharp.MathUtils
 {
     public static class Utils
     {
-        public static float NextFloat(float min, float max)
+        public static float Nextfloat(float min, float max)
         {
             System.Random random = new System.Random();
-            double val = (random.NextDouble() * (max - min) + min);
+            float val = (float)(random.NextDouble() * (max - min) + min);
             return (float)val;
         }
         public static Vector<float> Flatten(Matrix<float> mtx)
@@ -33,6 +34,14 @@ namespace NeuroSharp.MathUtils
         {
             float sigma = MathF.Sqrt(2f/layerInputSize);
             return (float)new Normal(0, sigma).Sample();
+        }
+
+        public static Vector<double> FiniteDifferencesGradient(Func<Vector<double>, Vector<double>> f, Vector<double> x, double h = 0.000001f)
+        {
+            Vector<double> hvec = Vector<double>.Build.Dense(x.Count);
+            for (int i = 0; i < x.Count; i++)
+                hvec[i] = h;
+            return (f(x + hvec) - f(x - hvec)) / (2 * hvec);
         }
     }
 }

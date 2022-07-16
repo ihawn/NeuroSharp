@@ -54,6 +54,8 @@ namespace NeuroSharp
             return inputGradient;
         }
 
+
+        #region Operator Methods
         public static (Vector<float>, Matrix<float>) Convolution(Vector<float> flattenedImage, Matrix<float> weights, int stride)
         {
             int dim = (int)Math.Round(Math.Sqrt(flattenedImage.Count));
@@ -86,6 +88,7 @@ namespace NeuroSharp
             return Convolution(Utils.Flatten(paddedDilatedGradient), rotatedWeight, stride: 1).Item1;
         }
 
+
         public static Matrix<float> PadAndDilate(Matrix<float> passedGradient, int stride, int kernel)
         {
             int weightsDim = passedGradient.RowCount;
@@ -111,6 +114,7 @@ namespace NeuroSharp
             return paddedDilatedMatrix;
         }
 
+
         public static Matrix<float> Dilate(Matrix<float> passedGradient, int stride)
         {
             int dilation = stride - 1;
@@ -134,6 +138,7 @@ namespace NeuroSharp
             return dilatedMatrix;
         }
 
+
         public static Matrix<float> Rotate180(Matrix<float> mtx)
         {
             Matrix<float> temp = Matrix<float>.Build.Dense(mtx.RowCount, mtx.ColumnCount);
@@ -146,5 +151,6 @@ namespace NeuroSharp
                     output[i, j] = temp[mtx.RowCount - i - 1, j];
             return output;
         }
+        #endregion
     }
 }

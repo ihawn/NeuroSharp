@@ -47,7 +47,6 @@ namespace NeuroSharp
                 for(int j = 0; j < x.Count; j++)
                     result[i, j] = i == j ? PointwiseSoftmax(x[i], expSum) * (1 - PointwiseSoftmax(x[j], expSum)) : 
                                            -PointwiseSoftmax(x[j], expSum) * PointwiseSoftmax(x[i], expSum);
-
             return result;
         }
     }
