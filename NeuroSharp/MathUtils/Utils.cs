@@ -1,6 +1,8 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.Distributions;
 using System.Linq;
+using System.Drawing.Imaging;
+using System.Drawing;
 
 namespace NeuroSharp.MathUtils
 {
@@ -49,6 +51,23 @@ namespace NeuroSharp.MathUtils
             }
 
             return grad;
+        }
+
+        public static void ToImage(Matrix<double> img)
+        {
+            int width = img.ColumnCount;
+            int height = img.RowCount;
+
+            Bitmap bitmap = new Bitmap(width, height);
+            for (int x = 0; x < width; ++x)
+            {
+                for (int y = 0; y < height; ++y)
+                {
+                    Color c = Color.FromArgb((byte)(img[x, y] * 255), (byte)(img[x, y] * 255), (byte)(img[x, y] * 255), 255);
+                    bitmap.SetPixel(x, y, c);
+                }
+            }
+            bitmap.Save(@"C:\Users\Isaac\Desktop\test.bmp");
         }
     }
 }

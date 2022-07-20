@@ -52,3 +52,9 @@ C:\Users\Isaac\Documents\C#\NeuroSharp\NeuroSharp\obj\Debug\net6.0\NeuroSharp.dl
 C:\Users\Isaac\Documents\C#\NeuroSharp\NeuroSharp\obj\Debug\net6.0\ref\NeuroSharp.dll
 C:\Users\Isaac\Documents\C#\NeuroSharp\NeuroSharp\obj\Debug\net6.0\NeuroSharp.pdb
 C:\Users\Isaac\Documents\C#\NeuroSharp\NeuroSharp\obj\Debug\net6.0\NeuroSharp.genruntimeconfig.cache
+C:\Users\Isaac\Documents\C#\NeuroSharp\NeuroSharp\bin\Debug\net6.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\Isaac\Documents\C#\NeuroSharp\NeuroSharp\bin\Debug\net6.0\System.Drawing.Common.dll
+C:\Users\Isaac\Documents\C#\NeuroSharp\NeuroSharp\bin\Debug\net6.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\Isaac\Documents\C#\NeuroSharp\NeuroSharp\bin\Debug\net6.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+C:\Users\Isaac\Documents\C#\NeuroSharp\NeuroSharp\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+C:\Users\Isaac\Documents\C#\NeuroSharp\NeuroSharp\obj\Debug\net6.0\NeuroSharp.csproj.ResolveComReference.cache

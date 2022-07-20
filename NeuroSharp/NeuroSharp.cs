@@ -10,9 +10,10 @@ namespace NeuroSharp
         static void Main(string[] args)
         {
             //XOR_Test();
-            //Mnist_Digits_Test(4096, 500, 10, "digits");
-            Mnist_Digits_Test_Conv(60000, 10000, 25, "digits");
-            //Conv_Vs_Non_Conv(20000, 2000, 25, 20, "digits");
+            //Mnist_Digits_Test(100, 100, 10, "fashion");
+            //Mnist_Digits_Test_Conv(60000, 10000, 15, "digits");
+            Conv_Base_Test(1000, 100, 10, "digits");
+            //Conv_Vs_Non_Conv(5000, 1000, 15, 20, "digits");
 
             #region testing
             /*double[,] filt = new double[,]
@@ -102,7 +103,6 @@ namespace NeuroSharp
                 yTrain.Add(Vector<double>.Build.DenseOfArray(categorical));
             }
 
-
             //testing data
             List<Vector<double>> xTest = new List<Vector<double>>();
             List<Vector<double>> yTest = new List<Vector<double>>();
@@ -163,6 +163,77 @@ namespace NeuroSharp
             Console.WriteLine("Training Runtime: " + (elapsedMs / 1000f).ToString() + "s");
             return acc;
         }
+        static void Conv_Base_Test(int trainSize, int testSize, int epochs, string data)
+        {
+            double[] x1 = new double[]
+            {
+                1, 0, 0,
+                1, 0, 1,
+                1, 0, 0,
+            };
+            double[] x2 = new double[]
+            {
+                0, 0, 1,
+                1, 0, 1,
+                0, 0, 1,
+            };
+            double[] x3 = new double[]
+            {
+                1, 1, 1,
+                0, 0, 0,
+                0, 1, 0,
+            };
+            double[] x4 = new double[]
+            {
+                0, 1, 0,
+                0, 0, 0,
+                1, 1, 1,
+            };
+
+
+            double[] y1 = new double[] { 0 };
+            double[] y2 = new double[] { 0.25 };
+            double[] y3 = new double[] { 0.5 };
+            double[] y4 = new double[] { 0.75 };
+
+            List<Vector<double>> xTrain = new List<Vector<double>>
+            {
+                Vector<double>.Build.DenseOfArray(x1),
+                Vector<double>.Build.DenseOfArray(x2),
+                Vector<double>.Build.DenseOfArray(x3),
+                Vector<double>.Build.DenseOfArray(x4),
+            };
+
+            List<Vector<double>> yTrain = new List<Vector<double>>
+            {
+                Vector<double>.Build.DenseOfArray(y1),
+                Vector<double>.Build.DenseOfArray(y2),
+                Vector<double>.Build.DenseOfArray(y3),
+                Vector<double>.Build.DenseOfArray(y4),
+            };
+
+
+
+            //build network
+            Network network = new Network();
+            network.Add(new ConvolutionalLayer(3 * 3, kernel: 2, filters: 1, stride: 1));
+            network.Add(new ConvolutionalLayer(4, kernel: 2, filters: 1, stride: 1));
+            network.UseLoss(LossFunctions.MeanSquaredError, LossFunctions.MeanSquaredErrorPrime);
+
+            //train
+            network.Train(xTrain, yTrain, epochs: 500, OptimizerType.Adam);
+
+            //test
+            int i = 0;
+            foreach (var test in xTrain)
+            {
+                double output = network.Predict(test)[0];
+                double actual = yTrain[i][0];
+                Console.WriteLine("Prediction: " + output);
+                Console.WriteLine("Actual: " + actual + "\n");
+                i++;
+            }
+        }
 
         static double Mnist_Digits_Test_Conv(int trainSize, int testSize, int epochs, string data)
         {
@@ -208,10 +279,10 @@ namespace NeuroSharp
 
             //build network
             Network network = new Network();
-            network.Add(new ConvolutionalLayer(28 * 28, kernel: 2, filters: 8, stride: 2));
+            network.Add(new ConvolutionalLayer(28 * 28, kernel: 2, filters: 6, stride: 2));
             network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
-            network.Add(new MaxPoolingLayer(8 * 14 * 14, prevFilterCount: 8, poolSize: 2));
-            network.Add(new FullyConnectedLayer(8 * 13 * 13, 150));
+            network.Add(new MaxPoolingLayer(6 * 14 * 14, prevFilterCount: 6, poolSize: 2));
+            network.Add(new FullyConnectedLayer(6 * 13 * 13, 150));
             network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
             network.Add(new FullyConnectedLayer(150, 10));
             network.Add(new SoftmaxActivationLayer());

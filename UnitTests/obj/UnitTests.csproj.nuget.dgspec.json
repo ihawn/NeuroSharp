@@ -50,6 +50,10 @@
             "MathNet.Spatial": {
               "target": "Package",
               "version": "[0.6.0, )"
+            },
+            "System.Drawing.Common": {
+              "target": "Package",
+              "version": "[6.0.0, )"
             }
           },
           "imports": [
