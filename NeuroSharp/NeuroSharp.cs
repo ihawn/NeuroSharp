@@ -10,7 +10,7 @@ namespace NeuroSharp
         static void Main(string[] args)
         {
             //XOR_Test();
-            //Mnist_Digits_Test(100, 100, 10, "fashion");
+            //Mnist_Digits_Test(1000, 100, 10, "digits");
             //Mnist_Digits_Test_Conv(60000, 10000, 15, "digits");
             Conv_Base_Test(1000, 100, 10, "digits");
             //Conv_Vs_Non_Conv(5000, 1000, 15, 20, "digits");
@@ -168,33 +168,46 @@ namespace NeuroSharp
             double[] x1 = new double[]
             {
                 1, 0, 0,
-                1, 0, 1,
+                0, 0, 0,
+                0, 0, 0
+            };
+            double[] x2 = new double[]
+            {
+                0, 0, 1,
+                0, 0, 0,
+                0, 0, 0
+            };
+            double[] x3 = new double[]
+            {
+                0, 0, 0,
+                0, 0, 0,
+                1, 0, 0
+            };
+            double[] x4 = new double[]
+            {
+                0, 0, 0,
+                0, 0, 0,
+                0, 0, 1,
+            };
+
+            /*double[] x1 = new double[]
+            {
+                1, 0, 0,
+                1, 0, 0,
                 1, 0, 0,
             };
             double[] x2 = new double[]
             {
                 0, 0, 1,
-                1, 0, 1,
                 0, 0, 1,
-            };
-            double[] x3 = new double[]
-            {
-                1, 1, 1,
-                0, 0, 0,
-                0, 1, 0,
-            };
-            double[] x4 = new double[]
-            {
-                0, 1, 0,
-                0, 0, 0,
-                1, 1, 1,
-            };
+                0, 0, 1,
+            };*/
 
 
-            double[] y1 = new double[] { 0 };
-            double[] y2 = new double[] { 0.25 };
-            double[] y3 = new double[] { 0.5 };
-            double[] y4 = new double[] { 0.75 };
+            double[] y1 = new double[] { 1, 0, 0, 0 };
+            double[] y2 = new double[] { 0, 1, 0, 0 };
+            double[] y3 = new double[] { 0, 0, 1, 0 };
+            double[] y4 = new double[] { 0, 0, 0, 1 };
 
             List<Vector<double>> xTrain = new List<Vector<double>>
             {
@@ -212,24 +225,27 @@ namespace NeuroSharp
                 Vector<double>.Build.DenseOfArray(y4),
             };
 
-
-
             //build network
             Network network = new Network();
-            network.Add(new ConvolutionalLayer(3 * 3, kernel: 2, filters: 1, stride: 1));
-            network.Add(new ConvolutionalLayer(4, kernel: 2, filters: 1, stride: 1));
-            network.UseLoss(LossFunctions.MeanSquaredError, LossFunctions.MeanSquaredErrorPrime);
+            network.Add(new ConvolutionalLayer(9, kernel: 2, filters: 1, stride: 1));
+            network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
+            //network.Add(new MaxPoolingLayer(4, prevFilterCount: 1, poolSize: 2));
+            network.Add(new SoftmaxActivationLayer());
+            network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+            //network.UseLoss(LossFunctions.MeanSquaredError, LossFunctions.MeanSquaredErrorPrime);
 
             //train
-            network.Train(xTrain, yTrain, epochs: 500, OptimizerType.Adam);
+            network.Train(xTrain, yTrain, epochs: 500, OptimizerType.Adam, learningRate: 0.001);
 
             //test
             int i = 0;
             foreach (var test in xTrain)
             {
-                double output = network.Predict(test)[0];
-                double actual = yTrain[i][0];
-                Console.WriteLine("Prediction: " + output);
+                var output = network.Predict(test);
+                int prediction = output.ToList().IndexOf(output.Max());
+                int actual = yTrain[i].ToList().IndexOf(yTrain[i].Max());
+                Console.WriteLine("Prediction Vector: " + output);
+                Console.WriteLine("Prediction: " + prediction);
                 Console.WriteLine("Actual: " + actual + "\n");
                 i++;
             }

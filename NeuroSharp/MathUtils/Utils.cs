@@ -53,21 +53,18 @@ namespace NeuroSharp.MathUtils
             return grad;
         }
 
-        public static void ToImage(Matrix<double> img)
+        public static Vector<double> FiniteDifferencesGradient(Func<Vector<double>, double> f, Vector<double> x, double h = 0.000001f)
         {
-            int width = img.ColumnCount;
-            int height = img.RowCount;
-
-            Bitmap bitmap = new Bitmap(width, height);
-            for (int x = 0; x < width; ++x)
+            Vector<double> grad = Vector<double>.Build.Dense(x.Count);
+            Vector<double> hvec = Vector<double>.Build.Dense(x.Count);
+            for (int i = 0; i < x.Count; i++)
             {
-                for (int y = 0; y < height; ++y)
-                {
-                    Color c = Color.FromArgb((byte)(img[x, y] * 255), (byte)(img[x, y] * 255), (byte)(img[x, y] * 255), 255);
-                    bitmap.SetPixel(x, y, c);
-                }
+                hvec[i] = h;
+                grad[i] = (f(x + hvec) - f(x - hvec)) / (2 * h);
+                hvec = Vector<double>.Build.Dense(x.Count);
             }
-            bitmap.Save(@"C:\Users\Isaac\Desktop\test.bmp");
+
+            return grad;
         }
     }
 }

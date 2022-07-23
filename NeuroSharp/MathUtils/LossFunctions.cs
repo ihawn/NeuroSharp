@@ -24,13 +24,17 @@ namespace NeuroSharp.MathUtils
         {
             double sum = 0;
             for(int i = 0; i < truth.Count; i++)
-                sum += truth[i]*Math.Log10(test[i]);
+                sum += truth[i]*Math.Log(test[i]);
             return -sum;
         }
 
         public static Vector<double> CategoricalCrossentropyPrime(Vector<double> truth, Vector<double> test)
         {
-            return test - truth;
+            //return test - truth;
+            Vector<double> gradient = Vector<double>.Build.Dense(test.Count);
+            for (int i = 0; i < gradient.Count; i++)
+                gradient[i] = -truth[i] / test[i];
+            return gradient;
         }
     }
 }
