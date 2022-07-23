@@ -17,7 +17,7 @@ namespace UnitTests
         {
         }
 
-        [Test]
+       /* [Test]
         public void ConvolutionOnlyNetwork_ConvolutionLayerNetworkOnlyIsLearning_1DataPiece_1Filter_NoSlide_Stride1()
         {
             for(int i = 0; i < 50; i++)
@@ -156,7 +156,7 @@ namespace UnitTests
             Assert.IsTrue(correct > 20);
         }
 
-        /*[Test]
+        [Test]
         public void ConvolutionWithDense_ShouldBeBetterThanDenseOnly()
         {
             double err1 = 0;

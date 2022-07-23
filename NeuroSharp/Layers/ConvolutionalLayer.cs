@@ -83,12 +83,13 @@ namespace NeuroSharp
 
 
         #region Operator Methods
-        public static (Vector<double>, Matrix<double>) Convolution(Vector<double> flattenedImage, Matrix<double> weights, int stride)
+        public static (Vector<double>, Matrix<double>) Convolution(Vector<double> flattenedImage, Matrix<double> weights, int stride, bool transposeOutput = false)
         {
             int dim = (int)Math.Round(Math.Sqrt(flattenedImage.Count));
             int outDim = (int)Math.Floor(((double)dim - weights.RowCount) / stride) + 1;
 
             Matrix<double> image = Utils.Unflatten(flattenedImage);
+
             Matrix<double> output = Matrix<double>.Build.Dense(outDim, outDim);
 
             //Parallel.For(0, outDim, i =>
@@ -100,6 +101,8 @@ namespace NeuroSharp
                             output[i, j] += image[j * stride + b, i * stride + a] * weights[a, b];
             }//);
 
+            if(transposeOutput)
+                output = output.Transpose();
 
             return (Utils.Flatten(output), output);
         }
@@ -107,8 +110,8 @@ namespace NeuroSharp
         // ∂L/∂W
         public static Matrix<double> ComputeWeightGradient(Vector<double> input, Matrix<double> outputJacobian, int stride)
         {
-            Matrix<double> dilatedGradient = Dilate(outputJacobian, stride);
-            return Convolution(input, dilatedGradient, stride: 1).Item2;
+            Matrix<double> dilatedGradient = Dilate(outputJacobian, stride).Transpose();
+            return Convolution(input, dilatedGradient, stride: 1, transposeOutput: true).Item2;
         }
 
         // ∂L/∂X
