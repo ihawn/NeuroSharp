@@ -423,7 +423,7 @@ namespace UnitTests
             };
 
             Matrix<double> grad1 = Matrix<double>.Build.DenseOfArray(grad);
-            Matrix<double> expected1 = Matrix<double>.Build.DenseOfArray(exp);
+            Matrix<double> expected1 = Matrix<double>.Build.DenseOfArray(exp).Transpose();
             #endregion
             #region Pan and Dilate Setup 2
             grad = new double[,]
@@ -447,7 +447,7 @@ namespace UnitTests
             };
 
             Matrix<double> grad2 = Matrix<double>.Build.DenseOfArray(grad);
-            Matrix<double> expected2 = Matrix<double>.Build.DenseOfArray(exp);
+            Matrix<double> expected2 = Matrix<double>.Build.DenseOfArray(exp).Transpose();
             #endregion
             #region Pan and Dilate Setup 3
             grad = new double[,]
@@ -473,7 +473,7 @@ namespace UnitTests
             };
 
             Matrix<double> grad3 = Matrix<double>.Build.DenseOfArray(grad);
-            Matrix<double> expected3 = Matrix<double>.Build.DenseOfArray(exp);
+            Matrix<double> expected3 = Matrix<double>.Build.DenseOfArray(exp).Transpose();
             #endregion
 
             Assert.AreEqual(expected1, ConvolutionalLayer.PadAndDilate(grad1, 2, 3));

@@ -142,7 +142,7 @@ namespace NeuroSharp
                 x++;
             }
 
-            return paddedDilatedMatrix;
+            return paddedDilatedMatrix.Transpose();
         }
 
 
