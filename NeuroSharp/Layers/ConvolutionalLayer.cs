@@ -12,6 +12,7 @@ namespace NeuroSharp
         private int _stride;
         private int _outputSize;
         private int _inputSize;
+        private int _rawInputSize;
         private int _filters;
 
         public ConvolutionalLayer(int inputSize, int kernel, int filters, int stride = 1)
@@ -30,6 +31,7 @@ namespace NeuroSharp
             _adam = new Adam(kernel, kernel, weightCount: filters);
             _stride = stride;
             _inputSize = filters * inputSize;
+            _rawInputSize = inputSize;
             _outputSize = filters * (int)Math.Pow((int)Math.Floor((Math.Sqrt(inputSize) - (double)kernel) / stride + 1), 2);
             _filters = filters;
         }
@@ -38,13 +40,13 @@ namespace NeuroSharp
         {
             Input = input;
             Output = Vector<double>.Build.Dense(_outputSize);
-            //Parallel.For(0, _filters, i =>
+
             for (int i = 0; i < _filters; i++)
             {
                 Vector<double> singleFilterOutput = Convolution(Input, Weights[i], _stride).Item1;
                 for (int j = 0; j < singleFilterOutput.Count; j++)
                     Output[i * singleFilterOutput.Count + j] = singleFilterOutput[j];
-            }//);
+            }
             return Output;
         }
 
@@ -52,8 +54,8 @@ namespace NeuroSharp
         {
             Vector<double> inputGradient = Vector<double>.Build.Dense(_inputSize);
             Vector<double>[] jacobianSlices = new Vector<double>[_filters];
+            Matrix<double> inputGradientMatrix = Matrix<double>.Build.Dense((int)Math.Sqrt(_rawInputSize), (int)Math.Sqrt(_rawInputSize));
 
-            //Parallel.For(0, _filters, i =>
             for (int i = 0; i < _filters; i++)
             {
                 jacobianSlices[i] = Vector<double>.Build.Dense(outputError.Count / _filters); // ∂L/∂Y
@@ -64,7 +66,8 @@ namespace NeuroSharp
                 Vector<double> singleGradient = ComputeInputGradient(Weights[i], Utils.Unflatten(jacobianSlices[i]), _stride);
                 for (int j = 0; j < singleGradient.Count; j++)
                     inputGradient[i * singleGradient.Count + j] = singleGradient[j];
-            }//);
+                inputGradientMatrix += Utils.Unflatten(singleGradient);
+            }
 
             switch (optimzerType)
             {
@@ -78,7 +81,7 @@ namespace NeuroSharp
                     break;
             }
 
-            return inputGradient;
+            return Utils.Flatten(inputGradientMatrix.Transpose());// inputGradient;
         }
 
 

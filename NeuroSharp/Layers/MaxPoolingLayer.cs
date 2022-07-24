@@ -51,7 +51,6 @@ namespace NeuroSharp
             int dim = (int)Math.Round(Math.Sqrt(_inputSize/_filters));
             List<double> rawBackpropData = new List<double>();
 
-            //Parallel.For(0, _filters, k =>
             for(int k = 0; k < _filters; k++)
             {
                 Matrix<double> backwardsGradient = Matrix<double>.Build.Dense(dim, dim);
@@ -62,8 +61,7 @@ namespace NeuroSharp
                 }
                 foreach (double d in Utils.Flatten(backwardsGradient))
                     rawBackpropData.Add(d);
-            }//);
-
+            }
 
             return Vector<double>.Build.DenseOfEnumerable(rawBackpropData);
         }

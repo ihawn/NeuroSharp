@@ -154,9 +154,9 @@ namespace UnitTests
             }
 
             Assert.IsTrue(correct > 20);
-        }
+        }*/
 
-        [Test]
+       /* [Test]
         public void ConvolutionWithDense_ShouldBeBetterThanDenseOnly()
         {
             double err1 = 0;
@@ -223,7 +223,7 @@ namespace UnitTests
             //with conv layer
             Network network2 = new Network();
             network2.Add(new ConvolutionalLayer(28*28, kernel: 3, filters: 1, stride: 1));
-            network2.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
+            network2.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
             network2.Add(new FullyConnectedLayer(26*26, 2));
             network2.Add(new SoftmaxActivationLayer());
             network2.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
