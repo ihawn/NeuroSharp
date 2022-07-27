@@ -11,7 +11,7 @@ namespace NeuroSharp
         {
             //XOR_Test();
             //Mnist_Digits_Test(1000, 100, 10, "digits");
-            Mnist_Digits_Test_Conv(60000, 10000, 20, "digits");
+            Mnist_Digits_Test_Conv(500, 50, 10, "digits");
             //Conv_Base_Test(1000, 100, 10, "digits");
             //Conv_Vs_Non_Conv(5000, 1000, 15, 20, "digits");
 
