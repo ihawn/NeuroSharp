@@ -16,7 +16,7 @@ namespace UnitTests
         {
         }
 
-        #region Convolutional Gradient Tests
+        #region Convolutional Gradient Tests For 1 Filter
         //Categorical Crossentropy Loss
         [Test]
         public void ConvolutionLayer_ReturnsCorrectInputGradient_WhenChainedTogetherWithCategoricalCrossentropySoftmaxTanhAndConvolutionalLayer_KernelSameSizeAsImageSoNoStride()
@@ -179,51 +179,6 @@ namespace UnitTests
                 }
             }
         }
-
-        //TODO
-        /*  [Test]
-          public void ConvolutionLayer_ReturnsCorrectInputGradient_WhenChainedTogetherWithCategoricalCrossentropySoftmaxTanhMaxpoolingAndConvolutionalLayer_WithStride1()
-          {
-              List<int> squares = new List<int>();
-              for (int i = 1; i < 10; i++)
-                  squares.Add((int)Math.Pow(i, 2));
-
-              foreach (int i in squares)
-              {
-                  foreach (int j in squares.Where(s => s <= i)) //test every square kernel up to the size of the input matrix
-                  {
-
-                  }
-              }
-              for (int i = 0; i < 100; i++)
-              {
-                  //int outdim = (int)Math.Floor(Math.Sqrt(i) - Math.Sqrt(j)) + 1;
-                  Vector<double> truthY = Vector<double>.Build.Random(4);
-                  Vector<double> testX = Vector<double>.Build.Random(16);
-
-                  Network network = new Network();
-                  network.Add(new ConvolutionalLayer(16, kernel: 2, filters: 1, stride: 1));
-                  //network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
-                  network.Add(new MaxPoolingLayer(9, prevFilterCount: 1, poolSize: 2));
-                  network.Add(new SoftmaxActivationLayer());
-                  network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
-
-                  double networkLoss(Vector<double> x)
-                  {
-                      x = network.Predict(x);
-                      return network.Loss(truthY, x);
-                  }
-
-                  Vector<double> finiteDiffGradient = Utils.FiniteDifferencesGradient(networkLoss, testX);
-                  Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
-                  for (int k = network.Layers.Count - 1; k >= 0; k--)
-                  {
-                      testGradient = network.Layers[k].BackPropagation(testGradient, OptimizerType.Adam, 1, 0.0001);
-                  }
-
-                  //Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
-              }
-          }*/
 
         //TODO
         //Mean Squared Error Loss
@@ -390,8 +345,9 @@ namespace UnitTests
         }*/
         #endregion
 
-
         //TODO
+        //Stride > 1
+
         #region Convolutional Gradient Tests For Multiple Filters
         [Test]
         public void ConvolutionLayer_ReturnsCorrectInputGradient_WhenChainedTogetherWithCategoricalCrossentropySoftmaxTanhAndConvolutionalLayer_WithStride1_MultipleFilters()
