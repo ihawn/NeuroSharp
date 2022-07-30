@@ -48,6 +48,44 @@ namespace NeuroSharp.Datatypes
             return tOut;
         }
 
+        public static Tensor operator *(Tensor t1, double d)
+        {
+            Tensor tOut = new Tensor(t1.YShape, t1.XShape, t1.ZShape);
+            for (int z = 0; z < t1.ZShape; z++)
+            {
+                Parallel.For(0, t1.XShape, y =>
+                {
+                    for (int x = 0; x < t1.YShape; x++)
+                        tOut[x, y, z] = t1[x, y, z] / d;
+                });
+            }
+            return tOut;
+        }
+
+        public static Tensor operator /(Tensor t1, Tensor t2)
+        {
+            Tensor tOut = new Tensor(t1.XShape, t1.YShape, t1.ZShape);
+            for (int z = 0; z < t1.ZShape; z++)
+                Parallel.For(0, t1.XShape, x =>
+                {
+                    for (int y = 0; y < t1.YShape; y++)
+                        tOut[x, y, z] = t1[x, y, z] / t2[x, y, z];
+                });
+            return tOut;
+        }
+
+        public static Tensor operator /(Tensor t1, double d)
+        {
+            Tensor tOut = new Tensor(t1.XShape, t1.YShape, t1.ZShape);
+            for (int z = 0; z < t1.ZShape; z++)
+                Parallel.For(0, t1.XShape, x =>
+                {
+                    for (int y = 0; y < t1.YShape; y++)
+                        tOut[x, y, z] = t1[x, y, z] / d;
+                });
+            return tOut;
+        }
+
         public static Tensor operator +(Tensor t1, Tensor t2)
         {
             Tensor tOut = new Tensor(t1.XShape, t1.YShape, t1.ZShape);
@@ -68,18 +106,6 @@ namespace NeuroSharp.Datatypes
                 {
                     for (int y = 0; y < t1.YShape; y++)
                         tOut[x, y, z] = t1[x, y, z] - t2[x, y, z];
-                });
-            return tOut;
-        }
-
-        public static Tensor operator /(Tensor t1, Tensor t2)
-        {
-            Tensor tOut = new Tensor(t1.XShape, t1.YShape, t1.ZShape);
-            for (int z = 0; z < t1.ZShape; z++)
-                Parallel.For(0, t1.XShape, x =>
-                {
-                    for (int y = 0; y < t1.YShape; y++)
-                        tOut[x, y, z] = t1[x, y, z] / t2[x, y, z];
                 });
             return tOut;
         }
