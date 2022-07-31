@@ -32,7 +32,6 @@ namespace NeuroSharp
 
         public override Vector<double> BackPropagation(Vector<double> outputError, OptimizerType optimzerType, int sampleIndex, double learningRate)
         {
-            Vector<double> inputError = outputError * Weights[0].Transpose();
             WeightGradient[0] = Input.OuterProduct(outputError);
             BiasGradient = outputError;
 
@@ -48,7 +47,7 @@ namespace NeuroSharp
                     break;
             }
 
-            return inputError;
+            return Weights[0] * outputError; //input error
         }
     }
 }
