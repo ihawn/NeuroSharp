@@ -41,12 +41,13 @@ namespace NeuroSharp
             Input = input;
             Output = Vector<double>.Build.Dense(_outputSize);
 
-            for (int i = 0; i < _filters; i++)
+            Parallel.For(0, _filters, i =>
+            //for (int i = 0; i < _filters; i++)
             {
                 Vector<double> singleFilterOutput = Convolution(Input, Weights[i], _stride).Item1;
                 for (int j = 0; j < singleFilterOutput.Count; j++)
                     Output[i * singleFilterOutput.Count + j] = singleFilterOutput[j];
-            }
+            });
             return Output;
         }
 
@@ -55,21 +56,27 @@ namespace NeuroSharp
             Vector<double> inputGradient = Vector<double>.Build.Dense(_inputSize);
             Vector<double>[] jacobianSlices = new Vector<double>[_filters];
             Matrix<double> inputGradientMatrix = Matrix<double>.Build.Dense((int)Math.Sqrt(_rawInputSize), (int)Math.Sqrt(_rawInputSize));
+            Matrix<double>[] inputGradientPieces = new Matrix<double>[_filters];
 
-            for (int i = 0; i < _filters; i++)
+            Parallel.For(0, _filters, i =>
+            //for (int i = 0; i < _filters; i++)
             {
                 jacobianSlices[i] = Vector<double>.Build.Dense(outputError.Count / _filters); // ∂L/∂Y
                 for (int j = 0; j < jacobianSlices[i].Count; j++)
                     jacobianSlices[i][j] = outputError[i * jacobianSlices[i].Count + j];
                 WeightGradient[i] = ComputeWeightGradient(Input, Utils.Unflatten(jacobianSlices[i]), _stride);
-
+  
                 Vector<double> singleGradient = ComputeInputGradient(Weights[i], Utils.Unflatten(jacobianSlices[i]), _stride);
                 for (int j = 0; j < singleGradient.Count; j++)
                     inputGradient[i * singleGradient.Count + j] = singleGradient[j];
-                inputGradientMatrix += Utils.Unflatten(singleGradient);
-            }
+                inputGradientPieces[i] = Utils.Unflatten(singleGradient);
+            });
 
-            switch (optimzerType)
+            for (int i = 0; i < _filters; i++)
+                inputGradientMatrix += inputGradientPieces[i];
+
+
+          /*  switch (optimzerType)
             {
                 case OptimizerType.GradientDescent:
                     for(int i = 0; i < _filters; i++)
@@ -79,7 +86,7 @@ namespace NeuroSharp
                 case OptimizerType.Adam:
                     _adam.Step(this, sampleIndex + 1, eta: learningRate, includeBias: false);
                     break;
-            }
+            }*/
 
             return Utils.Flatten(inputGradientMatrix.Transpose());// inputGradient;
         }
@@ -89,20 +96,21 @@ namespace NeuroSharp
         public static (Vector<double>, Matrix<double>) Convolution(Vector<double> flattenedImage, Matrix<double> weights, int stride, bool transposeOutput = false)
         {
             int dim = (int)Math.Round(Math.Sqrt(flattenedImage.Count));
-            int outDim = (int)Math.Floor(((double)dim - weights.RowCount) / stride) + 1;
+            double imageQuotient = ((double)dim - weights.RowCount) / stride + 1;
+            int outDim = (int)Math.Floor(imageQuotient);
 
             Matrix<double> image = Utils.Unflatten(flattenedImage);
 
             Matrix<double> output = Matrix<double>.Build.Dense(outDim, outDim);
 
-            //Parallel.For(0, outDim, i =>
-            for(int i = 0; i < outDim; i++)
+            Parallel.For(0, outDim, i =>
+            //for(int i = 0; i < outDim; i++)
             {
                 for (int j = 0; j < outDim; j++)
                     for (int a = 0; a < weights.RowCount; a++)
                         for (int b = 0; b < weights.RowCount; b++)
                             output[i, j] += image[j * stride + b, i * stride + a] * weights[a, b];
-            }//);
+            });
 
             if(transposeOutput)
                 output = output.Transpose();

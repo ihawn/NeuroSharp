@@ -10,8 +10,8 @@ namespace NeuroSharp
         static void Main(string[] args)
         {
             //XOR_Test();
-            //Mnist_Digits_Test(1000, 100, 10, "digits");
-            Mnist_Digits_Test_Conv(128, 10, 5, "digits");
+            //Mnist_Digits_Test(512, 10, 5, "digits");
+            Mnist_Digits_Test_Conv(8192, 500, 10, "digits");
             //Conv_Base_Test(1000, 100, 10, "digits");
             //Conv_Vs_Non_Conv(5000, 1000, 15, 20, "digits");
 
@@ -127,11 +127,11 @@ namespace NeuroSharp
 
             //build network
             Network network = new Network();
-            network.Add(new FullyConnectedLayer(28*28, 250));
-            network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
-            network.Add(new FullyConnectedLayer(250, 100));
-            network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
-            network.Add(new FullyConnectedLayer(100, 10));
+            network.Add(new FullyConnectedLayer(28*28, 256));
+            network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
+            network.Add(new FullyConnectedLayer(256, 128));
+            network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
+            network.Add(new FullyConnectedLayer(128, 10));
             //network.UseLoss(LossFunctions.MeanSquaredError, LossFunctions.MeanSquaredErrorPrime);
             network.Add(new SoftmaxActivationLayer());
             network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
@@ -139,7 +139,7 @@ namespace NeuroSharp
             //train
             var watch = System.Diagnostics.Stopwatch.StartNew();
             //network.Train(xTrain, yTrain, epochs: 5, OptimizerType.Adam);
-            network.MinibatchTrain(xTrain, yTrain, epochs: epochs, OptimizerType.Adam, batchSize: 256);
+            network.MinibatchTrain(xTrain, yTrain, epochs: epochs, OptimizerType.GradientDescent, batchSize: 256);
             var elapsedMs = watch.ElapsedMilliseconds;
 
             //test
@@ -295,12 +295,12 @@ namespace NeuroSharp
 
             //build network
             Network network = new Network();
-            network.Add(new ConvolutionalLayer(28 * 28, kernel: 2, filters: 4, stride: 1));
+            network.Add(new ConvolutionalLayer(28 * 28, kernel: 4, filters: 4, stride: 4));
             network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
-            network.Add(new MaxPoolingLayer(27 * 27 * 4, prevFilterCount: 4, poolSize: 2));
-            network.Add(new FullyConnectedLayer(26 * 26 * 4, 150));
+            network.Add(new MaxPoolingLayer(7 * 7 * 4, prevFilterCount: 4, poolSize: 2));
+            network.Add(new FullyConnectedLayer(6 * 6 * 4, 128));
             network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
-            network.Add(new FullyConnectedLayer(150, 10));
+            network.Add(new FullyConnectedLayer(128, 10));
             network.Add(new SoftmaxActivationLayer());
             network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
 
