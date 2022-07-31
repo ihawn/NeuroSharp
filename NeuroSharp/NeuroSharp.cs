@@ -295,12 +295,12 @@ namespace NeuroSharp
 
             //build network
             Network network = new Network();
-            network.Add(new ConvolutionalLayer(28 * 28, kernel: 2, filters: 8, stride: 1));
+            network.Add(new ConvolutionalLayer(28 * 28, kernel: 4, filters: 4, stride: 4));
             network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
-            network.Add(new MaxPoolingLayer(27 * 27 * 8, prevFilterCount: 8, poolSize: 2));
-            network.Add(new FullyConnectedLayer(26 * 26 * 8, 150));
+            network.Add(new MaxPoolingLayer(7 * 7 * 4, prevFilterCount: 4, poolSize: 2));
+            network.Add(new FullyConnectedLayer(6 * 6 * 4, 128));
             network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
-            network.Add(new FullyConnectedLayer(150, 10));
+            network.Add(new FullyConnectedLayer(128, 10));
             network.Add(new SoftmaxActivationLayer());
             network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
 

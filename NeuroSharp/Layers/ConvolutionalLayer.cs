@@ -73,11 +73,8 @@ namespace NeuroSharp
             });
 
             for (int i = 0; i < _filters; i++)
-            {
-                for(int x = 0; x < inputGradientPieces[i].ColumnCount; x++)
-                    for(int y = 0; y < inputGradientPieces[i].RowCount; y++)
-                        inputGradientMatrix[x, y] += inputGradientPieces[i][x, y];
-            }
+                inputGradientMatrix += inputGradientPieces[i];
+
 
           /*  switch (optimzerType)
             {
@@ -99,7 +96,8 @@ namespace NeuroSharp
         public static (Vector<double>, Matrix<double>) Convolution(Vector<double> flattenedImage, Matrix<double> weights, int stride, bool transposeOutput = false)
         {
             int dim = (int)Math.Round(Math.Sqrt(flattenedImage.Count));
-            int outDim = (int)Math.Floor(((double)dim - weights.RowCount) / stride) + 1;
+            double imageQuotient = ((double)dim - weights.RowCount) / stride + 1;
+            int outDim = (int)Math.Floor(imageQuotient);
 
             Matrix<double> image = Utils.Unflatten(flattenedImage);
 
@@ -166,7 +164,7 @@ namespace NeuroSharp
         {
             int dilation = stride - 1;
             int gradientDim = passedGradient.RowCount;
-            int outDim = gradientDim + dilation * gradientDim;
+            int outDim = gradientDim + dilation * (gradientDim - 1);
 
             Matrix<double> dilatedMatrix = Matrix<double>.Build.Dense(outDim, outDim);
 
