@@ -39,7 +39,7 @@ namespace NeuroSharp.Optimizers
                 _varianceWeightGradient[i] = beta2 * _varianceWeightGradient[i] + (1 - beta2) * layer.WeightGradient[i].PointwisePower(2);
                 _meanWeightGradCorrection[i] = _meanWeightGradient[i] / (1 - Math.Pow(beta1, t));
                 _varianceWeightGradCorrection[i] = _varianceWeightGradient[i] / (1 - Math.Pow(beta2, t));
-                layer.Weights[i] -= eta * (_meanWeightGradCorrection[i].PointwiseDivide(_varianceWeightGradCorrection[i].PointwiseSqrt() + Matrix<double>.Build.One * epsilon));
+                layer.Weights[i] -= eta * (_meanWeightGradCorrection[i].PointwiseDivide(_varianceWeightGradCorrection[i].PointwiseSqrt() + epsilon));
             });
             if (includeBias)
             {
