@@ -93,7 +93,6 @@ namespace NeuroSharp
                 double err = 0;
 
                 for (int b = 0; b <= batchCount; b++)
-                //Parallel.For(0, batchCount, b =>
                 {
                     var minibatch = data.Skip(b*batchSize).Take(batchSize).ToList();
 
@@ -113,10 +112,9 @@ namespace NeuroSharp
                         for (int k = Layers.Count - 1; k >= 0; k--)
                         {
                             error = Layers[k].BackPropagation(error, optimizerType, j, learningRate);
-                        }
-                        
+                        }                      
                     }
-                }//);
+                }
 
 
                 err /= (batchSize * batchCount);
