@@ -2,6 +2,7 @@
 using NeuroSharp.MathUtils;
 using NeuroSharp.Data;
 using NeuroSharp.Enumerations;
+using MathNet.Numerics;
 
 namespace NeuroSharp
 {
@@ -9,6 +10,7 @@ namespace NeuroSharp
     {
         static void Main(string[] args)
         {
+            Control.UseNativeMKL();
             //XOR_Test();
             //Mnist_Digits_Test(512, 10, 5, "digits");
             Mnist_Digits_Test_Conv(1024, 100, 5, "digits");

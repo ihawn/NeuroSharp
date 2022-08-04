@@ -9,6 +9,7 @@
       "NeuroSharp/1.0.0": {
         "dependencies": {
           "MathNet.Numerics": "5.0.0",
+          "MathNet.Numerics.MKL.Win-x64": "3.0.0",
           "MathNet.Spatial": "0.6.0",
           "System.Drawing.Common": "6.0.0"
         },
@@ -19,6 +20,34 @@
       "MathNet.Numerics/5.0.0": {
         "runtime": {
           "lib/net6.0/MathNet.Numerics.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.0.0"
+          }
+        }
+      },
+      "MathNet.Numerics.MKL.Win-x64/3.0.0": {
+        "dependencies": {
+          "MathNet.Numerics.Providers.MKL": "5.0.0"
+        },
+        "runtimeTargets": {
+          "runtimes/win-x64/native/libMathNetNumericsMKL.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "3.0.0.0"
+          },
+          "runtimes/win-x64/native/libiomp5md.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "5.0.2021.1013"
+          }
+        }
+      },
+      "MathNet.Numerics.Providers.MKL/5.0.0": {
+        "dependencies": {
+          "MathNet.Numerics": "5.0.0"
+        },
+        "runtime": {
+          "lib/net6.0/MathNet.Numerics.Providers.MKL.dll": {
             "assemblyVersion": "5.0.0.0",
             "fileVersion": "5.0.0.0"
           }
@@ -104,6 +133,20 @@
       "sha512": "sha512-pg1W2VwaEQMAiTpGK840hZgzavnqjlCMTVSbtVCXVyT+7AX4mc1o89SPv4TBlAjhgCOo9c1Y+jZ5m3ti2YgGgA==",
       "path": "mathnet.numerics/5.0.0",
       "hashPath": "mathnet.numerics.5.0.0.nupkg.sha512"
+    },
+    "MathNet.Numerics.MKL.Win-x64/3.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-tgp9xQlPCiIqZ+VWJo2/c7GalV+1ucJkiaV7XEh9uNFt7KkG+rKN/7J2dhdiNxAAejD0MFeMkQy08cgQhHQc+Q==",
+      "path": "mathnet.numerics.mkl.win-x64/3.0.0",
+      "hashPath": "mathnet.numerics.mkl.win-x64.3.0.0.nupkg.sha512"
+    },
+    "MathNet.Numerics.Providers.MKL/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-cCOM4ImHjdbpD2iR4/6mVFq+sD0sI5hXlAYJXIKmob+20OiA7QQ259vY4GLXYOLBhy35D2QjGmBlgdzNNkuepw==",
+      "path": "mathnet.numerics.providers.mkl/5.0.0",
+      "hashPath": "mathnet.numerics.providers.mkl.5.0.0.nupkg.sha512"
     },
     "MathNet.Spatial/0.6.0": {
       "type": "package",

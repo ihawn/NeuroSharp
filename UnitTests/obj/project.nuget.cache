@@ -1,11 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "PmFT+xv9xDzO/It4cRVj23duGa8B8llW+ponZMDZJubFh3Bk5QWxUaVOSpMEm0FBZs7WMljXzBhVp+FQ/TsWMw==",
+  "dgSpecHash": "0bTUgQJLArunOgl4+6em0hTXIpK/UYE/CwfMm2AjbHbmcNFdefvH8lw7JFJ4HJ5Lvk3BxsmJ+j9I8Y2a+usNmg==",
   "success": true,
   "projectFilePath": "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\UnitTests\\UnitTests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Isaac\\.nuget\\packages\\coverlet.collector\\3.1.0\\coverlet.collector.3.1.0.nupkg.sha512",
     "C:\\Users\\Isaac\\.nuget\\packages\\mathnet.numerics\\5.0.0\\mathnet.numerics.5.0.0.nupkg.sha512",
+    "C:\\Users\\Isaac\\.nuget\\packages\\mathnet.numerics.mkl.win-x64\\3.0.0\\mathnet.numerics.mkl.win-x64.3.0.0.nupkg.sha512",
+    "C:\\Users\\Isaac\\.nuget\\packages\\mathnet.numerics.providers.mkl\\5.0.0\\mathnet.numerics.providers.mkl.5.0.0.nupkg.sha512",
     "C:\\Users\\Isaac\\.nuget\\packages\\mathnet.spatial\\0.6.0\\mathnet.spatial.0.6.0.nupkg.sha512",
     "C:\\Users\\Isaac\\.nuget\\packages\\microsoft.codecoverage\\16.11.0\\microsoft.codecoverage.16.11.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.csharp\\4.0.1\\microsoft.csharp.4.0.1.nupkg.sha512",

@@ -1,0 +1,7 @@
+
+NeuroSharp/bin/Release/net6.0/runtimes/win-x64/native/libMathNetNumericsMKL.dll
+NeuroSharp/bin/Debug/net6.0/MathNet.Numerics.Providers.MKL.dll
+NeuroSharp/.vs/NeuroSharp/v17/TestStore/0/029.testlog
+*.testlog
+*.dll
+*.dll

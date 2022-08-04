@@ -1,10 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "K/jG+Rfkxg5zE93I4cg0vgFdyaRBBw5gZAqTpdqLkJWrqXIxg3hraol2O5TllZRROhO8l7DLQbVqTRPYSOShBQ==",
+  "dgSpecHash": "xtFyYiCWL640HiVFYpY0UV/kzieRd77Uo4z0JnHZJytis4p0wcoMtCEihH17/ppVda8mGPnho3x9e0BGZ1x+MQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\NeuroSharp\\NeuroSharp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Isaac\\.nuget\\packages\\mathnet.numerics\\5.0.0\\mathnet.numerics.5.0.0.nupkg.sha512",
+    "C:\\Users\\Isaac\\.nuget\\packages\\mathnet.numerics.mkl.win-x64\\3.0.0\\mathnet.numerics.mkl.win-x64.3.0.0.nupkg.sha512",
+    "C:\\Users\\Isaac\\.nuget\\packages\\mathnet.numerics.providers.mkl\\5.0.0\\mathnet.numerics.providers.mkl.5.0.0.nupkg.sha512",
     "C:\\Users\\Isaac\\.nuget\\packages\\mathnet.spatial\\0.6.0\\mathnet.spatial.0.6.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.netcore.targets\\1.1.0\\microsoft.netcore.targets.1.1.0.nupkg.sha512",

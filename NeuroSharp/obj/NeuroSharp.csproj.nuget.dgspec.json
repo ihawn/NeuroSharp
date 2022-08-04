@@ -47,6 +47,10 @@
               "target": "Package",
               "version": "[5.0.0, )"
             },
+            "MathNet.Numerics.MKL.Win-x64": {
+              "target": "Package",
+              "version": "[3.0.0, )"
+            },
             "MathNet.Spatial": {
               "target": "Package",
               "version": "[0.6.0, )"
