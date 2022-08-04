@@ -33,15 +33,30 @@ namespace NeuroSharp.Optimizers
 
         public void Step(ParameterizedLayer layer, int t, double eta = 0.001f, double beta1 = 0.9f, double beta2 = 0.999f, double epsilon = 0.0000001f, bool includeBias = true)
         {
-            //for(int i = 0; i < layer.Weights.Length; i++)
-            Parallel.For(0, layer.Weights.Length, i =>
+            if (layer.Weights.Count() == 1)
             {
-                _meanWeightGradient[i] = beta1 * _meanWeightGradient[i] + (1 - beta1) * layer.WeightGradient[i];
-                _varianceWeightGradient[i] = beta2 * _varianceWeightGradient[i] + (1 - beta2) * layer.WeightGradient[i].PointwisePower(2);
-                _meanWeightGradCorrection[i] = _meanWeightGradient[i] / (1 - Math.Pow(beta1, t));
-                _varianceWeightGradCorrection[i] = _varianceWeightGradient[i] / (1 - Math.Pow(beta2, t));
-                layer.Weights[i] -= eta * (_meanWeightGradCorrection[i].PointwiseDivide(_varianceWeightGradCorrection[i].PointwiseSqrt() + epsilon));
-            });
+                (beta1 * _meanWeightGradient[0] + (1 - beta1) * layer.WeightGradient[0]).CopyTo(_meanWeightGradient[0]);
+                (beta2 * _varianceWeightGradient[0] + (1 - beta2) * layer.WeightGradient[0].PointwisePower(2)).CopyTo(_varianceWeightGradient[0]);
+                layer.Weights[0] -= eta *
+                        (_meanWeightGradient[0] / (1 - Math.Pow(beta1, t))) // mean weight gradient correction
+                        .PointwiseDivide
+                        (
+                            (_varianceWeightGradient[0] / (1 - Math.Pow(beta2, t))) // variance weight gradient correction
+                            .PointwiseSqrt() + epsilon
+                        );
+            }
+            else
+            {
+                for(int i = 0; i < layer.Weights.Length; i++)
+                //Parallel.For(0, layer.Weights.Length, i =>
+                {
+                    _meanWeightGradient[i] = beta1 * _meanWeightGradient[i] + (1 - beta1) * layer.WeightGradient[i];
+                    _varianceWeightGradient[i] = beta2 * _varianceWeightGradient[i] + (1 - beta2) * layer.WeightGradient[i].PointwisePower(2);
+                    _meanWeightGradCorrection[i] = _meanWeightGradient[i] / (1 - Math.Pow(beta1, t));
+                    _varianceWeightGradCorrection[i] = _varianceWeightGradient[i] / (1 - Math.Pow(beta2, t));
+                    layer.Weights[i] -= eta * (_meanWeightGradCorrection[i].PointwiseDivide(_varianceWeightGradCorrection[i].PointwiseSqrt() + epsilon));
+                }//);
+            }
             if (includeBias)
             {
                 _meanBiasGradient = beta1 * _meanBiasGradient + (1 - beta1) * layer.BiasGradient;

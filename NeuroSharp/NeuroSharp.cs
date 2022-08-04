@@ -81,7 +81,7 @@ namespace NeuroSharp
 
             //train
             network.UseLoss(LossFunctions.MeanSquaredError, LossFunctions.MeanSquaredErrorPrime);
-            network.Train(xTrain, yTrain, epochs: 1000, optimizerType: OptimizerType.Adam, learningRate: 0.1f);
+            network.Train(xTrain, yTrain, epochs: 1000, optimizerType: OptimizerType.GradientDescent, learningRate: 0.1f);
 
             //test
             foreach(var test in xTrain)
