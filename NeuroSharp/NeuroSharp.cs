@@ -3,6 +3,8 @@ using NeuroSharp.MathUtils;
 using NeuroSharp.Data;
 using NeuroSharp.Enumerations;
 using MathNet.Numerics;
+using System;
+using System.Diagnostics;
 
 namespace NeuroSharp
 {
@@ -10,7 +12,10 @@ namespace NeuroSharp
     {
         static void Main(string[] args)
         {
+            //Control.UseNativeCUDA();
             Control.UseNativeMKL();
+            //Control.UseManaged();
+
             //XOR_Test();
             //Mnist_Digits_Test(512, 10, 5, "digits");
             Mnist_Digits_Test_Conv(1024, 100, 5, "digits");
@@ -18,25 +23,26 @@ namespace NeuroSharp
             //Conv_Vs_Non_Conv(5000, 1000, 15, 20, "digits");
 
             #region testing
-            /*double[,] filt = new double[,]
-            {
-                {1, 2 },
-                {3, 4 }
-            };
-            Matrix<double> filter = Matrix<double>.Build.DenseOfArray(filt);
+            /*// Using managed code only
+            Control.UseManaged();
+            Console.WriteLine("Managed");
 
-            double[,] mtxarr = new double[,]
-            {
-                { 1, 2, 3, 9 },
-                { 5, 5, 6, 10 },
-                { 1, 2, 7, 2 },
-                { 8, 3, 0, 2 }
-            };
+            var m1 = Matrix<double>.Build.Random(3000, 3000);
+            var m2 = Matrix<double>.Build.Random(3000, 3000);
 
-           MaxPoolingLayer m = new MaxPoolingLayer(4, 2, 2);
+            var w = Stopwatch.StartNew();
+            var y1 = m1 * m2;
+            Console.WriteLine(w.Elapsed);
+            Console.WriteLine(y1);
 
-           Matrix<double> mtx = Matrix<double>.Build.DenseOfArray(mtxarr);
-           var o = m.MaxPool(mtx, 2, 2);*/
+            // Using the Intel MKL native provider
+            Control.UseNativeMKL();
+            Console.WriteLine("MKL");
+
+            w.Restart();
+            var y2 = m1 * m2;
+            Console.WriteLine(w.Elapsed);
+            Console.WriteLine(y2);*/
             #endregion
         }
 
@@ -309,7 +315,7 @@ namespace NeuroSharp
             //train
             var watch = System.Diagnostics.Stopwatch.StartNew();
             //network.Train(xTrain, yTrain, epochs: epochs, OptimizerType.Adam);
-            network.MinibatchTrain(xTrain, yTrain, epochs: epochs, OptimizerType.Adam, batchSize: 32, learningRate: 0.0005f);
+            network.MinibatchTrain(xTrain, yTrain, epochs: epochs, OptimizerType.Adam, batchSize: 32, learningRate: 0.001f);
             var elapsedMs = watch.ElapsedMilliseconds;
 
             //test

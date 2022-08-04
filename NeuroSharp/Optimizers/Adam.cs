@@ -1,4 +1,5 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics;
 
 namespace NeuroSharp.Optimizers
 {
