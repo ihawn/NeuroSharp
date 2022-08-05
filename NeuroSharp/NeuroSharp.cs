@@ -23,15 +23,43 @@ namespace NeuroSharp
             //Conv_Vs_Non_Conv(5000, 1000, 15, 20, "digits");
 
             #region testing
-            // Using managed code only
-            /*Control.UseManaged();
+            /* // Using managed code only
+             var m1 = Matrix<double>.Build.Random(10000, 10000);
+             var m2 = Matrix<double>.Build.Random(10000, 10000);
+             var w = Stopwatch.StartNew();
+
+             Control.UseManaged();
+             Console.WriteLine("Managed");
+
+             var y1 = m1 * m2;
+             Console.WriteLine(w.Elapsed);
+             Console.WriteLine(y1);
+
+             // Using the Intel MKL native provider
+             Control.UseNativeMKL();
+             Console.WriteLine("MKL");
+
+             w.Restart();
+             var y2 = m1 * m2;
+             Console.WriteLine(w.Elapsed);
+             Console.WriteLine(y2);
+
+             // Cuda ??
+             /*Control.UseNativeCUDA();
+             Console.WriteLine("CUDA");
+
+             w.Restart();
+             var y3 = m1 * m2;
+             Console.WriteLine(w.Elapsed);
+             Console.WriteLine(y3);*/
+
+            /*var m1 = Matrix<double>.Build.Random(20000, 20000);
+            var w = Stopwatch.StartNew();
+
+            Control.UseManaged();
             Console.WriteLine("Managed");
 
-            var m1 = Matrix<double>.Build.Random(10, 128000);
-            var m2 = Matrix<double>.Build.Random(128000, 10);
-
-            var w = Stopwatch.StartNew();
-            var y1 = m1 * m2;
+            var y1 = m1.Multiply(0.2d);
             Console.WriteLine(w.Elapsed);
             Console.WriteLine(y1);
 
@@ -40,18 +68,9 @@ namespace NeuroSharp
             Console.WriteLine("MKL");
 
             w.Restart();
-            var y2 = m1 * m2;
+            var y2 = m1.Multiply(0.2d);
             Console.WriteLine(w.Elapsed);
             Console.WriteLine(y2);*/
-
-            // Cuda ??
-            /*Control.UseNativeCUDA();
-            Console.WriteLine("CUDA");
-
-            w.Restart();
-            var y3 = m1 * m2;
-            Console.WriteLine(w.Elapsed);
-            Console.WriteLine(y3);*/
             #endregion
         }
 

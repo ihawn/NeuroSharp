@@ -51,7 +51,7 @@ namespace NeuroSharp
             return Output;
         }
 
-        public override Vector<double> BackPropagation(Vector<double> outputError, OptimizerType optimzerType, int sampleIndex, double learningRate)
+        public override Vector<double> BackPropagation(Vector<double> outputError)
         {
             Vector<double> inputGradient = Vector<double>.Build.Dense(_inputSize);
             Vector<double>[] jacobianSlices = new Vector<double>[_filters];
@@ -76,19 +76,22 @@ namespace NeuroSharp
                 inputGradientMatrix += inputGradientPieces[i];
 
 
-          /*  switch (optimzerType)
+            return Utils.Flatten(inputGradientMatrix.Transpose());
+        }
+
+        public override void UpdateParameters(OptimizerType optimizerType, int sampleIndex, double learningRate)
+        {
+            switch (optimizerType)
             {
                 case OptimizerType.GradientDescent:
-                    for(int i = 0; i < _filters; i++)
-                        Weights[i] -= learningRate * WeightGradient[i];
+                    for (int i = 0; i < _filters; i++)
+                        Weights[i] -= learningRate * WeightGradients[i];
                     break;
 
                 case OptimizerType.Adam:
                     _adam.Step(this, sampleIndex + 1, eta: learningRate, includeBias: false);
                     break;
-            }*/
-
-            return Utils.Flatten(inputGradientMatrix.Transpose());// inputGradient;
+            }
         }
 
 

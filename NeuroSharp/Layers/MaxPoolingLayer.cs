@@ -46,7 +46,7 @@ namespace NeuroSharp
             return Output;
         }
 
-        public override Vector<double> BackPropagation(Vector<double> outputError, OptimizerType optimzerType, int sampleIndex, double learningRate)
+        public override Vector<double> BackPropagation(Vector<double> outputError)
         {
             int dim = (int)Math.Round(Math.Sqrt(_inputSize/_filters));
             int errorOffset = outputError.Count / _filters;

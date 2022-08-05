@@ -12,6 +12,7 @@ namespace NeuroSharp
     public class Network
     {
         public List<Layer> Layers { get; set; }
+        public List<ParameterizedLayer> ParameterizedLayers { get; set; }
         public Func<Vector<double>, Vector<double>, double> Loss { get; set; }
         public Func<Vector<double>, Vector<double>, Vector<double>> LossPrime { get; set; }
 
@@ -58,10 +59,17 @@ namespace NeuroSharp
 
                     err += Loss(yTrain[j], output);
 
+                    // backpropagate the backwards gradient and store weight/bias gradients
                     Vector<double> error = LossPrime(yTrain[j], output);
                     for (int k = Layers.Count - 1; k >= 0; k--)
                     {
-                        error = Layers[k].BackPropagation(error, optimizerType, j, learningRate);
+                        error = Layers[k].BackPropagation(error);
+                    }
+
+                    // update weights/biases based on stored gradients
+                    for (int k = 0; k < ParameterizedLayers.Count(); k++)
+                    {
+                        ParameterizedLayers[k].UpdateParameters(optimizerType, j, learningRate);
                     }
 
                     int progress = (int)Math.Round(100f * j / samples);
@@ -77,6 +85,8 @@ namespace NeuroSharp
 
         public void MinibatchTrain(List<Vector<double>> xTrain, List<Vector<double>> yTrain, int epochs, OptimizerType optimizerType, int batchSize, double learningRate = 0.001f)
         {
+            ParameterizedLayers = Layers.Where(l => l is ParameterizedLayer).Select(l => (ParameterizedLayer)l).ToList();
+
             var dataTuples = new List<(Vector<double>, Vector<double>)>();
             for(int i = 0; i < xTrain.Count; i++)
                 dataTuples.Add((xTrain[i], yTrain[i]));
@@ -107,15 +117,20 @@ namespace NeuroSharp
 
                         err += Loss(yTrainItem, output);
                         
-
+                        // backpropagate the backwards gradient and store weight/bias gradients
                         Vector<double> error = LossPrime(yTrainItem, output);
                         for (int k = Layers.Count - 1; k >= 0; k--)
                         {
-                            error = Layers[k].BackPropagation(error, optimizerType, j, learningRate);
-                        }                      
+                            error = Layers[k].BackPropagation(error);
+                        }
+
+                        // update weights/biases based on stored gradients
+                        for(int k = 0; k < ParameterizedLayers.Count(); k++)
+                        {
+                            ParameterizedLayers[k].UpdateParameters(optimizerType, j, learningRate);
+                        }
                     }
                 }
-
 
                 err /= (batchSize * batchCount);
                 Console.WriteLine("Loss: " + err + "\n");

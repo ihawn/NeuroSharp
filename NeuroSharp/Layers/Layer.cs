@@ -9,6 +9,6 @@ namespace NeuroSharp
         public Vector<double> Output { get; set; }
 
         public abstract Vector<double> ForwardPropagation(Vector<double> input);
-        public abstract Vector<double> BackPropagation(Vector<double> outputError, OptimizerType optimzerType, int sampleIndex, double learningRate = 0.001f);
+        public abstract Vector<double> BackPropagation(Vector<double> outputError);
     }
 }
