@@ -17,7 +17,7 @@ namespace NeuroSharp
 
         public ConvolutionalLayer(int inputSize, int kernel, int filters, int stride = 1)
         {
-            WeightGradient = new Matrix<double>[filters];
+            WeightGradients = new Matrix<double>[filters];
             Weights = new Matrix<double>[filters];
 
             for (int i = 0; i < filters; i++)
@@ -64,7 +64,7 @@ namespace NeuroSharp
                 jacobianSlices[i] = Vector<double>.Build.Dense(outputError.Count / _filters); // ∂L/∂Y
                 for (int j = 0; j < jacobianSlices[i].Count; j++)
                     jacobianSlices[i][j] = outputError[i * jacobianSlices[i].Count + j];
-                WeightGradient[i] = ComputeWeightGradient(Input, Utils.Unflatten(jacobianSlices[i]), _stride);
+                WeightGradients[i] = ComputeWeightGradient(Input, Utils.Unflatten(jacobianSlices[i]), _stride);
   
                 Vector<double> singleGradient = ComputeInputGradient(Weights[i], Utils.Unflatten(jacobianSlices[i]), _stride);
                 for (int j = 0; j < singleGradient.Count; j++)

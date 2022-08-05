@@ -23,12 +23,12 @@ namespace NeuroSharp
             //Conv_Vs_Non_Conv(5000, 1000, 15, 20, "digits");
 
             #region testing
-            /*// Using managed code only
-            Control.UseManaged();
+            // Using managed code only
+            /*Control.UseManaged();
             Console.WriteLine("Managed");
 
-            var m1 = Matrix<double>.Build.Random(3000, 3000);
-            var m2 = Matrix<double>.Build.Random(3000, 3000);
+            var m1 = Matrix<double>.Build.Random(10, 128000);
+            var m2 = Matrix<double>.Build.Random(128000, 10);
 
             var w = Stopwatch.StartNew();
             var y1 = m1 * m2;
@@ -43,6 +43,15 @@ namespace NeuroSharp
             var y2 = m1 * m2;
             Console.WriteLine(w.Elapsed);
             Console.WriteLine(y2);*/
+
+            // Cuda ??
+            /*Control.UseNativeCUDA();
+            Console.WriteLine("CUDA");
+
+            w.Restart();
+            var y3 = m1 * m2;
+            Console.WriteLine(w.Elapsed);
+            Console.WriteLine(y3);*/
             #endregion
         }
 
