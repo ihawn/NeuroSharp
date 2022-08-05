@@ -43,6 +43,8 @@ namespace NeuroSharp
 
         public void Train(List<Vector<double>> xTrain, List<Vector<double>> yTrain, int epochs, OptimizerType optimizerType, double learningRate = 0.001f)
         {
+            ParameterizedLayers = Layers.Where(l => l is ParameterizedLayer).Select(l => (ParameterizedLayer)l).ToList();
+
             int samples = xTrain.Count;
 
             for (int i = 0; i < epochs; i++)
