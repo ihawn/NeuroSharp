@@ -11,7 +11,7 @@ namespace NeuroSharp
 
         public FullyConnectedLayer(int inputSize, int outputSize)
         {
-            WeightGradient = new Matrix<double>[1];
+            WeightGradients = new Matrix<double>[1];
             Weights = new Matrix<double>[] { Matrix<double>.Build.Random(inputSize, outputSize) };
             Bias = Vector<double>.Build.Random(outputSize);
             _adam = new Adam(inputSize, outputSize);
@@ -30,24 +30,26 @@ namespace NeuroSharp
             return Output;
         }
 
-        public override Vector<double> BackPropagation(Vector<double> outputError, OptimizerType optimzerType, int sampleIndex, double learningRate)
+        public override Vector<double> BackPropagation(Vector<double> outputError)
         {
-            WeightGradient[0] = Input.OuterProduct(outputError);
+            WeightGradients[0] = Input.OuterProduct(outputError);
             BiasGradient = outputError;
+            return Weights[0] * outputError;
+        }
 
-            switch (optimzerType)
+        public override void UpdateParameters(OptimizerType optimizerType, int sampleIndex, double learningRate)
+        {
+            switch (optimizerType)
             {
                 case OptimizerType.GradientDescent:
-                    Weights[0] -= learningRate * WeightGradient[0];
-                    Bias -= learningRate * outputError;
+                    Weights[0] -= learningRate * WeightGradients[0];
+                    Bias -= learningRate * BiasGradient;
                     break;
 
                 case OptimizerType.Adam:
                     _adam.Step(this, sampleIndex + 1, eta: learningRate);
                     break;
             }
-
-            return Weights[0] * outputError; //input error
         }
     }
 }

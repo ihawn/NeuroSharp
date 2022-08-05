@@ -51,9 +51,9 @@
               "target": "Package",
               "version": "[3.0.0, )"
             },
-            "MathNet.Spatial": {
+            "MathNet.Numerics.Providers.CUDA": {
               "target": "Package",
-              "version": "[0.6.0, )"
+              "version": "[5.0.0, )"
             },
             "System.Drawing.Common": {
               "target": "Package",
@@ -122,9 +122,17 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "MathNet.Numerics": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
             "MathNet.Numerics.MKL.Win-x64": {
               "target": "Package",
               "version": "[3.0.0, )"
+            },
+            "MathNet.Numerics.Providers.CUDA": {
+              "target": "Package",
+              "version": "[5.0.0, )"
             },
             "Microsoft.NET.Test.Sdk": {
               "target": "Package",

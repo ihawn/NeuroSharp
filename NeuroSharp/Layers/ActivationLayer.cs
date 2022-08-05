@@ -24,7 +24,7 @@ namespace NeuroSharp
             return Output;
         }
 
-        public override Vector<double> BackPropagation(Vector<double> outputError, OptimizerType optimzerType, int sampleIndex, double learningRate = 0.001f)
+        public override Vector<double> BackPropagation(Vector<double> outputError)
         {
             Vector<double> vec = Vector<double>.Build.Dense(Input.Count);
             for (int i = 0; i < Input.Count; i++)

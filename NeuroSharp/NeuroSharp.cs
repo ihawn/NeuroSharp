@@ -18,20 +18,48 @@ namespace NeuroSharp
 
             //XOR_Test();
             //Mnist_Digits_Test(512, 10, 5, "digits");
-            Mnist_Digits_Test_Conv(1024, 100, 5, "digits");
+            Mnist_Digits_Test_Conv(1024, 100, 2, "digits");
             //Conv_Base_Test(1000, 100, 10, "digits");
             //Conv_Vs_Non_Conv(5000, 1000, 15, 20, "digits");
 
             #region testing
-            /*// Using managed code only
+            /* // Using managed code only
+             var m1 = Matrix<double>.Build.Random(10000, 10000);
+             var m2 = Matrix<double>.Build.Random(10000, 10000);
+             var w = Stopwatch.StartNew();
+
+             Control.UseManaged();
+             Console.WriteLine("Managed");
+
+             var y1 = m1 * m2;
+             Console.WriteLine(w.Elapsed);
+             Console.WriteLine(y1);
+
+             // Using the Intel MKL native provider
+             Control.UseNativeMKL();
+             Console.WriteLine("MKL");
+
+             w.Restart();
+             var y2 = m1 * m2;
+             Console.WriteLine(w.Elapsed);
+             Console.WriteLine(y2);
+
+             // Cuda ??
+             /*Control.UseNativeCUDA();
+             Console.WriteLine("CUDA");
+
+             w.Restart();
+             var y3 = m1 * m2;
+             Console.WriteLine(w.Elapsed);
+             Console.WriteLine(y3);*/
+
+            /*var m1 = Matrix<double>.Build.Random(20000, 20000);
+            var w = Stopwatch.StartNew();
+
             Control.UseManaged();
             Console.WriteLine("Managed");
 
-            var m1 = Matrix<double>.Build.Random(3000, 3000);
-            var m2 = Matrix<double>.Build.Random(3000, 3000);
-
-            var w = Stopwatch.StartNew();
-            var y1 = m1 * m2;
+            var y1 = m1.Multiply(0.2d);
             Console.WriteLine(w.Elapsed);
             Console.WriteLine(y1);
 
@@ -40,7 +68,7 @@ namespace NeuroSharp
             Console.WriteLine("MKL");
 
             w.Restart();
-            var y2 = m1 * m2;
+            var y2 = m1.Multiply(0.2d);
             Console.WriteLine(w.Elapsed);
             Console.WriteLine(y2);*/
             #endregion
@@ -303,19 +331,19 @@ namespace NeuroSharp
 
             //build network
             Network network = new Network();
-            network.Add(new ConvolutionalLayer(28 * 28, kernel: 2, filters: 2, stride: 1));
+            network.Add(new ConvolutionalLayer(28 * 28, kernel: 2, filters: 1, stride: 1));
             network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
-            network.Add(new MaxPoolingLayer(27 * 27 * 2, prevFilterCount: 2, poolSize: 2));
-            network.Add(new FullyConnectedLayer(26 * 26 * 2, 128));
+            network.Add(new MaxPoolingLayer(27 * 27 * 1, prevFilterCount: 1, poolSize: 2));
+            network.Add(new FullyConnectedLayer(26 * 26 * 1, 64));
             network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
-            network.Add(new FullyConnectedLayer(128, 10));
+            network.Add(new FullyConnectedLayer(64, 10));
             network.Add(new SoftmaxActivationLayer());
             network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
 
             //train
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            //network.Train(xTrain, yTrain, epochs: epochs, OptimizerType.Adam);
-            network.MinibatchTrain(xTrain, yTrain, epochs: epochs, OptimizerType.Adam, batchSize: 32, learningRate: 0.001f);
+            network.Train(xTrain, yTrain, epochs: epochs, OptimizerType.Adam);
+            //network.MinibatchTrain(xTrain, yTrain, epochs: epochs, OptimizerType.Adam, batchSize: 32, learningRate: 0.001f);
             var elapsedMs = watch.ElapsedMilliseconds;
 
             //test

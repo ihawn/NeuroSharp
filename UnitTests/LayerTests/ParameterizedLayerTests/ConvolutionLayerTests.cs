@@ -126,7 +126,7 @@ namespace UnitTests
                 {
                     outputGradient = network.Layers[k].BackPropagation(outputGradient, OptimizerType.Adam, 1, 0.0001);
                     if (k == 0) // retrieve weight gradient from convolutional layer
-                        explicitWeightGradient = Utils.Flatten(((ConvolutionalLayer)network.Layers[0]).WeightGradient[0]);
+                        explicitWeightGradient = Utils.Flatten(((ConvolutionalLayer)network.Layers[0]).WeightGradients[0]);
                 }
 
                 Assert.IsTrue((finiteDiffWeightGradient - explicitWeightGradient).L2Norm() < 0.00001);
@@ -172,7 +172,7 @@ namespace UnitTests
                     {
                         outputGradient = network.Layers[k].BackPropagation(outputGradient, OptimizerType.Adam, 1, 0.0001);
                         if (k == 0) // retrieve weight gradient from convolutional layer
-                            explicitWeightGradient = Utils.Flatten(((ConvolutionalLayer)network.Layers[0]).WeightGradient[0]);
+                            explicitWeightGradient = Utils.Flatten(((ConvolutionalLayer)network.Layers[0]).WeightGradients[0]);
                     }
 
                     Assert.IsTrue((finiteDiffWeightGradient - explicitWeightGradient).L2Norm() < 0.0001);
@@ -436,7 +436,7 @@ namespace UnitTests
                         {
                             outputGradient = network.Layers[k].BackPropagation(outputGradient, OptimizerType.Adam, 1, 0.0001);
                             if (k == 0) // retrieve weight gradient from convolutional layer
-                                explicitWeightGradient = Utils.Flatten(((ConvolutionalLayer)network.Layers[0]).WeightGradient[0]);
+                                explicitWeightGradient = Utils.Flatten(((ConvolutionalLayer)network.Layers[0]).WeightGradients[0]);
                         }
 
                         Assert.IsTrue((finiteDiffWeightGradient - explicitWeightGradient).L2Norm() < 0.0001);
@@ -538,9 +538,9 @@ namespace UnitTests
                             if (k == 0) // retrieve weight gradient from convolutional layer
                             {
                                 ConvolutionalLayer conv = (ConvolutionalLayer)network.Layers[0];
-                                for (int y = 0; y < conv.WeightGradient.Length; y++)
+                                for (int y = 0; y < conv.WeightGradients.Length; y++)
                                 {
-                                    Vector<double> weightGrad = Utils.Flatten(conv.WeightGradient[y]);
+                                    Vector<double> weightGrad = Utils.Flatten(conv.WeightGradients[y]);
                                     for (int q = 0; q < weightGrad.Count; q++)
                                         explicitWeightGradientList.Add(weightGrad[q]);
                                 }
@@ -659,9 +659,9 @@ namespace UnitTests
                                 if (k == 0) // retrieve weight gradient from convolutional layer
                                 {
                                     ConvolutionalLayer conv = (ConvolutionalLayer)network.Layers[0];
-                                    for (int y = 0; y < conv.WeightGradient.Length; y++)
+                                    for (int y = 0; y < conv.WeightGradients.Length; y++)
                                     {
-                                        Vector<double> weightGrad = Utils.Flatten(conv.WeightGradient[y]);
+                                        Vector<double> weightGrad = Utils.Flatten(conv.WeightGradients[y]);
                                         for (int q = 0; q < weightGrad.Count; q++)
                                             explicitWeightGradientList.Add(weightGrad[q]);
                                     }

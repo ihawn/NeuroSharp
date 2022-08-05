@@ -51,9 +51,9 @@
               "target": "Package",
               "version": "[3.0.0, )"
             },
-            "MathNet.Spatial": {
+            "MathNet.Numerics.Providers.CUDA": {
               "target": "Package",
-              "version": "[0.6.0, )"
+              "version": "[5.0.0, )"
             },
             "System.Drawing.Common": {
               "target": "Package",

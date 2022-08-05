@@ -17,7 +17,7 @@ namespace NeuroSharp
 
         public ConvolutionalLayer(int inputSize, int kernel, int filters, int stride = 1)
         {
-            WeightGradient = new Matrix<double>[filters];
+            WeightGradients = new Matrix<double>[filters];
             Weights = new Matrix<double>[filters];
 
             for (int i = 0; i < filters; i++)
@@ -51,7 +51,7 @@ namespace NeuroSharp
             return Output;
         }
 
-        public override Vector<double> BackPropagation(Vector<double> outputError, OptimizerType optimzerType, int sampleIndex, double learningRate)
+        public override Vector<double> BackPropagation(Vector<double> outputError)
         {
             Vector<double> inputGradient = Vector<double>.Build.Dense(_inputSize);
             Vector<double>[] jacobianSlices = new Vector<double>[_filters];
@@ -64,7 +64,7 @@ namespace NeuroSharp
                 jacobianSlices[i] = Vector<double>.Build.Dense(outputError.Count / _filters); // ∂L/∂Y
                 for (int j = 0; j < jacobianSlices[i].Count; j++)
                     jacobianSlices[i][j] = outputError[i * jacobianSlices[i].Count + j];
-                WeightGradient[i] = ComputeWeightGradient(Input, Utils.Unflatten(jacobianSlices[i]), _stride);
+                WeightGradients[i] = ComputeWeightGradient(Input, Utils.Unflatten(jacobianSlices[i]), _stride);
   
                 Vector<double> singleGradient = ComputeInputGradient(Weights[i], Utils.Unflatten(jacobianSlices[i]), _stride);
                 for (int j = 0; j < singleGradient.Count; j++)
@@ -76,19 +76,22 @@ namespace NeuroSharp
                 inputGradientMatrix += inputGradientPieces[i];
 
 
-          /*  switch (optimzerType)
+            return Utils.Flatten(inputGradientMatrix.Transpose());
+        }
+
+        public override void UpdateParameters(OptimizerType optimizerType, int sampleIndex, double learningRate)
+        {
+            switch (optimizerType)
             {
                 case OptimizerType.GradientDescent:
-                    for(int i = 0; i < _filters; i++)
-                        Weights[i] -= learningRate * WeightGradient[i];
+                    for (int i = 0; i < _filters; i++)
+                        Weights[i] -= learningRate * WeightGradients[i];
                     break;
 
                 case OptimizerType.Adam:
                     _adam.Step(this, sampleIndex + 1, eta: learningRate, includeBias: false);
                     break;
-            }*/
-
-            return Utils.Flatten(inputGradientMatrix.Transpose());// inputGradient;
+            }
         }
 
 

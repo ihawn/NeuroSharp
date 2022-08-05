@@ -12,7 +12,7 @@ namespace NeuroSharp
             return Output;
         }
 
-        public override Vector<double> BackPropagation(Vector<double> outputError, OptimizerType optimzerType, int sampleIndex, double learningRate = 0.001f)
+        public override Vector<double> BackPropagation(Vector<double> outputError)
         {
             Matrix<double> jacobian = ActivationFunctions.SoftmaxPrime(Input);
             return outputError * jacobian;
