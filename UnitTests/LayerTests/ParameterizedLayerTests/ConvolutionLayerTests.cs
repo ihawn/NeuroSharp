@@ -45,7 +45,7 @@ namespace UnitTests
                 Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
                 for (int k = network.Layers.Count - 1; k >= 0; k--)
                 {
-                    testGradient = network.Layers[k].BackPropagation(testGradient, OptimizerType.Adam, 1, 0.0001);
+                    testGradient = network.Layers[k].BackPropagation(testGradient);
                 }
 
                 Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
@@ -83,7 +83,7 @@ namespace UnitTests
                     Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
                     for (int k = network.Layers.Count - 1; k >= 0; k--)
                     {
-                        testGradient = network.Layers[k].BackPropagation(testGradient, OptimizerType.Adam, 1, 0.0001);
+                        testGradient = network.Layers[k].BackPropagation(testGradient);
                     }
 
                     Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
@@ -124,7 +124,7 @@ namespace UnitTests
 
                 for (int k = network.Layers.Count - 1; k >= 0; k--)
                 {
-                    outputGradient = network.Layers[k].BackPropagation(outputGradient, OptimizerType.Adam, 1, 0.0001);
+                    outputGradient = network.Layers[k].BackPropagation(outputGradient);
                     if (k == 0) // retrieve weight gradient from convolutional layer
                         explicitWeightGradient = Utils.Flatten(((ConvolutionalLayer)network.Layers[0]).WeightGradients[0]);
                 }
@@ -170,7 +170,7 @@ namespace UnitTests
 
                     for (int k = network.Layers.Count - 1; k >= 0; k--)
                     {
-                        outputGradient = network.Layers[k].BackPropagation(outputGradient, OptimizerType.Adam, 1, 0.0001);
+                        outputGradient = network.Layers[k].BackPropagation(outputGradient);
                         if (k == 0) // retrieve weight gradient from convolutional layer
                             explicitWeightGradient = Utils.Flatten(((ConvolutionalLayer)network.Layers[0]).WeightGradients[0]);
                     }
@@ -182,7 +182,7 @@ namespace UnitTests
 
         //TODO
         //Mean Squared Error Loss
-        /* [Test]
+       /*  [Test]
          public void ConvolutionLayer_ReturnsCorrectInputGradient_WhenChainedTogetherWithMSESoftmaxTanhAndConvolutionalLayer_KernelSameSizeAsImageSoNoStride()
          {
              List<int> squares = new List<int>();
@@ -210,7 +210,7 @@ namespace UnitTests
              Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
              for (int k = network.Layers.Count - 1; k >= 0; k--)
              {
-                 testGradient = network.Layers[k].BackPropagation(testGradient, OptimizerType.Adam, 1, 0.0001);
+                 testGradient = network.Layers[k].BackPropagation(testGradient);
              }
 
              Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
@@ -383,7 +383,7 @@ namespace UnitTests
                         Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
                         for (int k = network.Layers.Count - 1; k >= 0; k--)
                         {
-                            testGradient = network.Layers[k].BackPropagation(testGradient, OptimizerType.Adam, 1, 0.0001);
+                            testGradient = network.Layers[k].BackPropagation(testGradient);
                         }
 
                         Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
@@ -434,7 +434,7 @@ namespace UnitTests
 
                         for (int k = network.Layers.Count - 1; k >= 0; k--)
                         {
-                            outputGradient = network.Layers[k].BackPropagation(outputGradient, OptimizerType.Adam, 1, 0.0001);
+                            outputGradient = network.Layers[k].BackPropagation(outputGradient);
                             if (k == 0) // retrieve weight gradient from convolutional layer
                                 explicitWeightGradient = Utils.Flatten(((ConvolutionalLayer)network.Layers[0]).WeightGradients[0]);
                         }
@@ -480,7 +480,7 @@ namespace UnitTests
                         Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
                         for (int k = network.Layers.Count - 1; k >= 0; k--)
                         {
-                            testGradient = network.Layers[k].BackPropagation(testGradient, OptimizerType.Adam, 1, 0.0001);
+                            testGradient = network.Layers[k].BackPropagation(testGradient);
                         }
 
                         Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
@@ -534,7 +534,7 @@ namespace UnitTests
 
                         for (int k = network.Layers.Count - 1; k >= 0; k--)
                         {
-                            outputGradient = network.Layers[k].BackPropagation(outputGradient, OptimizerType.Adam, 1, 0.0001);
+                            outputGradient = network.Layers[k].BackPropagation(outputGradient);
                             if (k == 0) // retrieve weight gradient from convolutional layer
                             {
                                 ConvolutionalLayer conv = (ConvolutionalLayer)network.Layers[0];
@@ -595,7 +595,7 @@ namespace UnitTests
                             Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
                             for (int k = network.Layers.Count - 1; k >= 0; k--)
                             {
-                                testGradient = network.Layers[k].BackPropagation(testGradient, OptimizerType.Adam, 1, 0.0001);
+                                testGradient = network.Layers[k].BackPropagation(testGradient);
                             }
 
                             Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
@@ -655,7 +655,7 @@ namespace UnitTests
 
                             for (int k = network.Layers.Count - 1; k >= 0; k--)
                             {
-                                outputGradient = network.Layers[k].BackPropagation(outputGradient, OptimizerType.Adam, 1, 0.0001);
+                                outputGradient = network.Layers[k].BackPropagation(outputGradient);
                                 if (k == 0) // retrieve weight gradient from convolutional layer
                                 {
                                     ConvolutionalLayer conv = (ConvolutionalLayer)network.Layers[0];

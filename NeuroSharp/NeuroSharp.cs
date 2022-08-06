@@ -18,7 +18,7 @@ namespace NeuroSharp
 
             //XOR_Test();
             //Mnist_Digits_Test(512, 10, 5, "digits");
-            Mnist_Digits_Test_Conv(1024, 100, 2, "digits");
+            Mnist_Digits_Test_Conv(60000, 10000, 30, "digits");
             //Conv_Base_Test(1000, 100, 10, "digits");
             //Conv_Vs_Non_Conv(5000, 1000, 15, 20, "digits");
 
@@ -331,18 +331,18 @@ namespace NeuroSharp
 
             //build network
             Network network = new Network();
-            network.Add(new ConvolutionalLayer(28 * 28, kernel: 2, filters: 1, stride: 1));
+            network.Add(new ConvolutionalLayer(28 * 28, kernel: 2, filters: 2, stride: 2));
             network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
-            network.Add(new MaxPoolingLayer(27 * 27 * 1, prevFilterCount: 1, poolSize: 2));
-            network.Add(new FullyConnectedLayer(26 * 26 * 1, 64));
+            network.Add(new MaxPoolingLayer(14 * 14 * 2, prevFilterCount: 2, poolSize: 2));
+            network.Add(new FullyConnectedLayer(13 * 13 * 2, 128));
             network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
-            network.Add(new FullyConnectedLayer(64, 10));
+            network.Add(new FullyConnectedLayer(128, 10));
             network.Add(new SoftmaxActivationLayer());
             network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
 
             //train
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            network.Train(xTrain, yTrain, epochs: epochs, OptimizerType.Adam);
+            network.Train(xTrain, yTrain, epochs: epochs, OptimizerType.Adam, learningRate: 0.00002f);
             //network.MinibatchTrain(xTrain, yTrain, epochs: epochs, OptimizerType.Adam, batchSize: 32, learningRate: 0.001f);
             var elapsedMs = watch.ElapsedMilliseconds;
 

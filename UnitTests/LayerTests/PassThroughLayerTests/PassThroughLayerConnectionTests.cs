@@ -40,7 +40,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                 Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
                 for (int k = network.Layers.Count - 1; k >= 0; k--)
                 {
-                    testGradient = network.Layers[k].BackPropagation(testGradient, OptimizerType.Adam, 1, 0.0001);
+                    testGradient = network.Layers[k].BackPropagation(testGradient);
                 }
 
                 Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
@@ -70,7 +70,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                 Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
                 for (int k = network.Layers.Count - 1; k >= 0; k--)
                 {
-                    testGradient = network.Layers[k].BackPropagation(testGradient, OptimizerType.Adam, 1, 0.0001);
+                    testGradient = network.Layers[k].BackPropagation(testGradient);
                 }
 
                 Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
@@ -100,7 +100,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                 Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
                 for (int k = network.Layers.Count - 1; k >= 0; k--)
                 {
-                    testGradient = network.Layers[k].BackPropagation(testGradient, OptimizerType.Adam, 1, 0.0001);
+                    testGradient = network.Layers[k].BackPropagation(testGradient);
                 }
 
                 Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
@@ -131,7 +131,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                 Vector<double> testGradient = LossFunctions.MeanSquaredErrorPrime(truthY, network.Predict(testX));
                 for (int k = network.Layers.Count - 1; k >= 0; k--)
                 {
-                    testGradient = network.Layers[k].BackPropagation(testGradient, OptimizerType.Adam, 1, 0.0001);
+                    testGradient = network.Layers[k].BackPropagation(testGradient);
                 }
 
                 Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
@@ -161,7 +161,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                 Vector<double> testGradient = LossFunctions.MeanSquaredErrorPrime(truthY, network.Predict(testX));
                 for (int k = network.Layers.Count - 1; k >= 0; k--)
                 {
-                    testGradient = network.Layers[k].BackPropagation(testGradient, OptimizerType.Adam, 1, 0.0001);
+                    testGradient = network.Layers[k].BackPropagation(testGradient);
                 }
 
                 Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
@@ -191,7 +191,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                 Vector<double> testGradient = LossFunctions.MeanSquaredErrorPrime(truthY, network.Predict(testX));
                 for (int k = network.Layers.Count - 1; k >= 0; k--)
                 {
-                    testGradient = network.Layers[k].BackPropagation(testGradient, OptimizerType.Adam, 1, 0.0001);
+                    testGradient = network.Layers[k].BackPropagation(testGradient);
                 }
 
                 Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
