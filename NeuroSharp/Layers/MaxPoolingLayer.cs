@@ -19,7 +19,7 @@ namespace NeuroSharp
             MaxPoolPositions = new List<List<(int, int)>>();
             _poolSize = poolSize;
             _inputSize = inputSize;
-            int dim = (int)Math.Round(Math.Sqrt(inputSize));
+            int dim = (int)Math.Round(Math.Sqrt(inputSize/prevFilterCount));
             _outputSize = (int)Math.Floor(((double)dim - poolSize) / stride + 1);
             _stride = stride;
             _filters = prevFilterCount;

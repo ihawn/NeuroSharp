@@ -2,9 +2,8 @@
 using NeuroSharp.MathUtils;
 using NeuroSharp.Data;
 using NeuroSharp.Enumerations;
+using NeuroSharp.Datatypes;
 using MathNet.Numerics;
-using System;
-using System.Diagnostics;
 
 namespace NeuroSharp
 {
@@ -18,9 +17,10 @@ namespace NeuroSharp
 
             //XOR_Test();
             //Mnist_Digits_Test(512, 10, 5, "digits");
-            Mnist_Digits_Test_Conv(60000, 10000, 30, "digits");
+            //Mnist_Digits_Test_Conv(60000, 10000, 30, "digits");
             //Conv_Base_Test(1000, 100, 10, "digits");
             //Conv_Vs_Non_Conv(5000, 1000, 15, 20, "digits");
+            IntelImageClassification_Test(epochs: 20);
 
             #region testing
             /* // Using managed code only
@@ -286,7 +286,6 @@ namespace NeuroSharp
                 i++;
             }
         }
-
         static double Mnist_Digits_Test_Conv(int trainSize, int testSize, int epochs, string data)
         {
             //training data
@@ -367,7 +366,6 @@ namespace NeuroSharp
             Console.WriteLine("Training Runtime: " + (elapsedMs / 1000f).ToString() + "s");
             return acc;
         }
-
         static void Conv_Vs_Non_Conv(int trainSize, int testSize, int testsToRun, int epochs, string data)
         {
             double denseNetAcc = 0;
@@ -384,6 +382,53 @@ namespace NeuroSharp
             
             Console.WriteLine("Dense Network Average Accuracy: " + denseNetAcc);
             Console.WriteLine("Convolutional Network Average Accuracy: " + convNetAcc);
+        }
+        static void IntelImageClassification_Test(int epochs)
+        {
+            ImageDataAggregate trainData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\IntelImageClassification_Smaller\seg_train\seg_train", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 150, expectedWidth: 150);
+            ImageDataAggregate testData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\IntelImageClassification_Smaller\seg_test\seg_test", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 150, expectedWidth: 150);
+
+            Network network = new Network();
+            network.Add(new MultiChannelConvolutionalLayer(150 * 150 * 3, kernel: 3, filters: 6, stride: 3, channels: 3));
+            network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
+            network.Add(new MultiChannelConvolutionalLayer(50 * 50 * 6, kernel: 2, filters: 4, stride: 2, channels: 6));
+            network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
+            network.Add(new MultiChannelConvolutionalLayer(25 * 25 * 4, kernel: 2, filters: 2, stride: 1, channels: 4));
+            network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
+            network.Add(new MultiChannelConvolutionalLayer(24 * 24 * 2, kernel: 2, filters: 1, stride: 1, channels: 2));
+            network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
+            network.Add(new MaxPoolingLayer(23 * 23 * 1, prevFilterCount: 1, poolSize: 2));
+            network.Add(new FullyConnectedLayer(22 * 22 * 1, 64));
+            network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
+            network.Add(new FullyConnectedLayer(64, 6));
+            network.Add(new SoftmaxActivationLayer());
+            network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+
+            //train
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            network.Train(trainData.XValues, trainData.YValues, epochs: epochs, OptimizerType.Adam, learningRate: 0.0001f);
+            var elapsedMs = watch.ElapsedMilliseconds;
+
+            //test
+            string[] labels = new string[] { "buildings", "forest", "glacier", "mountain", "sea", "street" };
+            int i = 0;
+            int wrongCount = 0;
+            foreach (var test in testData.XValues)
+            {
+                var output = network.Predict(test);
+                int prediction = output.ToList().IndexOf(output.Max());
+                int actual = testData.YValues[i].ToList().IndexOf(testData.YValues[i].Max());
+                Console.WriteLine("Prediction: " + labels[prediction]);
+                Console.WriteLine("Actual: " + labels[actual] + "\n");
+
+                if (prediction != actual)
+                    wrongCount++;
+
+                i++;
+            }
+            double acc = (1f - ((double)wrongCount) / ((double)i));
+            Console.WriteLine("Accuracy: " + acc);
+            Console.WriteLine("Training Runtime: " + (elapsedMs / 1000f).ToString() + "s");
         }
     }
 }

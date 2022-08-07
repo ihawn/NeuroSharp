@@ -69,10 +69,10 @@ namespace NeuroSharp
                     }
 
                     // update weights/biases based on stored gradients
-                    for (int k = 0; k < ParameterizedLayers.Count(); k++)
+                    Parallel.For(0, ParameterizedLayers.Count, k =>
                     {
                         ParameterizedLayers[k].UpdateParameters(optimizerType, j, learningRate);
-                    }
+                    });
 
                     int progress = (int)Math.Round(100f * j / samples);
                     if (lastProgress != progress && progress % 5 == 0)
@@ -127,10 +127,10 @@ namespace NeuroSharp
                         }
 
                         // update weights/biases based on stored gradients
-                        for(int k = 0; k < ParameterizedLayers.Count(); k++)
+                        Parallel.For(0, ParameterizedLayers.Count, k =>
                         {
                             ParameterizedLayers[k].UpdateParameters(optimizerType, j, learningRate);
-                        }
+                        });
                     }
                 }
 

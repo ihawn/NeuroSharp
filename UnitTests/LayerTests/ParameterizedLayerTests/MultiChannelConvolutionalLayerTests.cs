@@ -136,6 +136,7 @@ namespace UnitTests
                 Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
             }
         }
+
         [Test]
         public void MultiChannelConvLayer_BackPropagation_ReturnsCorrectInputGradient_CategoricalCrossentropy_Stride2()
         {
@@ -233,20 +234,20 @@ namespace UnitTests
         {
             for(int s = 0; s < 25; s++)
             {
-                Vector<double> testX = Vector<double>.Build.Random(64);
+                Vector<double> testX = Vector<double>.Build.Random(80);
                 Vector<double> truthY = Vector<double>.Build.Random(13 * 4);
-                Vector<double> testWeights = Vector<double>.Build.Random(4 * 13 * 4);
+                Vector<double> testWeights = Vector<double>.Build.Random(5 * 13 * 4);
 
                 Network network = new Network();
-                network.Add(new MultiChannelConvolutionalLayer(inputSize: 64, kernel: 2, filters: 13, stride: 2, channels: 4));
+                network.Add(new MultiChannelConvolutionalLayer(inputSize: 80, kernel: 2, filters: 13, stride: 2, channels: 5));
                 network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
                 network.Add(new SoftmaxActivationLayer());
                 network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
 
                 double networkLossWithWeightAsVariable(Vector<double> x)
                 {
-                    Vector<double>[] splitWeights = MultiChannelConvolutionalLayer.SplitInputToChannels(x, 4, 13 * 4);
-                    for (int p = 0; p < 4; p++)
+                    Vector<double>[] splitWeights = MultiChannelConvolutionalLayer.SplitInputToChannels(x, 5, 13 * 4);
+                    for (int p = 0; p < 5; p++)
                     {
                         Vector<double>[] splitWeights2 = MultiChannelConvolutionalLayer.SplitInputToChannels(splitWeights[p], 13, 4);
                         ConvolutionalLayer conv = ((MultiChannelConvolutionalLayer)network.Layers[0]).ChannelOperators[p];
@@ -270,7 +271,7 @@ namespace UnitTests
                     outputGradient = network.Layers[k].BackPropagation(outputGradient);
                     if (k == 0) // retrieve weight gradient from convolutional layer
                     {
-                        for (int p = 0; p < 4; p++)
+                        for (int p = 0; p < 5; p++)
                         {
                             ConvolutionalLayer conv = ((MultiChannelConvolutionalLayer)network.Layers[0]).ChannelOperators[p];
                             for (int y = 0; y < conv.WeightGradients.Length; y++)

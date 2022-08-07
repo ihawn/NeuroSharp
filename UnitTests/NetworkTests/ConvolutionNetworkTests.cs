@@ -17,233 +17,108 @@ namespace UnitTests
         {
         }
 
-       /* [Test]
-        public void ConvolutionOnlyNetwork_ConvolutionLayerNetworkOnlyIsLearning_1DataPiece_1Filter_NoSlide_Stride1()
+        [Test]
+        public void ChainedConvolutionalLayers_PropogateCorrectInputGradients()
         {
-            for(int i = 0; i < 50; i++)
+            Vector<double> trainX = Vector<double>.Build.Random(56 * 56 * 2);
+            Vector<double> truthY = Vector<double>.Build.Dense(4);
+
+            //note that the number of filters on a convolutional layer turns into the number of channels on the next one
+            Network network = new Network();
+            network.Add(new MultiChannelConvolutionalLayer(56 * 56 * 2, kernel: 8, filters: 6, stride: 2, channels: 2));
+            network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
+            network.Add(new MultiChannelConvolutionalLayer(25 * 25 * 6, kernel: 4, filters: 5, stride: 3, channels: 6));
+            network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
+            network.Add(new MultiChannelConvolutionalLayer(8 * 8 * 5, kernel: 2, filters: 7, stride: 2, channels: 5));
+            network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
+            network.Add(new MaxPoolingLayer(4 * 4 * 7, prevFilterCount: 7, poolSize: 2));
+            network.Add(new FullyConnectedLayer(3 * 3 * 7, 10));
+            network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
+            network.Add(new FullyConnectedLayer(10, 4));
+            network.Add(new SoftmaxActivationLayer());
+            network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+
+            double networkLoss(Vector<double> x)
             {
-                Random rand = new Random();
-
-                double[] x1 = new double[]
-                {
-                    1, 0, 0,
-                    1, 0, 1,
-                    1, 0, 0,
-                };
-
-                double category = rand.NextDouble();
-                double[] y1 = new double[] { category };
-                List<Vector<double>> xTrain = new List<Vector<double>> { Vector<double>.Build.DenseOfArray(x1) };
-                List<Vector<double>> yTrain = new List<Vector<double>> { Vector<double>.Build.DenseOfArray(y1) };
-
-                Network network = new Network();
-                network.Add(new ConvolutionalLayer(3 * 3, kernel: 3, filters: 1, stride: 1));
-                network.UseLoss(LossFunctions.MeanSquaredError, LossFunctions.MeanSquaredErrorPrime);
-
-                network.Train(xTrain, yTrain, epochs: 500, OptimizerType.Adam, learningRate: 0.005f);
-
-                double output = network.Predict(xTrain[0])[0];
-
-                Console.WriteLine("Prediction: " + output);
-                Console.WriteLine("Actual: " + category + "\n");
-
-                Assert.IsTrue(Math.Abs(output - category) < 0.01d);
+                x = network.Predict(x);
+                return network.Loss(truthY, x);
             }
+
+            Vector<double> finiteDiffGradient = Utils.FiniteDifferencesGradient(networkLoss, trainX);
+            Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(trainX));
+            for (int k = network.Layers.Count - 1; k >= 0; k--)
+            {
+                testGradient = network.Layers[k].BackPropagation(testGradient);
+            }
+
+            Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
         }
 
         [Test]
-        public void ConvolutionOnlyNetwork_ConvolutionLayerNetworkOnlyIsLearning_2DataPieces_1Filter_NoSlide_Stride1()
+        public void ChainedConvolutionalLayers_PropogateCorrectWeightGradients()
         {
-            double correct = 0;
-            for (int i = 0; i < 50; i++)
+            Vector<double> trainX = Vector<double>.Build.Random(56 * 56 * 3);
+            Vector<double> truthY = Vector<double>.Build.Dense(4);
+            Vector<double> testWeights = Vector<double>.Build.Random(64 * 6 * 3);
+
+            //note that the number of filters on a convolutional layer turns into the number of channels on the next one
+            Network network = new Network();
+            network.Add(new MultiChannelConvolutionalLayer(56 * 56 * 3, kernel: 8, filters: 6, stride: 2, channels: 3));
+            network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
+            network.Add(new MultiChannelConvolutionalLayer(25 * 25 * 6, kernel: 4, filters: 5, stride: 3, channels: 6));
+            network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
+            network.Add(new MultiChannelConvolutionalLayer(8 * 8 * 5, kernel: 2, filters: 7, stride: 2, channels: 5));
+            network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
+            network.Add(new MaxPoolingLayer(4 * 4 * 7, prevFilterCount: 7, poolSize: 2));
+            network.Add(new FullyConnectedLayer(3 * 3 * 7, 10));
+            network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
+            network.Add(new FullyConnectedLayer(10, 4));
+            network.Add(new SoftmaxActivationLayer());
+            network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+
+            double networkLossWithWeightAsVariable(Vector<double> x)
             {
-                double[] x1 = new double[]
+                Vector<double>[] splitWeights = MultiChannelConvolutionalLayer.SplitInputToChannels(x, 3, 6 * 64);
+                for (int p = 0; p < 3; p++)
                 {
-                    1, 0, 0,
-                    1, 0, 1,
-                    1, 0, 0,
-                };
-                double[] x2 = new double[]
-                {
-                    0, 0, 1,
-                    1, 0, 1,
-                    0, 0, 1,
-                };
+                    Vector<double>[] splitWeights2 = MultiChannelConvolutionalLayer.SplitInputToChannels(splitWeights[p], 6, 64);
+                    ConvolutionalLayer conv = ((MultiChannelConvolutionalLayer)network.Layers[0]).ChannelOperators[p];
+                    for (int k = 0; k < 6; k++)
+                    {
+                        conv.Weights[k] = Utils.Unflatten(splitWeights2[k]);
+                    }
+                }
 
-                Random rand = new Random();
-                double category1 = rand.NextDouble();
-                double category2 = rand.NextDouble();
-                double[] y1 = new double[] { category1 };
-                double[] y2 = new double[] { category2 };
-
-                List<Vector<double>> xTrain = new List<Vector<double>>
-                {
-                    Vector<double>.Build.DenseOfArray(x1),
-                    Vector<double>.Build.DenseOfArray(x2),
-                };
-
-                List<Vector<double>> yTrain = new List<Vector<double>>
-                {
-                    Vector<double>.Build.DenseOfArray(y1),
-                    Vector<double>.Build.DenseOfArray(y2),
-                };
-
-                Network network = new Network();
-                network.Add(new ConvolutionalLayer(3 * 3, kernel: 3, filters: 1, stride: 1));
-                network.UseLoss(LossFunctions.MeanSquaredError, LossFunctions.MeanSquaredErrorPrime);
-
-                network.Train(xTrain, yTrain, epochs: 500, OptimizerType.Adam, learningRate: 0.005f);
-
-                double output1 = network.Predict(xTrain[0])[0];
-                double output2 = network.Predict(xTrain[1])[0];
-
-                Console.WriteLine("Prediction: " + output1);
-                Console.WriteLine("Actual: " + category1 + "\n");
-
-                Console.WriteLine("Prediction: " + output2);
-                Console.WriteLine("Actual: " + category2 + "\n");
-
-                correct += Math.Abs(output1 - category1) < 0.15 ? 0.5 : 0;
-                correct += Math.Abs(output2 - category2) < 0.15 ? 0.5 : 0;
+                Vector<double> output = network.Predict(trainX);
+                return network.Loss(truthY, output);
             }
 
-            Assert.IsTrue(correct > 40);
+            Vector<double> finiteDiffWeightGradient = Utils.FiniteDifferencesGradient(networkLossWithWeightAsVariable, testWeights);
+            List<double> explicitWeightGradientList = new List<double>();
+
+            Vector<double> outputGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(trainX));
+
+            for (int k = network.Layers.Count - 1; k >= 0; k--)
+            {
+                outputGradient = network.Layers[k].BackPropagation(outputGradient);
+                if (k == 0) // retrieve weight gradient from convolutional layer
+                {
+                    for (int p = 0; p < 3; p++)
+                    {
+                        ConvolutionalLayer conv = ((MultiChannelConvolutionalLayer)network.Layers[0]).ChannelOperators[p];
+                        for (int y = 0; y < conv.WeightGradients.Length; y++)
+                        {
+                            Vector<double> weightGrad = Utils.Flatten(conv.WeightGradients[y]);
+                            for (int q = 0; q < weightGrad.Count; q++)
+                                explicitWeightGradientList.Add(weightGrad[q]);
+                        }
+                    }
+                }
+            }
+
+            Vector<double> explicitWeightGradient = Vector<double>.Build.DenseOfEnumerable(explicitWeightGradientList);
+
+            Assert.IsTrue((finiteDiffWeightGradient - explicitWeightGradient).L2Norm() < 0.0001);
         }
-
-        [Test]
-        public void ConvolutionOnlyNetwork_ConvolutionLayerMaxPoolingNetworkOnlyIsLearning_2DataPieces_1Filter_Slide_Stride1()
-        {
-            int correct = 0;
-            for(int i = 0; i < 30; i++)
-            {
-                double[] x1 = new double[]
-                {
-                    1, 0, 0,
-                    1, 0, 1,
-                    1, 0, 0,
-                };
-
-                Random rand = new Random();
-                double category = rand.NextDouble();
-                double[] y1 = new double[] { category };
-
-                List<Vector<double>> xTrain = new List<Vector<double>>
-                {
-                    Vector<double>.Build.DenseOfArray(x1),
-                };
-
-                List<Vector<double>> yTrain = new List<Vector<double>>
-                {
-                    Vector<double>.Build.DenseOfArray(y1),
-                };
-
-                Network network = new Network();
-                network.Add(new ConvolutionalLayer(3 * 3, kernel: 2, filters: 1, stride: 1));
-                network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
-                network.Add(new MaxPoolingLayer(4, prevFilterCount: 1, poolSize: 2));
-                network.UseLoss(LossFunctions.MeanSquaredError, LossFunctions.MeanSquaredErrorPrime);
-
-                network.Train(xTrain, yTrain, epochs: 2000, OptimizerType.Adam, learningRate: 0.002);
-
-                var output = network.Predict(xTrain[0])[0];
-                var actual = category;
-                Console.WriteLine("Prediction: " + output);
-                Console.WriteLine("Actual: " + actual + "\n");
-
-                correct += Math.Abs(output - actual) < 0.15 ? 1 : 0;
-            }
-
-            Assert.IsTrue(correct > 20);
-        }*/
-
-       /* [Test]
-        public void ConvolutionWithDense_ShouldBeBetterThanDenseOnly()
-        {
-            double err1 = 0;
-            double err2 = 0;
-
-            List<Vector<double>> xTrain = new List<Vector<double>>();
-            List<Vector<double>> yTrain = new List<Vector<double>>();
-
-            var trainData = MnistReader.ReadTrainingData("digits").ToList();
-            for (int n = 0; n < 100; n++)
-            {
-                var image = trainData[n];
-                if (image.Label > 1)
-                    continue;
-
-                double[] flattenedNormalized = image.Data.Cast<byte>().Select(t => t / 256d).ToArray();
-                xTrain.Add(Vector<double>.Build.DenseOfArray(flattenedNormalized));
-
-                double[] categorical = new double[2];
-                categorical[image.Label] = 1;
-                yTrain.Add(Vector<double>.Build.DenseOfArray(categorical));
-            }
-
-
-            List<Vector<double>> xTest = new List<Vector<double>>();
-            List<Vector<double>> yTest = new List<Vector<double>>();
-
-            var testData = MnistReader.ReadTestData("digits").ToList();
-            for (int n = 0; n < 100; n++)
-            {
-                var image = testData[n];
-                if (image.Label > 1)
-                    continue;
-
-                double[] flattenedNormalized = image.Data.Cast<byte>().Select(t => t / 256d).ToArray();
-                xTest.Add(Vector<double>.Build.DenseOfArray(flattenedNormalized));
-
-                double[] categorical = new double[2];
-                categorical[image.Label] = 1;
-                yTest.Add(Vector<double>.Build.DenseOfArray(categorical));
-            }
-
-            //dense layer network only
-            Network network1 = new Network();
-            network1.Add(new FullyConnectedLayer(28*28, 2));
-            network1.Add(new SoftmaxActivationLayer());
-            network1.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
-
-            network1.Train(xTrain, yTrain, epochs: 10, OptimizerType.Adam, learningRate: 0.002);
-
-            int i = 0;
-            foreach (var test in xTrain)
-            {
-                var output = network1.Predict(test);
-                int prediction = output.ToList().IndexOf(output.Max());
-                int actual = yTrain[i].ToList().IndexOf(yTrain[i].Max());
-                Console.WriteLine("Prediction Vector: " + output);
-                Console.WriteLine("Prediction: " + prediction);
-                Console.WriteLine("Actual: " + actual + "\n");
-                err1 += (output - yTrain[i]).L2Norm();
-                i++;
-            }
-
-            //with conv layer
-            Network network2 = new Network();
-            network2.Add(new ConvolutionalLayer(28*28, kernel: 3, filters: 1, stride: 1));
-            network2.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
-            network2.Add(new FullyConnectedLayer(26*26, 2));
-            network2.Add(new SoftmaxActivationLayer());
-            network2.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
-
-            network2.Train(xTrain, yTrain, epochs: 5, OptimizerType.Adam, learningRate: 0.002);
-
-            i = 0;
-            foreach (var test in xTrain)
-            {
-                var output = network2.Predict(test);
-                int prediction = output.ToList().IndexOf(output.Max());
-                int actual = yTrain[i].ToList().IndexOf(yTrain[i].Max());
-                Console.WriteLine("Prediction Vector: " + output);
-                Console.WriteLine("Prediction: " + prediction);
-                Console.WriteLine("Actual: " + actual + "\n");
-                err2 += (output - yTrain[i]).L2Norm();
-                i++;
-            }
-
-            Assert.IsTrue(err1 > err2);
-        }*/
     }
 }
