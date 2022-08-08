@@ -10,6 +10,7 @@ namespace NeuroSharp
 
         public ActivationLayer(Func<double, double> activation, Func<double, double> activationPrime)
         {
+            LayerType = LayerType.Activation;
             Activation = activation;
             ActivationPrime = activationPrime;
         }

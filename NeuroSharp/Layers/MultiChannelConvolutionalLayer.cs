@@ -16,6 +16,7 @@ namespace NeuroSharp
 
         public MultiChannelConvolutionalLayer(int inputSize, int kernel, int filters, int stride = 1, int channels = 1)
         {
+            LayerType = LayerType.MultiChannelConvolutional;
             ChannelOperators = new ConvolutionalLayer[channels];
             _channelOutputs = new Vector<double>[channels];
             _channelInputs = new Vector<double>[channels];

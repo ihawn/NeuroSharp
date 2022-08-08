@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 using MathNet.Numerics.LinearAlgebra;
 using NeuroSharp.Optimizers;
 using NeuroSharp.Enumerations;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using NeuroSharp.Model;
 
-namespace NeuroSharp
+namespace NeuroSharp.Training
 {
     public class Network
     {
@@ -15,10 +18,12 @@ namespace NeuroSharp
         public List<ParameterizedLayer> ParameterizedLayers { get; set; }
         public Func<Vector<double>, Vector<double>, double> Loss { get; set; }
         public Func<Vector<double>, Vector<double>, Vector<double>> LossPrime { get; set; }
+        public string Name { get; set; }
 
-        public Network()
+        public Network(string name = "")
         {
             Layers = new List<Layer>();
+            Name = name;
         }
 
         public void Add(Layer layer)
@@ -90,7 +95,7 @@ namespace NeuroSharp
             ParameterizedLayers = Layers.Where(l => l is ParameterizedLayer).Select(l => (ParameterizedLayer)l).ToList();
 
             var dataTuples = new List<(Vector<double>, Vector<double>)>();
-            for(int i = 0; i < xTrain.Count; i++)
+            for (int i = 0; i < xTrain.Count; i++)
                 dataTuples.Add((xTrain[i], yTrain[i]));
 
             Random rnd = new Random();
@@ -106,7 +111,7 @@ namespace NeuroSharp
 
                 for (int b = 0; b <= batchCount; b++)
                 {
-                    var minibatch = data.Skip(b*batchSize).Take(batchSize).ToList();
+                    var minibatch = data.Skip(b * batchSize).Take(batchSize).ToList();
 
                     for (int j = 0; j < minibatch.Count; j++)
                     {
@@ -118,7 +123,7 @@ namespace NeuroSharp
                             output = layer.ForwardPropagation(output);
 
                         err += Loss(yTrainItem, output);
-                        
+
                         // backpropagate the backwards gradient and store weight/bias gradients
                         Vector<double> error = LossPrime(yTrainItem, output);
                         for (int k = Layers.Count - 1; k >= 0; k--)
@@ -134,9 +139,15 @@ namespace NeuroSharp
                     }
                 }
 
-                err /= (batchSize * batchCount);
+                err /= batchSize * batchCount;
                 Console.WriteLine("Loss: " + err + "\n");
             }
+        }
+
+        public string ConvertToJSON()
+        {
+            SerializeableNetwork jsonNetwork = new SerializeableNetwork(this);
+            return JsonSerializer.Serialize(jsonNetwork);
         }
     }
 }

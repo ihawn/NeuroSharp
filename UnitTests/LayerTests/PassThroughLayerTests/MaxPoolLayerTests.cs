@@ -6,6 +6,7 @@ using MathNet.Numerics.LinearAlgebra;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using NeuroSharp.Training;
 
 namespace UnitTests
 {

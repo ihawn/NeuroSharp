@@ -11,6 +11,7 @@ namespace NeuroSharp
 
         public FullyConnectedLayer(int inputSize, int outputSize)
         {
+            LayerType = LayerType.FullyConnected;
             WeightGradients = new Matrix<double>[1];
             Weights = new Matrix<double>[] { Matrix<double>.Build.Random(inputSize, outputSize) };
             Bias = Vector<double>.Build.Random(outputSize);

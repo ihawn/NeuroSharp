@@ -7,6 +7,7 @@ namespace NeuroSharp
     {
         public override Vector<double> ForwardPropagation(Vector<double> input)
         {
+            LayerType = LayerType.SoftmaxActivation;
             Input = input;
             Output = ActivationFunctions.Softmax(input);
             return Output;

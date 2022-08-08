@@ -16,6 +16,7 @@ namespace NeuroSharp
 
         public MaxPoolingLayer(int inputSize, int poolSize, int prevFilterCount, int stride = 1)
         {
+            LayerType = LayerType.MaxPooling;
             MaxPoolPositions = new List<List<(int, int)>>();
             _poolSize = poolSize;
             _inputSize = inputSize;

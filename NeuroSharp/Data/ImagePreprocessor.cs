@@ -56,7 +56,7 @@ namespace NeuroSharp.Data
             return new List<NetworkFormattedImage>();
         }
 
-        public static ImageDataAggregate GetImageData(string path, ImagePreprocessingType imagePreprocessingType, int? expectedWidth = null, int? expectedHeight = null, int ? take = null)
+        public static ImageDataAggregate GetImageData(string path, ImagePreprocessingType imagePreprocessingType, bool isColor = true, int? expectedWidth = null, int? expectedHeight = null, int ? take = null)
         {
             Random rand = new Random();
             List<NetworkFormattedImage> data = ReadImages(path, imagePreprocessingType, expectedWidth, expectedHeight);
