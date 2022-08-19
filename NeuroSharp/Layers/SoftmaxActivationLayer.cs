@@ -3,6 +3,7 @@ using NeuroSharp.Enumerations;
 
 namespace NeuroSharp
 {
+    [Serializable]
     public class SoftmaxActivationLayer : Layer
     {
         public override Vector<double> ForwardPropagation(Vector<double> input)

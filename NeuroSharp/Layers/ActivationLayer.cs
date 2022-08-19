@@ -3,16 +3,28 @@ using NeuroSharp.Enumerations;
 
 namespace NeuroSharp
 {
+    [Serializable]
     public class ActivationLayer : Layer
     {
-        public Func<double, double> Activation { get; set; }
-        public Func<double, double> ActivationPrime { get; set; }
+        private Func<double, double> _activation;
+        private Func<double, double> _activationPrime;
 
-        public ActivationLayer(Func<double, double> activation, Func<double, double> activationPrime)
+        public ActivationType ActivationType { get; set; }
+
+        public ActivationLayer(ActivationType type)
         {
             LayerType = LayerType.Activation;
-            Activation = activation;
-            ActivationPrime = activationPrime;
+            switch(type)
+            {
+                case ActivationType.ReLu:
+                    _activation = ActivationFunctions.Relu;
+                    _activationPrime = ActivationFunctions.ReluPrime;
+                    break;
+                case ActivationType.Tanh:
+                    _activation = ActivationFunctions.Tanh;
+                    _activationPrime= ActivationFunctions.TanhPrime;
+                    break;
+            }
         }
 
         public override Vector<double> ForwardPropagation(Vector<double> input)
@@ -20,7 +32,7 @@ namespace NeuroSharp
             Input = input;
             Output = Vector<double>.Build.Dense(input.Count);
             for(int i = 0; i < input.Count; i++)
-                Output[i] = Activation(input[i]);
+                Output[i] = _activation(input[i]);
 
             return Output;
         }
@@ -29,7 +41,7 @@ namespace NeuroSharp
         {
             Vector<double> vec = Vector<double>.Build.Dense(Input.Count);
             for (int i = 0; i < Input.Count; i++)
-                vec[i] = ActivationPrime(Input[i]);
+                vec[i] = _activationPrime(Input[i]);
             return vec.PointwiseMultiply(outputError);
         }
     }

@@ -36,9 +36,9 @@ namespace NeuroSharp.Datatypes
 
         public Vector<double> GetFlattenedImage()
         {
-            return Vector<double>.Build.DenseOfEnumerable(Utils.Flatten(Red).ToList().Concat(
-                                                              Utils.Flatten(Green).ToList().Concat(
-                                                                   Utils.Flatten(Blue))));
+            return Vector<double>.Build.DenseOfEnumerable(MathUtils.Flatten(Red).ToList().Concat(
+                                                              MathUtils.Flatten(Green).ToList().Concat(
+                                                                   MathUtils.Flatten(Blue))));
         }
     }
 }

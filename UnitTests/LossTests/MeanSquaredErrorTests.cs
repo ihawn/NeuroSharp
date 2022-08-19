@@ -33,7 +33,7 @@ namespace UnitTests
                     return LossFunctions.MeanSquaredErrorPrime(truth, x);
                 }
 
-                Vector<double> finiteDiffGradient = Utils.FiniteDifferencesGradient(MSE, test);
+                Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(MSE, test);
                 Vector<double> explicitGradient = nablaMSE(test);
 
                 Assert.IsTrue((finiteDiffGradient - explicitGradient).L2Norm() < 0.0001);

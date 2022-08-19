@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "TipH/arWdP9s+tJpnRC2TAPucFqvFGKWZG7BYd3/ickWvutOo3Rg9Y15B6Odcz4TPJIwQWRECDB2ohae78p0Rw==",
+  "dgSpecHash": "7/Ld5X9t9OFAPb+RlDDMbuMcnsIUF1CrbQfqD8KgFn+Fyn/d5fRhwWOCqsgTSLR7xgwoVjRFOXVs4he6djVCpg==",
   "success": true,
   "projectFilePath": "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\NeuroSharp\\NeuroSharp.csproj",
   "expectedPackageFiles": [
@@ -9,6 +9,7 @@
     "C:\\Users\\Isaac\\.nuget\\packages\\mathnet.numerics.providers.cuda\\5.0.0\\mathnet.numerics.providers.cuda.5.0.0.nupkg.sha512",
     "C:\\Users\\Isaac\\.nuget\\packages\\mathnet.numerics.providers.mkl\\5.0.0\\mathnet.numerics.providers.mkl.5.0.0.nupkg.sha512",
     "C:\\Users\\Isaac\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
+    "C:\\Users\\Isaac\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
     "C:\\Users\\Isaac\\.nuget\\packages\\system.drawing.common\\6.0.0\\system.drawing.common.6.0.0.nupkg.sha512"
   ],
   "logs": []

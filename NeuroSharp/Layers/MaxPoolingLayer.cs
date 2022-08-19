@@ -4,6 +4,7 @@ using NeuroSharp.Enumerations;
 
 namespace NeuroSharp
 {
+    [Serializable]
     public class MaxPoolingLayer : Layer
     {
         public List<List<(int, int)>> MaxPoolPositions { get; set; }
@@ -38,7 +39,7 @@ namespace NeuroSharp
             {
                 var maxPoolResult = MaxPool(featureMaps[i], _poolSize, _stride);
                 MaxPoolPositions.Add(maxPoolResult.Item2);
-                foreach (double d in Utils.Flatten(maxPoolResult.Item1))
+                foreach (double d in MathUtils.MathUtils.Flatten(maxPoolResult.Item1))
                     rawOutput.Add(d);
             }
 
@@ -61,7 +62,7 @@ namespace NeuroSharp
                     var coord = new { x = MaxPoolPositions[k][i].Item1, y = MaxPoolPositions[k][i].Item2 };
                     backwardsGradient[coord.x, coord.y] += outputError[i + k * errorOffset];
                 }
-                foreach (double d in Utils.Flatten(backwardsGradient))
+                foreach (double d in MathUtils.MathUtils.Flatten(backwardsGradient))
                     rawBackpropData.Add(d);
             }
 

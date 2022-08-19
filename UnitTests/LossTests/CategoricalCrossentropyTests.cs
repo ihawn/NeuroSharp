@@ -38,7 +38,7 @@ namespace UnitTests
                 for (int i = 0; i < n; i++)
                     test[i] = rand.NextDouble();
 
-                Vector<double> finiteDiffGradient = Utils.FiniteDifferencesGradient(crossentropy, test);
+                Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(crossentropy, test);
                 Vector<double> explicitGradient = nablaCrossentropy(test);
 
                 Assert.IsTrue((finiteDiffGradient - explicitGradient).L2Norm() < 0.001, "Finite Difference: " + finiteDiffGradient + "\nActual: " + explicitGradient);

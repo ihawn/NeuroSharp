@@ -9,6 +9,7 @@ namespace NeuroSharp.Enumerations
     public enum ActivationType
     {
         ReLu = 0,
-        Tanh = 1
+        Tanh = 1,
+        Softmax = 2,
     }
 }

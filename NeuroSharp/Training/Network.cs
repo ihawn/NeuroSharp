@@ -9,6 +9,7 @@ using NeuroSharp.Enumerations;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using NeuroSharp.Model;
+using Newtonsoft.Json;
 
 namespace NeuroSharp.Training
 {
@@ -144,10 +145,22 @@ namespace NeuroSharp.Training
             }
         }
 
-        public string ConvertToJSON()
+        public string SerializeToJSON()
         {
-            SerializeableNetwork jsonNetwork = new SerializeableNetwork(this);
-            return JsonSerializer.Serialize(jsonNetwork);
+            return JsonConvert.SerializeObject(this, new JsonSerializerSettings 
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.All
+            });
+        }
+
+        public static Network DeserializeNetworkJSON(string json)
+        {
+            return JsonConvert.DeserializeObject<Network>(json, new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto,
+                NullValueHandling = NullValueHandling.Ignore
+            });
         }
     }
 }

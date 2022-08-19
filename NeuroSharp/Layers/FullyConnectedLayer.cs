@@ -5,6 +5,7 @@ using NeuroSharp.MathUtils;
 
 namespace NeuroSharp
 {
+    [Serializable]
     public class FullyConnectedLayer : ParameterizedLayer
     {
         private Adam _adam;
@@ -19,9 +20,9 @@ namespace NeuroSharp
 
             for (int i = 0; i < inputSize; i++)
                 for (int j = 0; j < outputSize; j++)
-                    Weights[0][i, j] = Utils.GetInitialWeight(inputSize);
+                    Weights[0][i, j] = MathUtils.MathUtils.GetInitialWeight(inputSize);
             for (int i = 0; i < outputSize; i++)
-                Bias[i] = Utils.GetInitialWeight(inputSize);
+                Bias[i] = MathUtils.MathUtils.GetInitialWeight(inputSize);
         }
 
         public override Vector<double> ForwardPropagation(Vector<double> input)

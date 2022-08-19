@@ -6,6 +6,7 @@ using NeuroSharp.MathUtils;
 
 namespace NeuroSharp
 {
+    [Serializable]
     public class ConvolutionalLayer : ParameterizedLayer
     {
         private Adam _adam;
@@ -74,7 +75,6 @@ namespace NeuroSharp
 
             for (int i = 0; i < _filters; i++)
                 inputGradientMatrix += inputGradientPieces[i];
-
 
             return Utils.Flatten(inputGradientMatrix.Transpose());
         }

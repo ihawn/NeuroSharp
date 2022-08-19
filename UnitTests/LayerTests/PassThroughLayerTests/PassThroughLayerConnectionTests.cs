@@ -36,7 +36,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                     return network.Loss(truthY, x);
                 }
 
-                Vector<double> finiteDiffGradient = Utils.FiniteDifferencesGradient(networkLoss, testX);
+                Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, testX);
                 Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
                 for (int k = network.Layers.Count - 1; k >= 0; k--)
                 {
@@ -56,7 +56,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                 Vector<double> testX = Vector<double>.Build.Random(i);
 
                 Network network = new Network();
-                network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
+                network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
                 network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
 
@@ -66,7 +66,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                     return network.Loss(truthY, x);
                 }
 
-                Vector<double> finiteDiffGradient = Utils.FiniteDifferencesGradient(networkLoss, testX);
+                Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, testX);
                 Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
                 for (int k = network.Layers.Count - 1; k >= 0; k--)
                 {
@@ -86,7 +86,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                 Vector<double> testX = Vector<double>.Build.Random(i);
 
                 Network network = new Network();
-                network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
+                network.Add(new ActivationLayer(ActivationType.ReLu));
                 network.Add(new SoftmaxActivationLayer());
                 network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
 
@@ -96,7 +96,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                     return network.Loss(truthY, x);
                 }
 
-                Vector<double> finiteDiffGradient = Utils.FiniteDifferencesGradient(networkLoss, testX);
+                Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, testX);
                 Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
                 for (int k = network.Layers.Count - 1; k >= 0; k--)
                 {
@@ -127,7 +127,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                     return network.Loss(truthY, x);
                 }
 
-                Vector<double> finiteDiffGradient = Utils.FiniteDifferencesGradient(networkLoss, testX);
+                Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, testX);
                 Vector<double> testGradient = LossFunctions.MeanSquaredErrorPrime(truthY, network.Predict(testX));
                 for (int k = network.Layers.Count - 1; k >= 0; k--)
                 {
@@ -147,7 +147,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                 Vector<double> testX = Vector<double>.Build.Random(i);
 
                 Network network = new Network();
-                network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
+                network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
                 network.UseLoss(LossFunctions.MeanSquaredError, LossFunctions.MeanSquaredErrorPrime);
 
@@ -157,7 +157,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                     return network.Loss(truthY, x);
                 }
 
-                Vector<double> finiteDiffGradient = Utils.FiniteDifferencesGradient(networkLoss, testX);
+                Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, testX);
                 Vector<double> testGradient = LossFunctions.MeanSquaredErrorPrime(truthY, network.Predict(testX));
                 for (int k = network.Layers.Count - 1; k >= 0; k--)
                 {
@@ -177,7 +177,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                 Vector<double> testX = Vector<double>.Build.Random(i);
 
                 Network network = new Network();
-                network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
+                network.Add(new ActivationLayer(ActivationType.ReLu));
                 network.Add(new SoftmaxActivationLayer());
                 network.UseLoss(LossFunctions.MeanSquaredError, LossFunctions.MeanSquaredErrorPrime);
 
@@ -187,7 +187,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                     return network.Loss(truthY, x);
                 }
 
-                Vector<double> finiteDiffGradient = Utils.FiniteDifferencesGradient(networkLoss, testX);
+                Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, testX);
                 Vector<double> testGradient = LossFunctions.MeanSquaredErrorPrime(truthY, network.Predict(testX));
                 for (int k = network.Layers.Count - 1; k >= 0; k--)
                 {

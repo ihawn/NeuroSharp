@@ -33,7 +33,7 @@ namespace UnitTests.LayerTests.PassThroughLayerTests
                         return ActivationFunctions.Softmax(x)[i];
                     }
                     Vector<double> jacobianRow = explicitJacobian.Row(i);
-                    Vector<double> jacobianRowFiniteDiff = Utils.FiniteDifferencesGradient(softmax, test);
+                    Vector<double> jacobianRowFiniteDiff = MathUtils.FiniteDifferencesGradient(softmax, test);
                     Assert.IsTrue((jacobianRow - jacobianRowFiniteDiff).L2Norm() < 0.0001);
                 }
             }

@@ -117,7 +117,7 @@ namespace UnitTests
 
                 Network network = new Network();
                 network.Add(new MultiChannelConvolutionalLayer(27, kernel: 2, filters: 7, stride: 1, channels: 3));
-                network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
+                network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
                 network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
 
@@ -127,7 +127,7 @@ namespace UnitTests
                     return network.Loss(truthY, x);
                 }
 
-                Vector<double> finiteDiffGradient = Utils.FiniteDifferencesGradient(networkLoss, testX);
+                Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, testX);
                 Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
                 for (int k = network.Layers.Count - 1; k >= 0; k--)
                 {
@@ -148,7 +148,7 @@ namespace UnitTests
 
                 Network network = new Network();
                 network.Add(new MultiChannelConvolutionalLayer(48, kernel: 2, filters: 7, stride: 2, channels: 3));
-                network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
+                network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
                 network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
 
@@ -158,7 +158,7 @@ namespace UnitTests
                     return network.Loss(truthY, x);
                 }
 
-                Vector<double> finiteDiffGradient = Utils.FiniteDifferencesGradient(networkLoss, testX);
+                Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, testX);
                 Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
                 for (int k = network.Layers.Count - 1; k >= 0; k--)
                 {
@@ -180,7 +180,7 @@ namespace UnitTests
 
                 Network network = new Network();
                 network.Add(new MultiChannelConvolutionalLayer(inputSize: 36, kernel: 2, filters: 13, stride: 1, channels: 4));
-                network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
+                network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
                 network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
 
@@ -193,7 +193,7 @@ namespace UnitTests
                         ConvolutionalLayer conv = ((MultiChannelConvolutionalLayer)network.Layers[0]).ChannelOperators[p];
                         for (int k = 0; k < 13; k++)
                         {
-                            conv.Weights[k] = Utils.Unflatten(splitWeights2[k]);
+                            conv.Weights[k] = MathUtils.Unflatten(splitWeights2[k]);
                         }
                     }
 
@@ -201,7 +201,7 @@ namespace UnitTests
                     return network.Loss(truthY, output);
                 }
 
-                Vector<double> finiteDiffWeightGradient = Utils.FiniteDifferencesGradient(networkLossWithWeightAsVariable, testWeights);
+                Vector<double> finiteDiffWeightGradient = MathUtils.FiniteDifferencesGradient(networkLossWithWeightAsVariable, testWeights);
                 List<double> explicitWeightGradientList = new List<double>();
 
                 Vector<double> outputGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
@@ -216,7 +216,7 @@ namespace UnitTests
                             ConvolutionalLayer conv = ((MultiChannelConvolutionalLayer)network.Layers[0]).ChannelOperators[p];
                             for (int y = 0; y < conv.WeightGradients.Length; y++)
                             {
-                                Vector<double> weightGrad = Utils.Flatten(conv.WeightGradients[y]);
+                                Vector<double> weightGrad = MathUtils.Flatten(conv.WeightGradients[y]);
                                 for (int q = 0; q < weightGrad.Count; q++)
                                     explicitWeightGradientList.Add(weightGrad[q]);
                             }
@@ -241,7 +241,7 @@ namespace UnitTests
 
                 Network network = new Network();
                 network.Add(new MultiChannelConvolutionalLayer(inputSize: 80, kernel: 2, filters: 13, stride: 2, channels: 5));
-                network.Add(new ActivationLayer(ActivationFunctions.Tanh, ActivationFunctions.TanhPrime));
+                network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
                 network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
 
@@ -254,7 +254,7 @@ namespace UnitTests
                         ConvolutionalLayer conv = ((MultiChannelConvolutionalLayer)network.Layers[0]).ChannelOperators[p];
                         for (int k = 0; k < 13; k++)
                         {
-                            conv.Weights[k] = Utils.Unflatten(splitWeights2[k]);
+                            conv.Weights[k] = MathUtils.Unflatten(splitWeights2[k]);
                         }
                     }
 
@@ -262,7 +262,7 @@ namespace UnitTests
                     return network.Loss(truthY, output);
                 }
 
-                Vector<double> finiteDiffWeightGradient = Utils.FiniteDifferencesGradient(networkLossWithWeightAsVariable, testWeights);
+                Vector<double> finiteDiffWeightGradient = MathUtils.FiniteDifferencesGradient(networkLossWithWeightAsVariable, testWeights);
                 List<double> explicitWeightGradientList = new List<double>();
 
                 Vector<double> outputGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
@@ -277,7 +277,7 @@ namespace UnitTests
                             ConvolutionalLayer conv = ((MultiChannelConvolutionalLayer)network.Layers[0]).ChannelOperators[p];
                             for (int y = 0; y < conv.WeightGradients.Length; y++)
                             {
-                                Vector<double> weightGrad = Utils.Flatten(conv.WeightGradients[y]);
+                                Vector<double> weightGrad = MathUtils.Flatten(conv.WeightGradients[y]);
                                 for (int q = 0; q < weightGrad.Count; q++)
                                     explicitWeightGradientList.Add(weightGrad[q]);
                             }

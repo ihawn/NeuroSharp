@@ -3,6 +3,7 @@ using NeuroSharp.Enumerations;
 
 namespace NeuroSharp
 {
+    [Serializable]
     public abstract class Layer
     {
         public Vector<double> Input { get; set; }

@@ -43,7 +43,7 @@ namespace UnitTests
                         return network.Loss(truthY, x);
                     }
 
-                    Vector<double> finiteDiffGradient = Utils.FiniteDifferencesGradient(networkLoss, testX);
+                    Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, testX);
                     Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
                     for (int k = network.Layers.Count - 1; k >= 0; k--)
                     {
@@ -83,7 +83,7 @@ namespace UnitTests
                             return network.Loss(truthY, x);
                         }
 
-                        Vector<double> finiteDiffGradient = Utils.FiniteDifferencesGradient(networkLoss, testX);
+                        Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, testX);
                         Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
                         for (int k = network.Layers.Count - 1; k >= 0; k--)
                         {
@@ -106,7 +106,7 @@ namespace UnitTests
 
                 Network network = new Network();
                 network.Add(new ConvolutionalLayer(4 * 4, kernel: 2, filters: 5, stride: 1));
-                network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
+                network.Add(new ActivationLayer(ActivationType.ReLu));
                 network.Add(new MaxPoolingLayer(3 * 3 * 5, prevFilterCount: 5, poolSize: 2));
                 network.Add(new SoftmaxActivationLayer());
                 network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
@@ -117,7 +117,7 @@ namespace UnitTests
                     return network.Loss(truthY, x);
                 }
 
-                Vector<double> finiteDiffGradient = Utils.FiniteDifferencesGradient(networkLoss, testX);
+                Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, testX);
                 Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
                 for (int k = network.Layers.Count - 1; k >= 0; k--)
                 {
@@ -134,7 +134,7 @@ namespace UnitTests
 
                 Network network = new Network();
                 network.Add(new ConvolutionalLayer(10 * 10, kernel: 5, filters: 20, stride: 1));
-                network.Add(new ActivationLayer(ActivationFunctions.Relu, ActivationFunctions.ReluPrime));
+                network.Add(new ActivationLayer(ActivationType.ReLu));
                 network.Add(new MaxPoolingLayer(6 * 6 * 20, prevFilterCount: 20, poolSize: 3));
                 network.Add(new SoftmaxActivationLayer());
                 network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
@@ -145,7 +145,7 @@ namespace UnitTests
                     return network.Loss(truthY, x);
                 }
 
-                Vector<double> finiteDiffGradient = Utils.FiniteDifferencesGradient(networkLoss, testX);
+                Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, testX);
                 Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
                 for (int k = network.Layers.Count - 1; k >= 0; k--)
                 {

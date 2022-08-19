@@ -3,6 +3,7 @@ using NeuroSharp.Enumerations;
 
 namespace NeuroSharp
 {
+    [Serializable]
     public class MultiChannelConvolutionalLayer : ParameterizedLayer
     {
         public ConvolutionalLayer[] ChannelOperators { get; set; }
