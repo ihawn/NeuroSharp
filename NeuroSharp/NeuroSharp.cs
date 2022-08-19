@@ -1,5 +1,5 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
-using NeuroSharp.MathUtils;
+using NeuroSharp.Utilities;
 using NeuroSharp.Data;
 using NeuroSharp.Enumerations;
 using NeuroSharp.Datatypes;
@@ -16,12 +16,13 @@ namespace NeuroSharp
             //Control.UseNativeMKL();
             Control.UseManaged();
 
-            XOR_Test();
-            //Mnist_Digits_Test(512, 10, 5, "digits");
+            //XOR_Test();
+            Mnist_Digits_Test(512, 10, 5, "digits");
             //Mnist_Digits_Test_Conv(60000, 10000, 30, "digits");
             //Conv_Base_Test(1000, 100, 10, "digits");
             //Conv_Vs_Non_Conv(5000, 1000, 15, 20, "digits");
             //IntelImageClassification_Test(epochs: 25);
+            //BirdSpecies_Test(epochs: 5);
 
             #region testing
             /* // Using managed code only
@@ -389,19 +390,19 @@ namespace NeuroSharp
 
             Network network = new Network();
             network.Add(new ActivationLayer(ActivationType.Tanh));
-            network.Add(new MultiChannelConvolutionalLayer(150 * 150 * 3, kernel: 3, filters: 64, stride: 3, channels: 3));
+            network.Add(new MultiChannelConvolutionalLayer(150 * 150 * 3, kernel: 3, filters: 16, stride: 3, channels: 3));
             network.Add(new ActivationLayer(ActivationType.ReLu));
-            network.Add(new MaxPoolingLayer(50 * 50 * 64, prevFilterCount: 64, poolSize: 3));
-            network.Add(new MultiChannelConvolutionalLayer(48 * 48 * 64, kernel: 3, filters: 16, stride: 1, channels: 64));
+            network.Add(new MaxPoolingLayer(50 * 50 * 16, prevFilterCount: 16, poolSize: 3));
+            network.Add(new MultiChannelConvolutionalLayer(48 * 48 * 16, kernel: 3, filters: 8, stride: 1, channels: 16));
             network.Add(new ActivationLayer(ActivationType.ReLu));
-            network.Add(new MaxPoolingLayer(46 * 46 * 16, prevFilterCount: 16, poolSize: 3));
-            network.Add(new MultiChannelConvolutionalLayer(44 * 44 * 16, kernel: 3, filters: 8, stride: 1, channels: 16));
+            network.Add(new MaxPoolingLayer(46 * 46 * 8, prevFilterCount: 8, poolSize: 3));
+            network.Add(new MultiChannelConvolutionalLayer(44 * 44 * 8, kernel: 3, filters: 4, stride: 1, channels: 8));
             network.Add(new ActivationLayer(ActivationType.ReLu));
-            network.Add(new MaxPoolingLayer(42 * 42 * 8, prevFilterCount: 8, poolSize: 2));
-            network.Add(new MultiChannelConvolutionalLayer(41 * 41 * 8, kernel: 2, filters: 4, stride: 1, channels: 8));
+            network.Add(new MaxPoolingLayer(42 * 42 * 4, prevFilterCount: 4, poolSize: 2));
+            network.Add(new MultiChannelConvolutionalLayer(41 * 41 * 4, kernel: 2, filters: 2, stride: 1, channels: 4));
             network.Add(new ActivationLayer(ActivationType.ReLu));
-            network.Add(new MaxPoolingLayer(40 * 40 * 4, prevFilterCount: 4, poolSize: 2));
-            network.Add(new FullyConnectedLayer(39 * 39 * 4, 64));
+            network.Add(new MaxPoolingLayer(40 * 40 * 2, prevFilterCount: 2, poolSize: 2));
+            network.Add(new FullyConnectedLayer(39 * 39 * 2, 64));
             network.Add(new ActivationLayer(ActivationType.Tanh));
             network.Add(new FullyConnectedLayer(64, 6));
             network.Add(new ActivationLayer(ActivationType.Tanh));
@@ -424,6 +425,54 @@ namespace NeuroSharp
                 int actual = testData.YValues[i].ToList().IndexOf(testData.YValues[i].Max());
                 Console.WriteLine("Prediction: " + labels[prediction]);
                 Console.WriteLine("Actual: " + labels[actual] + "\n");
+
+                if (prediction != actual)
+                    wrongCount++;
+
+                i++;
+            }
+            double acc = (1f - ((double)wrongCount) / ((double)i));
+            Console.WriteLine("Accuracy: " + acc);
+            Console.WriteLine("Training Runtime: " + (elapsedMs / 1000f).ToString() + "s");
+        }
+        static void BirdSpecies_Test(int epochs)
+        {
+            ImageDataAggregate trainData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\Birds\train", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 224, expectedWidth: 224);
+            ImageDataAggregate testData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\Birds\test", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 224, expectedWidth: 224);
+
+            Network network = new Network();
+            network.Add(new MultiChannelConvolutionalLayer(224 * 224 * 3, kernel: 2, filters: 4, stride: 3, channels: 3));
+            network.Add(new ActivationLayer(ActivationType.ReLu));
+            network.Add(new MaxPoolingLayer(75 * 75 * 4, prevFilterCount: 4, poolSize: 3));
+            network.Add(new MultiChannelConvolutionalLayer(73 * 73 * 4, kernel: 3, filters: 3, stride: 2, channels: 4));
+            network.Add(new ActivationLayer(ActivationType.ReLu));
+            network.Add(new MaxPoolingLayer(36 * 36 * 3, prevFilterCount: 3, poolSize: 3));
+            network.Add(new MultiChannelConvolutionalLayer(34 * 34 * 3, kernel: 2, filters: 2, stride: 2, channels: 3));
+            network.Add(new ActivationLayer(ActivationType.ReLu));
+            network.Add(new MaxPoolingLayer(17 * 17 * 2, prevFilterCount: 2, poolSize: 3));
+            network.Add(new MultiChannelConvolutionalLayer(15 * 15 * 2, kernel: 3, filters: 1, stride: 1, channels: 2));
+            network.Add(new ActivationLayer(ActivationType.ReLu));
+            network.Add(new MaxPoolingLayer(13 * 13 * 1, prevFilterCount: 1, poolSize: 2));
+            network.Add(new FullyConnectedLayer(144, 37));
+            network.Add(new ActivationLayer(ActivationType.Tanh));
+            network.Add(new SoftmaxActivationLayer());
+            network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+
+            //train
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            network.Train(trainData.XValues, trainData.YValues, epochs: epochs, OptimizerType.Adam, learningRate: 0.0001f);
+            var elapsedMs = watch.ElapsedMilliseconds;
+
+            //test
+            int i = 0;
+            int wrongCount = 0;
+            foreach (var test in testData.XValues)
+            {
+                var output = network.Predict(test);
+                int prediction = output.ToList().IndexOf(output.Max());
+                int actual = testData.YValues[i].ToList().IndexOf(testData.YValues[i].Max());
+                Console.WriteLine("Prediction: " + prediction);
+                Console.WriteLine("Actual: " + actual + "\n");
 
                 if (prediction != actual)
                     wrongCount++;

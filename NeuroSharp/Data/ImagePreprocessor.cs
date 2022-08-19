@@ -20,7 +20,7 @@ namespace NeuroSharp.Data
 
                     for (int i = 0; i < subDirectories.Length; i++)
                     {
-                        Console.WriteLine("Loading Data... " + (i+1) + "/" + subDirectories.Length);
+                        Console.WriteLine("Processing Image Data: " + (i+1) + "/" + subDirectories.Length);
 
                         Vector<double> label = Vector<double>.Build.Dense(subDirectories.Length);
                         label[i] = 1;

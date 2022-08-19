@@ -9,7 +9,7 @@ using MathNet.Numerics.Statistics;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra.Single;
 
-namespace NeuroSharp.MathUtils
+namespace NeuroSharp.Utilities
 {
     public static class PCA
     {

@@ -2,7 +2,7 @@
 using MathNet.Numerics.Distributions;
 using NeuroSharp.Optimizers;
 using NeuroSharp.Enumerations;
-using NeuroSharp.MathUtils;
+using NeuroSharp.Utilities;
 
 namespace NeuroSharp
 {
@@ -27,7 +27,7 @@ namespace NeuroSharp
                 Weights[i] = Matrix<double>.Build.Random(kernel, kernel);
                 for (int x = 0; x < kernel; x++)
                     for (int y = 0; y < kernel; y++)
-                        Weights[i][x, y] = Utils.GetInitialWeight(inputSize);
+                        Weights[i][x, y] = Utilities.MathUtils.GetInitialWeight(inputSize);
             }
 
             _adam = new Adam(kernel, kernel, weightCount: filters);
@@ -65,18 +65,18 @@ namespace NeuroSharp
                 jacobianSlices[i] = Vector<double>.Build.Dense(outputError.Count / _filters); // ∂L/∂Y
                 for (int j = 0; j < jacobianSlices[i].Count; j++)
                     jacobianSlices[i][j] = outputError[i * jacobianSlices[i].Count + j];
-                WeightGradients[i] = ComputeWeightGradient(Input, Utils.Unflatten(jacobianSlices[i]), _stride);
-  
-                Vector<double> singleGradient = ComputeInputGradient(Weights[i], Utils.Unflatten(jacobianSlices[i]), _stride);
+                WeightGradients[i] = ComputeWeightGradient(Input, MathUtils.Unflatten(jacobianSlices[i]), _stride);
+
+                Vector<double> singleGradient = ComputeInputGradient(Weights[i], MathUtils.Unflatten(jacobianSlices[i]), _stride);
                 for (int j = 0; j < singleGradient.Count; j++)
                     inputGradient[i * singleGradient.Count + j] = singleGradient[j];
-                inputGradientPieces[i] = Utils.Unflatten(singleGradient);
+                inputGradientPieces[i] = MathUtils.Unflatten(singleGradient);
             });
 
             for (int i = 0; i < _filters; i++)
                 inputGradientMatrix += inputGradientPieces[i];
 
-            return Utils.Flatten(inputGradientMatrix.Transpose());
+            return Utilities.MathUtils.Flatten(inputGradientMatrix.Transpose());
         }
 
         public override void UpdateParameters(OptimizerType optimizerType, int sampleIndex, double learningRate)
@@ -102,7 +102,7 @@ namespace NeuroSharp
             double imageQuotient = ((double)dim - weights.RowCount) / stride + 1;
             int outDim = (int)Math.Floor(imageQuotient);
 
-            Matrix<double> image = Utils.Unflatten(flattenedImage);
+            Matrix<double> image = MathUtils.Unflatten(flattenedImage);
 
             Matrix<double> output = Matrix<double>.Build.Dense(outDim, outDim);
 
@@ -118,7 +118,7 @@ namespace NeuroSharp
             if(transposeOutput)
                 output = output.Transpose();
 
-            return (Utils.Flatten(output), output);
+            return (Utilities.MathUtils.Flatten(output), output);
         }
 
         // ∂L/∂W
@@ -133,7 +133,7 @@ namespace NeuroSharp
         {
             Matrix<double> rotatedWeight = Rotate180(weight);
             Matrix<double> paddedDilatedGradient = PadAndDilate(outputJacobian, stride, rotatedWeight.RowCount);
-            return Convolution(Utils.Flatten(paddedDilatedGradient), rotatedWeight, stride: 1).Item1;
+            return Convolution(MathUtils.Flatten(paddedDilatedGradient), rotatedWeight, stride: 1).Item1;
         }
 
 

@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using NeuroSharp;
 using NeuroSharp.Enumerations;
-using NeuroSharp.MathUtils;
+using NeuroSharp.Utilities;
 using NeuroSharp.Datatypes;
 using System.Collections.Generic;
 using System.Linq;

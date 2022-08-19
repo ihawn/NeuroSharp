@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using NeuroSharp;
-using NeuroSharp.MathUtils;
+using NeuroSharp.Utilities;
 using NeuroSharp.Enumerations;
 using MathNet.Numerics.LinearAlgebra;
 using System.Collections.Generic;

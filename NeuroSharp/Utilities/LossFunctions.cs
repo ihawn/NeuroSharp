@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.Statistics;
 
-namespace NeuroSharp.MathUtils
+namespace NeuroSharp.Utilities
 {
     public static class LossFunctions
     {

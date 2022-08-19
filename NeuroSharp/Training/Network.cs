@@ -8,7 +8,6 @@ using NeuroSharp.Optimizers;
 using NeuroSharp.Enumerations;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using NeuroSharp.Model;
 using Newtonsoft.Json;
 
 namespace NeuroSharp.Training

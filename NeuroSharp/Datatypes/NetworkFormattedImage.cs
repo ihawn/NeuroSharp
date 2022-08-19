@@ -1,6 +1,6 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using System.Drawing;
-using NeuroSharp.MathUtils;
+using NeuroSharp.Utilities;
 
 namespace NeuroSharp.Datatypes
 {

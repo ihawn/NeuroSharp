@@ -4,9 +4,9 @@ using System.Linq;
 using System.Drawing.Imaging;
 using System.Drawing;
 
-namespace NeuroSharp.MathUtils
+namespace NeuroSharp.Utilities
 {
-    public static class Utils
+    public static class MathUtils
     {
         public static double Nextdouble(double min, double max)
         {
