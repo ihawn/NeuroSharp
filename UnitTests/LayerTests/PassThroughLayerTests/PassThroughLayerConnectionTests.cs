@@ -28,7 +28,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
 
                 Network network = new Network();
                 network.Add(new SoftmaxActivationLayer());
-                network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+                network.UseLoss(LossType.CategoricalCrossentropy);
 
                 double networkLoss(Vector<double> x)
                 {
@@ -58,7 +58,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                 Network network = new Network();
                 network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
-                network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+                network.UseLoss(LossType.CategoricalCrossentropy);
 
                 double networkLoss(Vector<double> x)
                 {
@@ -88,7 +88,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                 Network network = new Network();
                 network.Add(new ActivationLayer(ActivationType.ReLu));
                 network.Add(new SoftmaxActivationLayer());
-                network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+                network.UseLoss(LossType.CategoricalCrossentropy);
 
                 double networkLoss(Vector<double> x)
                 {
@@ -119,7 +119,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
 
                 Network network = new Network();
                 network.Add(new SoftmaxActivationLayer());
-                network.UseLoss(LossFunctions.MeanSquaredError, LossFunctions.MeanSquaredErrorPrime);
+                network.UseLoss(LossType.MeanSquaredError);
 
                 double networkLoss(Vector<double> x)
                 {
@@ -149,7 +149,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                 Network network = new Network();
                 network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
-                network.UseLoss(LossFunctions.MeanSquaredError, LossFunctions.MeanSquaredErrorPrime);
+                network.UseLoss(LossType.MeanSquaredError);
 
                 double networkLoss(Vector<double> x)
                 {
@@ -179,7 +179,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                 Network network = new Network();
                 network.Add(new ActivationLayer(ActivationType.ReLu));
                 network.Add(new SoftmaxActivationLayer());
-                network.UseLoss(LossFunctions.MeanSquaredError, LossFunctions.MeanSquaredErrorPrime);
+                network.UseLoss(LossType.MeanSquaredError);
 
                 double networkLoss(Vector<double> x)
                 {

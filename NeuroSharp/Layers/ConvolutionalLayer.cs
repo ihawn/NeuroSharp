@@ -3,18 +3,26 @@ using MathNet.Numerics.Distributions;
 using NeuroSharp.Optimizers;
 using NeuroSharp.Enumerations;
 using NeuroSharp.Utilities;
+using Newtonsoft.Json;
 
 namespace NeuroSharp
 {
-    [Serializable]
     public class ConvolutionalLayer : ParameterizedLayer
     {
+        [JsonProperty]
         private Adam _adam;
+        [JsonProperty]
         private int _stride;
+        [JsonProperty]
         private int _outputSize;
+        [JsonProperty]
         private int _inputSize;
+        [JsonProperty]
         private int _rawInputSize;
+        [JsonProperty]
         private int _filters;
+        [JsonProperty]
+        private int _kernelSize;
 
         public ConvolutionalLayer(int inputSize, int kernel, int filters, int stride = 1)
         {
@@ -25,17 +33,35 @@ namespace NeuroSharp
             for (int i = 0; i < filters; i++)
             {
                 Weights[i] = Matrix<double>.Build.Random(kernel, kernel);
+                WeightGradients[i] = Matrix<double>.Build.Dense(kernel, kernel);
                 for (int x = 0; x < kernel; x++)
                     for (int y = 0; y < kernel; y++)
-                        Weights[i][x, y] = Utilities.MathUtils.GetInitialWeight(inputSize);
+                        Weights[i][x, y] = MathUtils.GetInitialWeight(inputSize);
             }
 
+            _kernelSize = kernel;
             _adam = new Adam(kernel, kernel, weightCount: filters);
             _stride = stride;
             _inputSize = filters * inputSize;
             _rawInputSize = inputSize;
             _outputSize = filters * (int)Math.Pow((int)Math.Floor((Math.Sqrt(inputSize) - (double)kernel) / stride + 1), 2);
             _filters = filters;
+        }
+        
+        //json constructor
+        public ConvolutionalLayer(Matrix<double>[] weights, Matrix<double>[] weightGradients, int kernelSize,
+            int stride, int inputSize, int outputSize, int filters, Adam adam, bool accumulateGradients)
+        {
+            LayerType = LayerType.Convolutional;
+            Weights = weights;
+            WeightGradients = weightGradients;
+            _kernelSize = kernelSize;
+            _stride = stride;
+            _inputSize = inputSize;
+            _outputSize = outputSize;
+            _filters = filters;
+            _adam = adam;
+            SetGradientAccumulation(accumulateGradients);
         }
 
         public override Vector<double> ForwardPropagation(Vector<double> input)
@@ -65,7 +91,10 @@ namespace NeuroSharp
                 jacobianSlices[i] = Vector<double>.Build.Dense(outputError.Count / _filters); // ∂L/∂Y
                 for (int j = 0; j < jacobianSlices[i].Count; j++)
                     jacobianSlices[i][j] = outputError[i * jacobianSlices[i].Count + j];
-                WeightGradients[i] = ComputeWeightGradient(Input, MathUtils.Unflatten(jacobianSlices[i]), _stride);
+
+                WeightGradients[i] = AccumulateGradients ? 
+                WeightGradients[i] + ComputeWeightGradient(Input, MathUtils.Unflatten(jacobianSlices[i]), _stride) :
+                ComputeWeightGradient(Input, MathUtils.Unflatten(jacobianSlices[i]), _stride);
 
                 Vector<double> singleGradient = ComputeInputGradient(Weights[i], MathUtils.Unflatten(jacobianSlices[i]), _stride);
                 for (int j = 0; j < singleGradient.Count; j++)
@@ -76,7 +105,18 @@ namespace NeuroSharp
             for (int i = 0; i < _filters; i++)
                 inputGradientMatrix += inputGradientPieces[i];
 
-            return Utilities.MathUtils.Flatten(inputGradientMatrix.Transpose());
+            return MathUtils.Flatten(inputGradientMatrix.Transpose());
+        }
+
+        public override void DrainGradients()
+        {
+            for (int i = 0; i < _filters; i++)
+                WeightGradients[i] = Matrix<double>.Build.Dense(_kernelSize, _kernelSize);
+        }
+
+        public override void SetGradientAccumulation(bool acc)
+        {
+            AccumulateGradients = acc;
         }
 
         public override void UpdateParameters(OptimizerType optimizerType, int sampleIndex, double learningRate)
@@ -92,6 +132,9 @@ namespace NeuroSharp
                     _adam.Step(this, sampleIndex + 1, eta: learningRate, includeBias: false);
                     break;
             }
+
+            if(AccumulateGradients)
+                DrainGradients();
         }
 
 

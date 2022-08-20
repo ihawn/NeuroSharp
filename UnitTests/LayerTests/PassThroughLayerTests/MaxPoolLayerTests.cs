@@ -35,7 +35,7 @@ namespace UnitTests
                     Network network = new Network();
                     network.Add(new MaxPoolingLayer(u, prevFilterCount: 1, poolSize: (int)Math.Sqrt(v)));
                     network.Add(new SoftmaxActivationLayer());
-                    network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+                    network.UseLoss(LossType.CategoricalCrossentropy);
 
                     double networkLoss(Vector<double> x)
                     {
@@ -75,7 +75,7 @@ namespace UnitTests
                         Network network = new Network();
                         network.Add(new MaxPoolingLayer(u * q, prevFilterCount: q, poolSize: (int)Math.Sqrt(v)));
                         network.Add(new SoftmaxActivationLayer());
-                        network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+                        network.UseLoss(LossType.CategoricalCrossentropy);
 
                         double networkLoss(Vector<double> x)
                         {
@@ -109,7 +109,7 @@ namespace UnitTests
                 network.Add(new ActivationLayer(ActivationType.ReLu));
                 network.Add(new MaxPoolingLayer(3 * 3 * 5, prevFilterCount: 5, poolSize: 2));
                 network.Add(new SoftmaxActivationLayer());
-                network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+                network.UseLoss(LossType.CategoricalCrossentropy);
 
                 double networkLoss(Vector<double> x)
                 {
@@ -137,7 +137,7 @@ namespace UnitTests
                 network.Add(new ActivationLayer(ActivationType.ReLu));
                 network.Add(new MaxPoolingLayer(6 * 6 * 20, prevFilterCount: 20, poolSize: 3));
                 network.Add(new SoftmaxActivationLayer());
-                network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+                network.UseLoss(LossType.CategoricalCrossentropy);
 
                 double networkLoss(Vector<double> x)
                 {
@@ -230,5 +230,7 @@ namespace UnitTests
             Assert.AreEqual(expected1, MaxPoolingLayer.SliceFlattenedMatrixIntoSquares(input1, 3));
             Assert.AreEqual(expected2, MaxPoolingLayer.SliceFlattenedMatrixIntoSquares(input2, 2));
         }
+        
+        //todo: write tests for max pooling with stride > 1
     }
 }

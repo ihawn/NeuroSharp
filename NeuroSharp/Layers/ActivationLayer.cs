@@ -3,7 +3,6 @@ using NeuroSharp.Enumerations;
 
 namespace NeuroSharp
 {
-    [Serializable]
     public class ActivationLayer : Layer
     {
         private Func<double, double> _activation;
@@ -14,6 +13,7 @@ namespace NeuroSharp
         public ActivationLayer(ActivationType type)
         {
             LayerType = LayerType.Activation;
+            ActivationType = type;
             switch(type)
             {
                 case ActivationType.ReLu:

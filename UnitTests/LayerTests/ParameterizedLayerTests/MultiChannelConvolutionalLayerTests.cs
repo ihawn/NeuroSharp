@@ -119,7 +119,7 @@ namespace UnitTests
                 network.Add(new MultiChannelConvolutionalLayer(27, kernel: 2, filters: 7, stride: 1, channels: 3));
                 network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
-                network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+                network.UseLoss(LossType.CategoricalCrossentropy);
 
                 double networkLoss(Vector<double> x)
                 {
@@ -150,7 +150,7 @@ namespace UnitTests
                 network.Add(new MultiChannelConvolutionalLayer(48, kernel: 2, filters: 7, stride: 2, channels: 3));
                 network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
-                network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+                network.UseLoss(LossType.CategoricalCrossentropy);
 
                 double networkLoss(Vector<double> x)
                 {
@@ -182,7 +182,7 @@ namespace UnitTests
                 network.Add(new MultiChannelConvolutionalLayer(inputSize: 36, kernel: 2, filters: 13, stride: 1, channels: 4));
                 network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
-                network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+                network.UseLoss(LossType.CategoricalCrossentropy);
 
                 double networkLossWithWeightAsVariable(Vector<double> x)
                 {
@@ -243,7 +243,7 @@ namespace UnitTests
                 network.Add(new MultiChannelConvolutionalLayer(inputSize: 80, kernel: 2, filters: 13, stride: 2, channels: 5));
                 network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
-                network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+                network.UseLoss(LossType.CategoricalCrossentropy);
 
                 double networkLossWithWeightAsVariable(Vector<double> x)
                 {

@@ -1,20 +1,30 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace NeuroSharp.Optimizers
 {
     public class Adam
     {
+        [JsonProperty]
         private Matrix<double>[] _meanWeightGradient;
+        [JsonProperty]
         private Vector<double> _meanBiasGradient;
 
+        [JsonProperty]
         private Matrix<double>[] _varianceWeightGradient;
+        [JsonProperty]
         private Vector<double> _varianceBiasGradient;
 
+        [JsonProperty]
         private double _beta1;
+        [JsonProperty]
         private double _beta2;
+        [JsonProperty]
         private double _oneMinusBeta1;
+        [JsonProperty]
         private double _oneMinusBeta2;
+        [JsonProperty]
         private double _epsilon;
 
         public Adam(int inputSize, int outputSize, int weightCount = 1, double beta1 = 0.9f, double beta2 = 0.999f, double epsilon = 0.0000001f)
@@ -33,6 +43,20 @@ namespace NeuroSharp.Optimizers
             for (int i = 0; i < weightCount; i++)
                 _varianceWeightGradient[i] = Matrix<double>.Build.Dense(inputSize, outputSize);
             _varianceBiasGradient = Vector<double>.Build.Dense(outputSize);
+        }
+        
+        //json constructor
+        public Adam(Matrix<double>[] meanWeightGradient, Vector<double> meanBiasGradient, 
+            Matrix<double>[] varianceWeightGradient, Vector<double> varianceBiasGradient, 
+            double beta1, double beta2, double epsilon)
+        {
+            _meanWeightGradient = meanWeightGradient;
+            _meanBiasGradient = meanBiasGradient;
+            _varianceWeightGradient = varianceWeightGradient;
+            _varianceBiasGradient = varianceBiasGradient;
+            _beta1 = beta1;
+            _beta2 = beta2;
+            _epsilon = epsilon;
         }
 
         public void Step(ParameterizedLayer layer, int t, double eta = 0.001f, bool includeBias = true)

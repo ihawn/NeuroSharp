@@ -37,7 +37,7 @@ namespace UnitTests
             network.Add(new ActivationLayer(ActivationType.Tanh));
             network.Add(new FullyConnectedLayer(10, 4));
             network.Add(new SoftmaxActivationLayer());
-            network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+            network.UseLoss(LossType.CategoricalCrossentropy);
 
             double networkLoss(Vector<double> x)
             {
@@ -75,7 +75,7 @@ namespace UnitTests
             network.Add(new ActivationLayer(ActivationType.Tanh));
             network.Add(new FullyConnectedLayer(10, 4));
             network.Add(new SoftmaxActivationLayer());
-            network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+            network.UseLoss(LossType.CategoricalCrossentropy);
 
             double networkLossWithWeightAsVariable(Vector<double> x)
             {
