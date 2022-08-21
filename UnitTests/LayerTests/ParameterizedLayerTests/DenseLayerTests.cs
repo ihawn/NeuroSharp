@@ -31,7 +31,7 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
                     network.Add(new FullyConnectedLayer(i, j));
                     network.Add(new ActivationLayer(ActivationType.Tanh));
                     network.Add(new SoftmaxActivationLayer());
-                    network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+                    network.UseLoss(LossType.CategoricalCrossentropy);
 
                     double networkLoss(Vector<double> x)
                     {

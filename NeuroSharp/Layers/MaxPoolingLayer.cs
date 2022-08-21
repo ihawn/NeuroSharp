@@ -1,18 +1,23 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using NeuroSharp.Utilities;
 using NeuroSharp.Enumerations;
+using Newtonsoft.Json;
 
 namespace NeuroSharp
 {
-    [Serializable]
     public class MaxPoolingLayer : Layer
     {
         public List<List<(int, int)>> MaxPoolPositions { get; set; }
 
+        [JsonProperty]
         private int _poolSize;
+        [JsonProperty]
         private int _inputSize;
+        [JsonProperty]
         private int _outputSize;
+        [JsonProperty]
         private int _stride;
+        [JsonProperty]
         private int _filters;
 
         public MaxPoolingLayer(int inputSize, int poolSize, int prevFilterCount, int stride = 1)
@@ -25,6 +30,19 @@ namespace NeuroSharp
             _outputSize = (int)Math.Floor(((double)dim - poolSize) / stride + 1);
             _stride = stride;
             _filters = prevFilterCount;
+        }
+        
+        //json constructor
+        public MaxPoolingLayer(List<List<(int, int)>> maxPoolPositions, int poolSize, int inputSize, int outputSize,
+            int stride, int filters)
+        {
+            LayerType = LayerType.MaxPooling;
+            MaxPoolPositions = maxPoolPositions;
+            _poolSize = poolSize;
+            _inputSize = inputSize;
+            _outputSize = outputSize;
+            _stride = stride;
+            _filters = filters;
         }
 
         public override Vector<double> ForwardPropagation(Vector<double> input)

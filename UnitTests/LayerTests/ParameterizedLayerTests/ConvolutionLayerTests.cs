@@ -34,7 +34,7 @@ namespace UnitTests
                 network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(i), filters: 1, stride: 1));
                 network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
-                network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+                network.UseLoss(LossType.CategoricalCrossentropy);
 
                 double networkLoss(Vector<double> x)
                 {
@@ -72,7 +72,7 @@ namespace UnitTests
                     network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: 1, stride: 1));
                     network.Add(new ActivationLayer(ActivationType.Tanh));
                     network.Add(new SoftmaxActivationLayer());
-                    network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+                    network.UseLoss(LossType.CategoricalCrossentropy);
 
                     double networkLoss(Vector<double> x)
                     {
@@ -108,7 +108,7 @@ namespace UnitTests
                 network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(i), filters: 1, stride: 1));
                 network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
-                network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+                network.UseLoss(LossType.CategoricalCrossentropy);
 
                 double networkLossWithWeightAsVariable(Vector<double> x)
                 {
@@ -154,7 +154,7 @@ namespace UnitTests
                     network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: 1, stride: 1));
                     network.Add(new ActivationLayer(ActivationType.Tanh));
                     network.Add(new SoftmaxActivationLayer());
-                    network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+                    network.UseLoss(LossType.CategoricalCrossentropy);
 
                     double networkLossWithWeightAsVariable(Vector<double> x)
                     {
@@ -236,7 +236,7 @@ namespace UnitTests
                     network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: 1, stride: 1));
                     network.Add(new ActivationLayer(ActivationType.Tanh));
                     network.Add(new SoftmaxActivationLayer());
-                    network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+                    network.UseLoss(LossType.CategoricalCrossentropy);
 
                     double networkLoss(Vector<double> x)
                     {
@@ -272,7 +272,7 @@ namespace UnitTests
                 network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(i), filters: 1, stride: 1));
                 network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
-                network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+                network.UseLoss(LossType.CategoricalCrossentropy);
 
                 double networkLossWithWeightAsVariable(Vector<double> x)
                 {
@@ -318,7 +318,7 @@ namespace UnitTests
                     network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: 1, stride: 1));
                     network.Add(new ActivationLayer(ActivationType.Tanh));
                     network.Add(new SoftmaxActivationLayer());
-                    network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+                    network.UseLoss(LossType.CategoricalCrossentropy);
 
                     double networkLossWithWeightAsVariable(Vector<double> x)
                     {
@@ -372,7 +372,7 @@ namespace UnitTests
                         network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: 1, stride: s));
                         network.Add(new ActivationLayer(ActivationType.Tanh));
                         network.Add(new SoftmaxActivationLayer());
-                        network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+                        network.UseLoss(LossType.CategoricalCrossentropy);
 
                         double networkLoss(Vector<double> x)
                         {
@@ -418,7 +418,7 @@ namespace UnitTests
                         network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: 1, stride: s));
                         network.Add(new ActivationLayer(ActivationType.Tanh));
                         network.Add(new SoftmaxActivationLayer());
-                        network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+                        network.UseLoss(LossType.CategoricalCrossentropy);
 
                         double networkLossWithWeightAsVariable(Vector<double> x)
                         {
@@ -469,7 +469,7 @@ namespace UnitTests
                         network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: n, stride: 1));
                         network.Add(new ActivationLayer(ActivationType.Tanh));
                         network.Add(new SoftmaxActivationLayer());
-                        network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+                        network.UseLoss(LossType.CategoricalCrossentropy);
 
                         double networkLoss(Vector<double> x)
                         {
@@ -512,7 +512,7 @@ namespace UnitTests
                         network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: n, stride: 1));
                         network.Add(new ActivationLayer(ActivationType.Tanh));
                         network.Add(new SoftmaxActivationLayer());
-                        network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+                        network.UseLoss(LossType.CategoricalCrossentropy);
 
                         double networkLossWithWeightAsVariable(Vector<double> x)
                         {
@@ -584,7 +584,7 @@ namespace UnitTests
                             network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: n, stride: s));
                             network.Add(new ActivationLayer(ActivationType.Tanh));
                             network.Add(new SoftmaxActivationLayer());
-                            network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+                            network.UseLoss(LossType.CategoricalCrossentropy);
 
                             double networkLoss(Vector<double> x)
                             {
@@ -633,7 +633,7 @@ namespace UnitTests
                             network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: n, stride: s));
                             network.Add(new ActivationLayer(ActivationType.Tanh));
                             network.Add(new SoftmaxActivationLayer());
-                            network.UseLoss(LossFunctions.CategoricalCrossentropy, LossFunctions.CategoricalCrossentropyPrime);
+                            network.UseLoss(LossType.CategoricalCrossentropy);
 
                             double networkLossWithWeightAsVariable(Vector<double> x)
                             {

@@ -106,9 +106,6 @@ C:\Users\Isaac\Documents\C#\NeuroSharp\UnitTests\bin\Debug\net6.0\nunit.engine.d
 C:\Users\Isaac\Documents\C#\NeuroSharp\UnitTests\bin\Debug\net6.0\nunit.engine.api.dll
 C:\Users\Isaac\Documents\C#\NeuroSharp\UnitTests\bin\Debug\net6.0\nunit.engine.core.dll
 C:\Users\Isaac\Documents\C#\NeuroSharp\UnitTests\bin\Debug\net6.0\testcentric.engine.metadata.dll
-C:\Users\Isaac\Documents\C#\NeuroSharp\UnitTests\bin\Debug\net6.0\NeuroSharp.deps.json
-C:\Users\Isaac\Documents\C#\NeuroSharp\UnitTests\bin\Debug\net6.0\NeuroSharp.runtimeconfig.json
-C:\Users\Isaac\Documents\C#\NeuroSharp\UnitTests\bin\Debug\net6.0\NeuroSharp.exe
 C:\Users\Isaac\Documents\C#\NeuroSharp\UnitTests\bin\Debug\net6.0\Microsoft.TestPlatform.PlatformAbstractions.dll
 C:\Users\Isaac\Documents\C#\NeuroSharp\UnitTests\bin\Debug\net6.0\UnitTests.deps.json
 C:\Users\Isaac\Documents\C#\NeuroSharp\UnitTests\bin\Debug\net6.0\UnitTests.runtimeconfig.json

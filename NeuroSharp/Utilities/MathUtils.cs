@@ -31,7 +31,14 @@ namespace NeuroSharp.Utilities
                     mtx[j, i] = vec[i * dim + j];
             return mtx;
         }
-
+        public static Matrix<double> Unflatten(Vector<double> vec, int rowCount, int colCount)
+        {
+            Matrix<double> mtx = Matrix<double>.Build.Dense(rowCount, colCount);
+            for (int j = 0; j < colCount; j++)
+                for (int i = 0; i < rowCount; i++)
+                    mtx[i, j] = vec[j * rowCount + i];
+            return mtx;
+        }
         public static double GetInitialWeight(int layerInputSize)
         {
             double sigma = Math.Sqrt(2f/layerInputSize);

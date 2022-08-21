@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using MathNet.Numerics.LinearAlgebra;
-using NeuroSharp.Optimizers;
 using NeuroSharp.Enumerations;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using NeuroSharp.Utilities;
 using Newtonsoft.Json;
 
 namespace NeuroSharp.Training
@@ -15,9 +9,16 @@ namespace NeuroSharp.Training
     public class Network
     {
         public List<Layer> Layers { get; set; }
+        
+        [JsonIgnore]
         public List<ParameterizedLayer> ParameterizedLayers { get; set; }
+        
+        [JsonIgnore]
         public Func<Vector<double>, Vector<double>, double> Loss { get; set; }
+        [JsonIgnore]
         public Func<Vector<double>, Vector<double>, Vector<double>> LossPrime { get; set; }
+        
+        public LossType LossType { get; set; }
         public string Name { get; set; }
 
         public Network(string name = "")
@@ -25,16 +26,34 @@ namespace NeuroSharp.Training
             Layers = new List<Layer>();
             Name = name;
         }
+        
+        //json constructor
+        public Network(List<Layer> layers, LossType lossType, string name)
+        {
+            Layers = layers;
+            Name = name;
+            UseLoss(lossType);
+        }
 
         public void Add(Layer layer)
         {
             Layers.Add(layer);
         }
 
-        public void UseLoss(Func<Vector<double>, Vector<double>, double> loss, Func<Vector<double>, Vector<double>, Vector<double>> lossPrime)
+        public void UseLoss(LossType loss)
         {
-            Loss = loss;
-            LossPrime = lossPrime;
+            LossType = loss;
+            switch (loss)
+            {
+                case LossType.MeanSquaredError:
+                    Loss = LossFunctions.MeanSquaredError;
+                    LossPrime = LossFunctions.MeanSquaredErrorPrime;
+                    break;
+                case LossType.CategoricalCrossentropy:
+                    Loss = LossFunctions.CategoricalCrossentropy;
+                    LossPrime = LossFunctions.CategoricalCrossentropyPrime;
+                    break;
+            }
         }
 
         public Vector<double> Predict(Vector<double> inputData)
@@ -46,7 +65,21 @@ namespace NeuroSharp.Training
             return output;
         }
 
-        public void Train(List<Vector<double>> xTrain, List<Vector<double>> yTrain, int epochs, OptimizerType optimizerType, double learningRate = 0.001f)
+        public void Train(List<Vector<double>> xTrain, List<Vector<double>> yTrain, int epochs, TrainingConfiguration trainingConfiguration = TrainingConfiguration.SGD,
+            OptimizerType optimizerType = OptimizerType.Adam, int batchSize = 64, double learningRate = 0.001f)
+        {
+            switch(trainingConfiguration)
+            {
+                case TrainingConfiguration.SGD:
+                    SGDTrain(xTrain, yTrain, epochs, optimizerType, learningRate);
+                    break;
+                case TrainingConfiguration.Minibatch:
+                    MinibatchTrain(xTrain, yTrain, epochs, optimizerType, batchSize, learningRate);
+                    break;
+            }
+        }
+
+        public void SGDTrain(List<Vector<double>> xTrain, List<Vector<double>> yTrain, int epochs, OptimizerType optimizerType, double learningRate = 0.001f)
         {
             ParameterizedLayers = Layers.Where(l => l is ParameterizedLayer).Select(l => (ParameterizedLayer)l).ToList();
 
@@ -93,6 +126,7 @@ namespace NeuroSharp.Training
         public void MinibatchTrain(List<Vector<double>> xTrain, List<Vector<double>> yTrain, int epochs, OptimizerType optimizerType, int batchSize, double learningRate = 0.001f)
         {
             ParameterizedLayers = Layers.Where(l => l is ParameterizedLayer).Select(l => (ParameterizedLayer)l).ToList();
+            ParameterizedLayers.ForEach(x => x.SetGradientAccumulation(true));
 
             var dataTuples = new List<(Vector<double>, Vector<double>)>();
             for (int i = 0; i < xTrain.Count; i++)
@@ -109,11 +143,12 @@ namespace NeuroSharp.Training
 
                 double err = 0;
 
+                int lastProgress = 0;
                 for (int b = 0; b <= batchCount; b++)
                 {
                     var minibatch = data.Skip(b * batchSize).Take(batchSize).ToList();
 
-                    for (int j = 0; j < minibatch.Count; j++)
+                    for(int j = 0; j < minibatch.Count; j++)
                     {
                         Vector<double> xTrainItem = minibatch[j].Item1;
                         Vector<double> yTrainItem = minibatch[j].Item2;
@@ -130,36 +165,39 @@ namespace NeuroSharp.Training
                         {
                             error = Layers[k].BackPropagation(error);
                         }
-
-                        // update weights/biases based on stored gradients
-                        Parallel.For(0, ParameterizedLayers.Count, k =>
-                        {
-                            ParameterizedLayers[k].UpdateParameters(optimizerType, j, learningRate);
-                        });
                     }
+
+                    int progress = (int)Math.Round(100f * b / batchCount);
+                    if (lastProgress != progress && progress % 5 == 0)
+                        Console.Write("..." + progress + "%");
+                    lastProgress = progress;
+
+                    // update weights/biases based on stored gradients
+                    Parallel.For(0, ParameterizedLayers.Count, k =>
+                    {
+                        ParameterizedLayers[k].UpdateParameters(optimizerType, b, learningRate);
+                    });
                 }
 
                 err /= batchSize * batchCount;
                 Console.WriteLine("Loss: " + err + "\n");
             }
         }
+        
+        //todo: implement batch train
+        //todo: write unit tests for all 3 training types
 
         public string SerializeToJSON()
         {
             return JsonConvert.SerializeObject(this, new JsonSerializerSettings 
             {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.All
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             });
         }
 
         public static Network DeserializeNetworkJSON(string json)
         {
-            return JsonConvert.DeserializeObject<Network>(json, new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.Auto,
-                NullValueHandling = NullValueHandling.Ignore
-            });
+            return JsonConvert.DeserializeObject<Network>(json, new JsonModelParser());
         }
     }
 }

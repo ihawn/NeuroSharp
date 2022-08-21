@@ -56,5 +56,44 @@ namespace UnitTests.UtilityTests
                 Assert.IsTrue((knownGradient2 - testGradient2).L2Norm() < 0.00001);
             }
         }
+
+        [Test]
+        public void Unflatten_ReturnsCorrectMatrix_WhenPassedNonSquareFlattenedMatrix()
+        {
+            Vector<double> input1 = Vector<double>.Build.DenseOfArray(
+                new double[]
+                {
+                    1, 2, 3, 4, 5, 6, 7, 8
+                }
+            );
+
+            Matrix<double> expected1 = Matrix<double>.Build.DenseOfArray(
+                new double[,]
+                {
+                    { 1, 3, 5, 7 },
+                    { 2, 4, 6, 8 }
+                }
+            );
+            
+            Vector<double> input2 = Vector<double>.Build.DenseOfArray(
+                new double[]
+                {
+                    1, 2, 3, 4, 5, 6, 7, 8
+                }
+            );
+
+            Matrix<double> expected2 = Matrix<double>.Build.DenseOfArray(
+                new double[,]
+                {
+                    { 1, 5 },
+                    { 2, 6 },
+                    { 3, 7 },
+                    { 4, 8 }
+                }
+            );
+            
+            Assert.AreEqual(expected1, MathUtils.Unflatten(input1, 2, 4));
+            Assert.AreEqual(expected2, MathUtils.Unflatten(input2, 4, 2));
+        }
     }
 }

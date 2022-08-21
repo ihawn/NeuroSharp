@@ -5,22 +5,35 @@ VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuroSharp", "NeuroSharp.csproj", "{0A671ABC-1B57-4382-B6CA-A19FA118D542}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "..\UnitTests\UnitTests.csproj", "{7E783010-CC4C-460F-B640-E6E922909FDF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "..\UnitTests\UnitTests.csproj", "{7E783010-CC4C-460F-B640-E6E922909FDF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetworkTests", "NetworkTests\NetworkTests.csproj", "{832416DA-9872-4EFE-9A8E-21B2596C670D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+		Release2|Any CPU = Release2|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{0A671ABC-1B57-4382-B6CA-A19FA118D542}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0A671ABC-1B57-4382-B6CA-A19FA118D542}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A671ABC-1B57-4382-B6CA-A19FA118D542}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A671ABC-1B57-4382-B6CA-A19FA118D542}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A671ABC-1B57-4382-B6CA-A19FA118D542}.Release2|Any CPU.ActiveCfg = Release2|Any CPU
+		{0A671ABC-1B57-4382-B6CA-A19FA118D542}.Release2|Any CPU.Build.0 = Release2|Any CPU
 		{7E783010-CC4C-460F-B640-E6E922909FDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7E783010-CC4C-460F-B640-E6E922909FDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E783010-CC4C-460F-B640-E6E922909FDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E783010-CC4C-460F-B640-E6E922909FDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E783010-CC4C-460F-B640-E6E922909FDF}.Release2|Any CPU.ActiveCfg = Release2|Any CPU
+		{7E783010-CC4C-460F-B640-E6E922909FDF}.Release2|Any CPU.Build.0 = Release2|Any CPU
+		{832416DA-9872-4EFE-9A8E-21B2596C670D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{832416DA-9872-4EFE-9A8E-21B2596C670D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{832416DA-9872-4EFE-9A8E-21B2596C670D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{832416DA-9872-4EFE-9A8E-21B2596C670D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{832416DA-9872-4EFE-9A8E-21B2596C670D}.Release2|Any CPU.ActiveCfg = Debug|Any CPU
+		{832416DA-9872-4EFE-9A8E-21B2596C670D}.Release2|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
