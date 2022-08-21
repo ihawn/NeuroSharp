@@ -148,7 +148,7 @@ namespace NeuroSharp.Training
                 {
                     var minibatch = data.Skip(b * batchSize).Take(batchSize).ToList();
 
-                    for (int j = 0; j < minibatch.Count; j++)
+                    for(int j = 0; j < minibatch.Count; j++)
                     {
                         Vector<double> xTrainItem = minibatch[j].Item1;
                         Vector<double> yTrainItem = minibatch[j].Item2;
@@ -183,6 +183,9 @@ namespace NeuroSharp.Training
                 Console.WriteLine("Loss: " + err + "\n");
             }
         }
+        
+        //todo: implement batch train
+        //todo: write unit tests for all 3 training types
 
         public string SerializeToJSON()
         {
@@ -194,7 +197,7 @@ namespace NeuroSharp.Training
 
         public static Network DeserializeNetworkJSON(string json)
         {
-            return JsonConvert.DeserializeObject<Network>(json, new JsonUtils());
+            return JsonConvert.DeserializeObject<Network>(json, new JsonModelParser());
         }
     }
 }

@@ -51,6 +51,7 @@ namespace NeuroSharp
         {
             WeightGradients[0] = AccumulateGradients ? WeightGradients[0] + Input.OuterProduct(outputError) : Input.OuterProduct(outputError);
             BiasGradient = AccumulateGradients ? BiasGradient + outputError : outputError;
+            
             return Weights[0] * outputError;
         }
 

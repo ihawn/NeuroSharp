@@ -12,9 +12,7 @@ namespace NeuroSharp
         public bool AccumulateGradients { get; set; }
 
         public abstract void UpdateParameters(OptimizerType optimizerType, int sampleIndex, double learningRate);
-
         public abstract void DrainGradients();
-
         public abstract void SetGradientAccumulation(bool acc);
     }
 }
