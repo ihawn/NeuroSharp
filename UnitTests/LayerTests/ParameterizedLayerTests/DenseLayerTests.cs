@@ -27,8 +27,8 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
                     Vector<double> truthY = Vector<double>.Build.Random(j);
                     Vector<double> testX = Vector<double>.Build.Random(i);
 
-                    Network network = new Network();
-                    network.Add(new FullyConnectedLayer(i, j));
+                    Network network = new Network(i);
+                    network.Add(new FullyConnectedLayer(j));
                     network.Add(new ActivationLayer(ActivationType.Tanh));
                     network.Add(new SoftmaxActivationLayer());
                     network.UseLoss(LossType.CategoricalCrossentropy);

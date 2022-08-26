@@ -86,7 +86,8 @@ namespace NeuroSharp
             Matrix<double> inputGradientMatrix = Matrix<double>.Build.Dense((int)Math.Sqrt(_rawInputSize), (int)Math.Sqrt(_rawInputSize));
             Matrix<double>[] inputGradientPieces = new Matrix<double>[_filters];
 
-            Parallel.For(0, _filters, i =>
+            for(int i = 0; i < _filters; i++)
+            //Parallel.For(0, _filters, i =>
             {
                 jacobianSlices[i] = Vector<double>.Build.Dense(outputError.Count / _filters); // ∂L/∂Y
                 for (int j = 0; j < jacobianSlices[i].Count; j++)
@@ -100,12 +101,17 @@ namespace NeuroSharp
                 for (int j = 0; j < singleGradient.Count; j++)
                     inputGradient[i * singleGradient.Count + j] = singleGradient[j];
                 inputGradientPieces[i] = MathUtils.Unflatten(singleGradient);
-            });
+            }//);
 
             for (int i = 0; i < _filters; i++)
                 inputGradientMatrix += inputGradientPieces[i];
 
             return MathUtils.Flatten(inputGradientMatrix.Transpose());
+        }
+
+        public override void InitializeParameters()
+        {
+            
         }
 
         public override void DrainGradients()
@@ -243,5 +249,7 @@ namespace NeuroSharp
             return output;
         }
         #endregion
+        
+        //todo: add support for non-square images
     }
 }

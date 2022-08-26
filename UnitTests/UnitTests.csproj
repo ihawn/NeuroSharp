@@ -24,4 +24,8 @@
     <ProjectReference Include="..\NeuroSharp\NeuroSharp.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DataStructureTests" />
+  </ItemGroup>
+
 </Project>

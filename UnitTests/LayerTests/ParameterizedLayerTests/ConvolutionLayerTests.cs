@@ -30,7 +30,7 @@ namespace UnitTests
                 Vector<double> truthY = Vector<double>.Build.Random(1);
                 Vector<double> testX = Vector<double>.Build.Random(i);
 
-                Network network = new Network();
+                Network network = new Network(i);
                 network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(i), filters: 1, stride: 1));
                 network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
@@ -68,7 +68,7 @@ namespace UnitTests
                     Vector<double> truthY = Vector<double>.Build.Random(outdim * outdim);
                     Vector<double> testX = Vector<double>.Build.Random(i);
 
-                    Network network = new Network();
+                    Network network = new Network(i);
                     network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: 1, stride: 1));
                     network.Add(new ActivationLayer(ActivationType.Tanh));
                     network.Add(new SoftmaxActivationLayer());
@@ -104,7 +104,7 @@ namespace UnitTests
                 Vector<double> testX = Vector<double>.Build.Random(i);
                 Vector<double> testWeight = Vector<double>.Build.Random(i);
 
-                Network network = new Network();
+                Network network = new Network(i);
                 network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(i), filters: 1, stride: 1));
                 network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
@@ -150,7 +150,7 @@ namespace UnitTests
                     Vector<double> testX = Vector<double>.Build.Random(i);
                     Vector<double> testWeight = Vector<double>.Build.Random(j);
 
-                    Network network = new Network();
+                    Network network = new Network(i);
                     network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: 1, stride: 1));
                     network.Add(new ActivationLayer(ActivationType.Tanh));
                     network.Add(new SoftmaxActivationLayer());
@@ -368,7 +368,7 @@ namespace UnitTests
                         Vector<double> truthY = Vector<double>.Build.Random(outdim * outdim);
                         Vector<double> testX = Vector<double>.Build.Random(i);
 
-                        Network network = new Network();
+                        Network network = new Network(i);
                         network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: 1, stride: s));
                         network.Add(new ActivationLayer(ActivationType.Tanh));
                         network.Add(new SoftmaxActivationLayer());
@@ -414,7 +414,7 @@ namespace UnitTests
                         Vector<double> testX = Vector<double>.Build.Random(i);
                         Vector<double> testWeight = Vector<double>.Build.Random(j);
 
-                        Network network = new Network();
+                        Network network = new Network(i);
                         network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: 1, stride: s));
                         network.Add(new ActivationLayer(ActivationType.Tanh));
                         network.Add(new SoftmaxActivationLayer());
@@ -465,7 +465,7 @@ namespace UnitTests
                         Vector<double> truthY = Vector<double>.Build.Random(outdim * outdim * n);
                         Vector<double> testX = Vector<double>.Build.Random(i);
 
-                        Network network = new Network();
+                        Network network = new Network(i);
                         network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: n, stride: 1));
                         network.Add(new ActivationLayer(ActivationType.Tanh));
                         network.Add(new SoftmaxActivationLayer());
@@ -508,7 +508,7 @@ namespace UnitTests
                         Vector<double> testX = Vector<double>.Build.Random(i);
                         Vector<double> testWeights = Vector<double>.Build.Random(j * n);
 
-                        Network network = new Network();
+                        Network network = new Network(i);
                         network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: n, stride: 1));
                         network.Add(new ActivationLayer(ActivationType.Tanh));
                         network.Add(new SoftmaxActivationLayer());
@@ -580,7 +580,7 @@ namespace UnitTests
                             Vector<double> truthY = Vector<double>.Build.Random(outdim * outdim * n);
                             Vector<double> testX = Vector<double>.Build.Random(i);
 
-                            Network network = new Network();
+                            Network network = new Network(i);
                             network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: n, stride: s));
                             network.Add(new ActivationLayer(ActivationType.Tanh));
                             network.Add(new SoftmaxActivationLayer());
@@ -629,7 +629,7 @@ namespace UnitTests
                             Vector<double> testX = Vector<double>.Build.Random(i);
                             Vector<double> testWeights = Vector<double>.Build.Random(j * n);
 
-                            Network network = new Network();
+                            Network network = new Network(i);
                             network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: n, stride: s));
                             network.Add(new ActivationLayer(ActivationType.Tanh));
                             network.Add(new SoftmaxActivationLayer());

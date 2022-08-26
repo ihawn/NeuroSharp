@@ -44,10 +44,10 @@ namespace UnitTests.ModelTests
                 yTrain.Add(Vector<double>.Build.DenseOfArray(y));
 
 
-            Network network = new Network();
-            network.Add(new FullyConnectedLayer(2, 3));
+            Network network = new Network(2);
+            network.Add(new FullyConnectedLayer(3));
             network.Add(new ActivationLayer(ActivationType.ReLu));
-            network.Add(new FullyConnectedLayer(3, 1));
+            network.Add(new FullyConnectedLayer(1));
             network.UseLoss(LossType.MeanSquaredError);
 
             network.SGDTrain(xTrain, yTrain, epochs: 1000, optimizerType: OptimizerType.GradientDescent, learningRate: 0.1f);
@@ -75,7 +75,7 @@ namespace UnitTests.ModelTests
                 yTrain.Add(Vector<double>.Build.Random(10));
             }
 
-            Network network = new Network();
+            Network network = new Network(28 * 28);
             network.Add(new MultiChannelConvolutionalLayer(28 * 28, kernel: 3, filters: 8, channels: 1, stride: 1));
             network.Add(new ActivationLayer(ActivationType.ReLu));
             network.Add(new MultiChannelConvolutionalLayer(26 * 26 * 8, kernel: 3, filters: 2, channels: 8, stride: 1));
@@ -83,13 +83,13 @@ namespace UnitTests.ModelTests
             network.Add(new MultiChannelConvolutionalLayer(24 * 24 * 2, kernel: 2, filters: 2, channels: 2, stride: 1));
             network.Add(new ActivationLayer(ActivationType.ReLu));
             network.Add(new MaxPoolingLayer(23 * 23 * 2, prevFilterCount: 2, poolSize: 2));
-            network.Add(new FullyConnectedLayer(22 * 22 * 2, 128));
+            network.Add(new FullyConnectedLayer(128));
             network.Add(new ActivationLayer(ActivationType.Tanh));
-            network.Add(new FullyConnectedLayer(128, 10));
+            network.Add(new FullyConnectedLayer(10));
             network.Add(new SoftmaxActivationLayer());
             network.UseLoss(LossType.CategoricalCrossentropy);
 
-            network.MinibatchTrain(xTrain, yTrain, epochs: 5, OptimizerType.Adam, batchSize: 64, learningRate: 0.001f);
+            network.MinibatchTrain(xTrain, yTrain, epochs: 2, OptimizerType.Adam, batchSize: 64, learningRate: 0.001f);
             string modelJson = network.SerializeToJSON();
             Network deserializedNetwork = Network.DeserializeNetworkJSON(modelJson);
 

@@ -11,6 +11,7 @@ namespace NeuroSharp
         public Vector<double> BiasGradient { get; set; }
         public bool AccumulateGradients { get; set; }
 
+        public abstract void InitializeParameters();
         public abstract void UpdateParameters(OptimizerType optimizerType, int sampleIndex, double learningRate);
         public abstract void DrainGradients();
         public abstract void SetGradientAccumulation(bool acc);

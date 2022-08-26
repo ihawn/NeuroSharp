@@ -115,7 +115,7 @@ namespace UnitTests
                 Vector<double> testX = Vector<double>.Build.Random(27);
                 Vector<double> truthY = Vector<double>.Build.Random(28);
 
-                Network network = new Network();
+                Network network = new Network(27);
                 network.Add(new MultiChannelConvolutionalLayer(27, kernel: 2, filters: 7, stride: 1, channels: 3));
                 network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
@@ -146,7 +146,7 @@ namespace UnitTests
                 Vector<double> testX = Vector<double>.Build.Random(48);
                 Vector<double> truthY = Vector<double>.Build.Random(28);
 
-                Network network = new Network();
+                Network network = new Network(48);
                 network.Add(new MultiChannelConvolutionalLayer(48, kernel: 2, filters: 7, stride: 2, channels: 3));
                 network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
@@ -178,7 +178,7 @@ namespace UnitTests
                 Vector<double> truthY = Vector<double>.Build.Random(13 * 4);
                 Vector<double> testWeights = Vector<double>.Build.Random(4 * 13 * 4);
 
-                Network network = new Network();
+                Network network = new Network(36);
                 network.Add(new MultiChannelConvolutionalLayer(inputSize: 36, kernel: 2, filters: 13, stride: 1, channels: 4));
                 network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
@@ -239,7 +239,7 @@ namespace UnitTests
                 Vector<double> truthY = Vector<double>.Build.Random(13 * 4);
                 Vector<double> testWeights = Vector<double>.Build.Random(5 * 13 * 4);
 
-                Network network = new Network();
+                Network network = new Network(80);
                 network.Add(new MultiChannelConvolutionalLayer(inputSize: 80, kernel: 2, filters: 13, stride: 2, channels: 5));
                 network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());

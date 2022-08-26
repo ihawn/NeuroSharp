@@ -25,7 +25,7 @@ namespace UnitTests
             Vector<double> truthY = Vector<double>.Build.Dense(4);
 
             //note that the number of filters on a convolutional layer turns into the number of channels on the next one
-            Network network = new Network();
+            Network network = new Network(56 * 56 * 2);
             network.Add(new MultiChannelConvolutionalLayer(56 * 56 * 2, kernel: 8, filters: 6, stride: 2, channels: 2));
             network.Add(new ActivationLayer(ActivationType.Tanh));
             network.Add(new MultiChannelConvolutionalLayer(25 * 25 * 6, kernel: 4, filters: 5, stride: 3, channels: 6));
@@ -33,9 +33,9 @@ namespace UnitTests
             network.Add(new MultiChannelConvolutionalLayer(8 * 8 * 5, kernel: 2, filters: 7, stride: 2, channels: 5));
             network.Add(new ActivationLayer(ActivationType.ReLu));
             network.Add(new MaxPoolingLayer(4 * 4 * 7, prevFilterCount: 7, poolSize: 2));
-            network.Add(new FullyConnectedLayer(3 * 3 * 7, 10));
+            network.Add(new FullyConnectedLayer(10));
             network.Add(new ActivationLayer(ActivationType.Tanh));
-            network.Add(new FullyConnectedLayer(10, 4));
+            network.Add(new FullyConnectedLayer(4));
             network.Add(new SoftmaxActivationLayer());
             network.UseLoss(LossType.CategoricalCrossentropy);
 
@@ -63,7 +63,7 @@ namespace UnitTests
             Vector<double> testWeights = Vector<double>.Build.Random(64 * 6 * 3);
 
             //note that the number of filters on a convolutional layer turns into the number of channels on the next one
-            Network network = new Network();
+            Network network = new Network(56 * 56 * 3);
             network.Add(new MultiChannelConvolutionalLayer(56 * 56 * 3, kernel: 8, filters: 6, stride: 2, channels: 3));
             network.Add(new ActivationLayer(ActivationType.Tanh));
             network.Add(new MultiChannelConvolutionalLayer(25 * 25 * 6, kernel: 4, filters: 5, stride: 3, channels: 6));
@@ -71,9 +71,9 @@ namespace UnitTests
             network.Add(new MultiChannelConvolutionalLayer(8 * 8 * 5, kernel: 2, filters: 7, stride: 2, channels: 5));
             network.Add(new ActivationLayer(ActivationType.ReLu));
             network.Add(new MaxPoolingLayer(4 * 4 * 7, prevFilterCount: 7, poolSize: 2));
-            network.Add(new FullyConnectedLayer(3 * 3 * 7, 10));
+            network.Add(new FullyConnectedLayer(10));
             network.Add(new ActivationLayer(ActivationType.Tanh));
-            network.Add(new FullyConnectedLayer(10, 4));
+            network.Add(new FullyConnectedLayer(4));
             network.Add(new SoftmaxActivationLayer());
             network.UseLoss(LossType.CategoricalCrossentropy);
 

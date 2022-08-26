@@ -67,7 +67,7 @@ namespace NeuroSharp.Utilities
             string name = (string)jo["Name"];
             LossType lossType = (LossType)Int32.Parse((string)jo["LossType"]);
             
-            return new Network(new List<Layer>(layers), lossType, name);
+            return new Network(layers, lossType, name);
         }
 
         public override bool CanWrite

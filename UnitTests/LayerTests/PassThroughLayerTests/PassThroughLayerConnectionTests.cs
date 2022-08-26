@@ -26,7 +26,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                 Vector<double> truthY = Vector<double>.Build.Random(i);
                 Vector<double> testX = Vector<double>.Build.Random(i);
 
-                Network network = new Network();
+                Network network = new Network(i);
                 network.Add(new SoftmaxActivationLayer());
                 network.UseLoss(LossType.CategoricalCrossentropy);
 
@@ -55,7 +55,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                 Vector<double> truthY = Vector<double>.Build.Random(i);
                 Vector<double> testX = Vector<double>.Build.Random(i);
 
-                Network network = new Network();
+                Network network = new Network(i);
                 network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
                 network.UseLoss(LossType.CategoricalCrossentropy);
@@ -85,7 +85,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                 Vector<double> truthY = Vector<double>.Build.Random(i);
                 Vector<double> testX = Vector<double>.Build.Random(i);
 
-                Network network = new Network();
+                Network network = new Network(i);
                 network.Add(new ActivationLayer(ActivationType.ReLu));
                 network.Add(new SoftmaxActivationLayer());
                 network.UseLoss(LossType.CategoricalCrossentropy);
@@ -117,7 +117,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                 Vector<double> truthY = Vector<double>.Build.Random(i);
                 Vector<double> testX = Vector<double>.Build.Random(i);
 
-                Network network = new Network();
+                Network network = new Network(i);
                 network.Add(new SoftmaxActivationLayer());
                 network.UseLoss(LossType.MeanSquaredError);
 
@@ -146,7 +146,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                 Vector<double> truthY = Vector<double>.Build.Random(i);
                 Vector<double> testX = Vector<double>.Build.Random(i);
 
-                Network network = new Network();
+                Network network = new Network(i);
                 network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
                 network.UseLoss(LossType.MeanSquaredError);
@@ -176,7 +176,7 @@ namespace UnitTests.NetworkTests.LayerConnectionTests
                 Vector<double> truthY = Vector<double>.Build.Random(i);
                 Vector<double> testX = Vector<double>.Build.Random(i);
 
-                Network network = new Network();
+                Network network = new Network(i);
                 network.Add(new ActivationLayer(ActivationType.ReLu));
                 network.Add(new SoftmaxActivationLayer());
                 network.UseLoss(LossType.MeanSquaredError);

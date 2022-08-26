@@ -10,6 +10,8 @@ namespace NeuroSharp.Training
     {
         public List<Layer> Layers { get; set; }
         
+        public int EntrySize { get; set; }
+        
         [JsonIgnore]
         public List<ParameterizedLayer> ParameterizedLayers { get; set; }
         
@@ -21,10 +23,11 @@ namespace NeuroSharp.Training
         public LossType LossType { get; set; }
         public string Name { get; set; }
 
-        public Network(string name = "")
+        public Network(int entrySize, string name = "")
         {
             Layers = new List<Layer>();
             Name = name;
+            EntrySize = entrySize;
         }
         
         //json constructor
@@ -37,6 +40,11 @@ namespace NeuroSharp.Training
 
         public void Add(Layer layer)
         {
+            layer.Id = Layers.Count();
+            layer.ParentNetwork = this;
+            layer.SetSizeIO();
+            if(layer is ParameterizedLayer)
+                ((ParameterizedLayer)layer).InitializeParameters();
             Layers.Add(layer);
         }
 
@@ -63,6 +71,33 @@ namespace NeuroSharp.Training
                 output = layer.ForwardPropagation(output);
 
             return output;
+        }
+
+        public Vector<double> BackPropagate(Vector<double> truth, Vector<double> test)
+        {
+            Vector<double> error = LossPrime(truth, test);
+            for (int k = Layers.Count - 1; k >= 0; k--)
+            {
+                error = Layers[k].BackPropagation(error);
+            }
+
+            return error;
+        }
+
+        public int TrainingFeedback(double lastProgress, int current, int total)
+        {
+            int progress = (int)Math.Round(100f * current / total);
+            if (lastProgress != progress && progress % 5 == 0)
+                Console.Write("..." + progress + "%");
+            return progress;
+        }
+
+        public void UpdateParameters(OptimizerType type, int adamIndex, double learningRate)
+        {
+            Parallel.For(0, ParameterizedLayers.Count, k =>
+            {
+                ParameterizedLayers[k].UpdateParameters(type, adamIndex, learningRate);
+            });
         }
 
         public void Train(List<Vector<double>> xTrain, List<Vector<double>> yTrain, int epochs, TrainingConfiguration trainingConfiguration = TrainingConfiguration.SGD,
@@ -93,29 +128,11 @@ namespace NeuroSharp.Training
                 int lastProgress = 0;
                 for (int j = 0; j < samples; j++)
                 {
-                    Vector<double> output = xTrain[j];
-                    foreach (var layer in Layers)
-                        output = layer.ForwardPropagation(output);
-
+                    Vector<double> output = Predict(xTrain[j]);
                     err += Loss(yTrain[j], output);
-
-                    // backpropagate the backwards gradient and store weight/bias gradients
-                    Vector<double> error = LossPrime(yTrain[j], output);
-                    for (int k = Layers.Count - 1; k >= 0; k--)
-                    {
-                        error = Layers[k].BackPropagation(error);
-                    }
-
-                    // update weights/biases based on stored gradients
-                    Parallel.For(0, ParameterizedLayers.Count, k =>
-                    {
-                        ParameterizedLayers[k].UpdateParameters(optimizerType, j, learningRate);
-                    });
-
-                    int progress = (int)Math.Round(100f * j / samples);
-                    if (lastProgress != progress && progress % 5 == 0)
-                        Console.Write("..." + progress + "%");
-                    lastProgress = progress;
+                    BackPropagate(yTrain[j], output);
+                    UpdateParameters(optimizerType, j, learningRate);
+                    lastProgress = TrainingFeedback(lastProgress, j, samples);
                 }
 
                 err /= samples;
@@ -142,41 +159,21 @@ namespace NeuroSharp.Training
                 Console.WriteLine("\nEpoch: " + (i + 1));
 
                 double err = 0;
-
                 int lastProgress = 0;
+                
                 for (int b = 0; b <= batchCount; b++)
                 {
                     var minibatch = data.Skip(b * batchSize).Take(batchSize).ToList();
 
                     for(int j = 0; j < minibatch.Count; j++)
                     {
-                        Vector<double> xTrainItem = minibatch[j].Item1;
-                        Vector<double> yTrainItem = minibatch[j].Item2;
-                        Vector<double> output = xTrainItem;
-
-                        foreach (var layer in Layers)
-                            output = layer.ForwardPropagation(output);
-
-                        err += Loss(yTrainItem, output);
-
-                        // backpropagate the backwards gradient and store weight/bias gradients
-                        Vector<double> error = LossPrime(yTrainItem, output);
-                        for (int k = Layers.Count - 1; k >= 0; k--)
-                        {
-                            error = Layers[k].BackPropagation(error);
-                        }
+                        Vector<double> output = Predict(minibatch[j].Item1);
+                        err += Loss(minibatch[j].Item2, output);
+                        BackPropagate(minibatch[j].Item2, output);
                     }
-
-                    int progress = (int)Math.Round(100f * b / batchCount);
-                    if (lastProgress != progress && progress % 5 == 0)
-                        Console.Write("..." + progress + "%");
-                    lastProgress = progress;
-
-                    // update weights/biases based on stored gradients
-                    Parallel.For(0, ParameterizedLayers.Count, k =>
-                    {
-                        ParameterizedLayers[k].UpdateParameters(optimizerType, b, learningRate);
-                    });
+                    
+                    UpdateParameters(optimizerType, b, learningRate);
+                    lastProgress = TrainingFeedback(lastProgress, b, batchCount);
                 }
 
                 err /= batchSize * batchCount;

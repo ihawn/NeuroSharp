@@ -1,6 +1,8 @@
-﻿using MathNet.Numerics.LinearAlgebra;
+﻿using System.Runtime.CompilerServices;
+using MathNet.Numerics.LinearAlgebra;
 using NeuroSharp.Optimizers;
 using NeuroSharp.Enumerations;
+using NeuroSharp.Training;
 using NeuroSharp.Utilities;
 using Newtonsoft.Json;
 
@@ -11,20 +13,10 @@ namespace NeuroSharp
         [JsonProperty]
         private Adam _adam;
 
-        public FullyConnectedLayer(int inputSize, int outputSize)
+        public FullyConnectedLayer(int outputSize)
         {
             LayerType = LayerType.FullyConnected;
-            WeightGradients = new Matrix<double>[] { Matrix<double>.Build.Dense(inputSize, outputSize) };
-            Weights = new Matrix<double>[] { Matrix<double>.Build.Random(inputSize, outputSize) };
-            Bias = Vector<double>.Build.Random(outputSize);
-            BiasGradient = Vector<double>.Build.Dense(outputSize);
-            _adam = new Adam(inputSize, outputSize);
-
-            for (int i = 0; i < inputSize; i++)
-                for (int j = 0; j < outputSize; j++)
-                    Weights[0][i, j] = MathUtils.GetInitialWeight(inputSize);
-            for (int i = 0; i < outputSize; i++)
-                Bias[i] = MathUtils.GetInitialWeight(inputSize);
+            OutputSize = outputSize;
         }
         
         //json constructor
@@ -51,8 +43,22 @@ namespace NeuroSharp
         {
             WeightGradients[0] = AccumulateGradients ? WeightGradients[0] + Input.OuterProduct(outputError) : Input.OuterProduct(outputError);
             BiasGradient = AccumulateGradients ? BiasGradient + outputError : outputError;
-            
             return Weights[0] * outputError;
+        }
+        
+        public override void InitializeParameters()
+        {
+            WeightGradients = new Matrix<double>[] { Matrix<double>.Build.Dense(InputSize, OutputSize) };
+            Weights = new Matrix<double>[] { Matrix<double>.Build.Random(InputSize, OutputSize) };
+            Bias = Vector<double>.Build.Random(OutputSize);
+            BiasGradient = Vector<double>.Build.Dense(OutputSize);
+            _adam = new Adam(InputSize, OutputSize);
+
+            for (int i = 0; i < InputSize; i++)
+                for (int j = 0; j < OutputSize; j++)
+                    Weights[0][i, j] = MathUtils.GetInitialWeight(InputSize);
+            for (int i = 0; i < OutputSize; i++)
+                Bias[i] = MathUtils.GetInitialWeight(InputSize);
         }
 
         public override void DrainGradients()

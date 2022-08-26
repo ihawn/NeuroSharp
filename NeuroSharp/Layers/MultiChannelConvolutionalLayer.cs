@@ -72,6 +72,11 @@ namespace NeuroSharp
 
             return CombineChannelBackPropagation(_channelBackpropagationOutputs, _channelCount, _channelInputSize);
         }
+        
+        public override void InitializeParameters()
+        {
+            
+        }
 
         public override void DrainGradients()
         {

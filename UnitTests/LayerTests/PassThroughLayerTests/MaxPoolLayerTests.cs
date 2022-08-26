@@ -32,7 +32,7 @@ namespace UnitTests
                     Vector<double> truthY = Vector<double>.Build.Random(outdim * outdim);
                     Vector<double> testX = Vector<double>.Build.Random(u);
 
-                    Network network = new Network();
+                    Network network = new Network(u);
                     network.Add(new MaxPoolingLayer(u, prevFilterCount: 1, poolSize: (int)Math.Sqrt(v)));
                     network.Add(new SoftmaxActivationLayer());
                     network.UseLoss(LossType.CategoricalCrossentropy);
@@ -72,7 +72,7 @@ namespace UnitTests
                         Vector<double> truthY = Vector<double>.Build.Random(outdim * outdim * q);
                         Vector<double> testX = Vector<double>.Build.Random(u * q);
 
-                        Network network = new Network();
+                        Network network = new Network(u * q);
                         network.Add(new MaxPoolingLayer(u * q, prevFilterCount: q, poolSize: (int)Math.Sqrt(v)));
                         network.Add(new SoftmaxActivationLayer());
                         network.UseLoss(LossType.CategoricalCrossentropy);
@@ -104,7 +104,7 @@ namespace UnitTests
                 Vector<double> truthY = Vector<double>.Build.Random(4 * 5);
                 Vector<double> testX = Vector<double>.Build.Random(16);
 
-                Network network = new Network();
+                Network network = new Network(16);
                 network.Add(new ConvolutionalLayer(4 * 4, kernel: 2, filters: 5, stride: 1));
                 network.Add(new ActivationLayer(ActivationType.ReLu));
                 network.Add(new MaxPoolingLayer(3 * 3 * 5, prevFilterCount: 5, poolSize: 2));
@@ -132,7 +132,7 @@ namespace UnitTests
                 Vector<double> truthY = Vector<double>.Build.Random(4 * 4 * 20);
                 Vector<double> testX = Vector<double>.Build.Random(100);
 
-                Network network = new Network();
+                Network network = new Network(100);
                 network.Add(new ConvolutionalLayer(10 * 10, kernel: 5, filters: 20, stride: 1));
                 network.Add(new ActivationLayer(ActivationType.ReLu));
                 network.Add(new MaxPoolingLayer(6 * 6 * 20, prevFilterCount: 20, poolSize: 3));
