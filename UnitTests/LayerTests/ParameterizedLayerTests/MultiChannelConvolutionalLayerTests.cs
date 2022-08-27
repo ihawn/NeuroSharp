@@ -302,6 +302,190 @@ namespace UnitTests
                 Assert.IsTrue((finiteDiffWeightGradient - explicitWeightGradient).L2Norm() < 0.0001);
             }
         }
+        
+        [Test]
+        public void MultiChannelConvLayer_BackPropagation_ReturnsCorrectInputGradient_MSE_Stride1()
+        {
+            for(int s = 0; s < 25; s++)
+            {
+                Vector<double> testX = Vector<double>.Build.Random(27);
+                Vector<double> truthY = Vector<double>.Build.Random(28);
+
+                Network network = new Network(27);
+                network.Add(new ConvolutionalLayer(kernel: 2, filters: 7, stride: 1, channels: 3));
+                network.Add(new ActivationLayer(ActivationType.Tanh));
+                network.Add(new SoftmaxActivationLayer());
+                network.UseLoss(LossType.MeanSquaredError);
+
+                double networkLoss(Vector<double> x)
+                {
+                    x = network.Predict(x);
+                    return network.Loss(truthY, x);
+                }
+
+                Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, testX);
+                Vector<double> testGradient = LossFunctions.MeanSquaredErrorPrime(truthY, network.Predict(testX));
+                for (int k = network.Layers.Count - 1; k >= 0; k--)
+                {
+                    testGradient = network.Layers[k].BackPropagation(testGradient);
+                }
+
+                Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
+            }
+        }
+
+        [Test]
+        public void MultiChannelConvLayer_BackPropagation_ReturnsCorrectInputGradient_MSE_Stride2()
+        {
+            for (int s = 0; s < 25; s++)
+            {
+                Vector<double> testX = Vector<double>.Build.Random(48);
+                Vector<double> truthY = Vector<double>.Build.Random(28);
+
+                Network network = new Network(48);
+                network.Add(new ConvolutionalLayer(kernel: 2, filters: 7, stride: 2, channels: 3));
+                network.Add(new ActivationLayer(ActivationType.Tanh));
+                network.Add(new SoftmaxActivationLayer());
+                network.UseLoss(LossType.MeanSquaredError);
+
+                double networkLoss(Vector<double> x)
+                {
+                    x = network.Predict(x);
+                    return network.Loss(truthY, x);
+                }
+
+                Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, testX);
+                Vector<double> testGradient = LossFunctions.MeanSquaredErrorPrime(truthY, network.Predict(testX));
+                for (int k = network.Layers.Count - 1; k >= 0; k--)
+                {
+                    testGradient = network.Layers[k].BackPropagation(testGradient);
+                }
+
+                Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
+            }
+        }
+
+        [Test]
+        public void MultiChannelConvLayer_BackPropagation_ComputesCorrectWeightGradient_MSE_Stride1()
+        {
+            for (int s = 0; s < 25; s++)
+            {
+                Vector<double> testX = Vector<double>.Build.Random(36);
+                Vector<double> truthY = Vector<double>.Build.Random(13 * 4);
+                Vector<double> testWeights = Vector<double>.Build.Random(4 * 13 * 4);
+
+                Network network = new Network(36);
+                network.Add(new ConvolutionalLayer(kernel: 2, filters: 13, stride: 1, channels: 4));
+                network.Add(new ActivationLayer(ActivationType.Tanh));
+                network.Add(new SoftmaxActivationLayer());
+                network.UseLoss(LossType.MeanSquaredError);
+
+                double networkLossWithWeightAsVariable(Vector<double> x)
+                {
+                    Vector<double>[] splitWeights = ConvolutionalLayer.SplitInputToChannels(x, 4, 13 * 4);
+                    for (int p = 0; p < 4; p++)
+                    {
+                        Vector<double>[] splitWeights2 = ConvolutionalLayer.SplitInputToChannels(splitWeights[p], 13, 4);
+                        ConvolutionalOperator conv = ((ConvolutionalLayer)network.Layers[0]).ChannelOperators[p];
+                        for (int k = 0; k < 13; k++)
+                        {
+                            conv.Weights[k] = MathUtils.Unflatten(splitWeights2[k]);
+                        }
+                    }
+
+                    Vector<double> output = network.Predict(testX);
+                    return network.Loss(truthY, output);
+                }
+
+                Vector<double> finiteDiffWeightGradient = MathUtils.FiniteDifferencesGradient(networkLossWithWeightAsVariable, testWeights);
+                List<double> explicitWeightGradientList = new List<double>();
+
+                Vector<double> outputGradient = LossFunctions.MeanSquaredErrorPrime(truthY, network.Predict(testX));
+
+                for (int k = network.Layers.Count - 1; k >= 0; k--)
+                {
+                    outputGradient = network.Layers[k].BackPropagation(outputGradient);
+                    if (k == 0) // retrieve weight gradient from convolutional layer
+                    {
+                        for (int p = 0; p < 4; p++)
+                        {
+                            ConvolutionalOperator conv = ((ConvolutionalLayer)network.Layers[0]).ChannelOperators[p];
+                            for (int y = 0; y < conv.WeightGradients.Length; y++)
+                            {
+                                Vector<double> weightGrad = MathUtils.Flatten(conv.WeightGradients[y]);
+                                for (int q = 0; q < weightGrad.Count; q++)
+                                    explicitWeightGradientList.Add(weightGrad[q]);
+                            }
+                        }
+                    }
+                }
+
+                Vector<double> explicitWeightGradient = Vector<double>.Build.DenseOfEnumerable(explicitWeightGradientList);
+
+                Assert.IsTrue((finiteDiffWeightGradient - explicitWeightGradient).L2Norm() < 0.0001);
+            }
+        }
+
+        [Test]
+        public void MultiChannelConvLayer_BackPropagation_ComputesCorrectWeightGradient_MSE_Stride2()
+        {
+            for(int s = 0; s < 25; s++)
+            {
+                Vector<double> testX = Vector<double>.Build.Random(80);
+                Vector<double> truthY = Vector<double>.Build.Random(13 * 4);
+                Vector<double> testWeights = Vector<double>.Build.Random(5 * 13 * 4);
+
+                Network network = new Network(80);
+                network.Add(new ConvolutionalLayer(kernel: 2, filters: 13, stride: 2, channels: 5));
+                network.Add(new ActivationLayer(ActivationType.Tanh));
+                network.Add(new SoftmaxActivationLayer());
+                network.UseLoss(LossType.MeanSquaredError);
+
+                double networkLossWithWeightAsVariable(Vector<double> x)
+                {
+                    Vector<double>[] splitWeights = ConvolutionalLayer.SplitInputToChannels(x, 5, 13 * 4);
+                    for (int p = 0; p < 5; p++)
+                    {
+                        Vector<double>[] splitWeights2 = ConvolutionalLayer.SplitInputToChannels(splitWeights[p], 13, 4);
+                        ConvolutionalOperator conv = ((ConvolutionalLayer)network.Layers[0]).ChannelOperators[p];
+                        for (int k = 0; k < 13; k++)
+                        {
+                            conv.Weights[k] = MathUtils.Unflatten(splitWeights2[k]);
+                        }
+                    }
+
+                    Vector<double> output = network.Predict(testX);
+                    return network.Loss(truthY, output);
+                }
+
+                Vector<double> finiteDiffWeightGradient = MathUtils.FiniteDifferencesGradient(networkLossWithWeightAsVariable, testWeights);
+                List<double> explicitWeightGradientList = new List<double>();
+
+                Vector<double> outputGradient = LossFunctions.MeanSquaredErrorPrime(truthY, network.Predict(testX));
+
+                for (int k = network.Layers.Count - 1; k >= 0; k--)
+                {
+                    outputGradient = network.Layers[k].BackPropagation(outputGradient);
+                    if (k == 0) // retrieve weight gradient from convolutional layer
+                    {
+                        for (int p = 0; p < 5; p++)
+                        {
+                            ConvolutionalOperator conv = ((ConvolutionalLayer)network.Layers[0]).ChannelOperators[p];
+                            for (int y = 0; y < conv.WeightGradients.Length; y++)
+                            {
+                                Vector<double> weightGrad = MathUtils.Flatten(conv.WeightGradients[y]);
+                                for (int q = 0; q < weightGrad.Count; q++)
+                                    explicitWeightGradientList.Add(weightGrad[q]);
+                            }
+                        }
+                    }
+                }
+
+                Vector<double> explicitWeightGradient = Vector<double>.Build.DenseOfEnumerable(explicitWeightGradientList);
+
+                Assert.IsTrue((finiteDiffWeightGradient - explicitWeightGradient).L2Norm() < 0.0001);
+            }
+        }
         #endregion
     }
 }

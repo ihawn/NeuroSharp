@@ -21,6 +21,8 @@ namespace NeuroSharp
         private int _filters;
         [JsonProperty]
         private int _kernelSize;
+        
+        //todo: profile memory and remove excess mem allocations
 
         public ConvolutionalOperator(ConvolutionalLayer parent, int kernel, int filters, int stride = 1)
         {
@@ -85,7 +87,7 @@ namespace NeuroSharp
             for (int i = 0; i < _filters; i++)
                 inputGradientMatrix += inputGradientPieces[i];
 
-            return MathUtils.Flatten(inputGradientMatrix.Transpose());
+            return MathUtils.Flatten(inputGradientMatrix.Transpose()); //todo perform transpose implicitly in the convolution
         }
 
         public override void SetSizeIO()

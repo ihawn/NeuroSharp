@@ -17,7 +17,7 @@ namespace UnitTests
         }
 
         [Test]
-        public void CategoricalCrossentropyPrime_ReturnsCorrectGradient()
+        public void MeanSquaredErrorPrime_ReturnsCorrectGradient()
         {
             for(int n = 1; n < 100; n++)
             {

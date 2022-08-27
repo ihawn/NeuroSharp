@@ -101,10 +101,7 @@ namespace NeuroSharp.Utilities
             get { return false; }
         }
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            throw new NotImplementedException();
-        }
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) { }
 
         public Vector<double> JsonArrayToVector(JToken obj)
         {

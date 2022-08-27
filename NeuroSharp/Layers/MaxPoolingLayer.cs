@@ -14,7 +14,7 @@ namespace NeuroSharp
         [JsonProperty]
         private int _poolSize;
         [JsonProperty]
-        private int _stride; //todo test stride > 1
+        private int _stride;
         [JsonProperty]
         private int _filters;
 

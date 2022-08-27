@@ -181,44 +181,43 @@ namespace UnitTests
             }
         }
 
-        //TODO
         //Mean Squared Error Loss
-       /*  [Test]
-         public void ConvolutionLayer_ReturnsCorrectInputGradient_WhenChainedTogetherWithMSESoftmaxTanhAndConvolutionalLayer_KernelSameSizeAsImageSoNoStride()
-         {
-             List<int> squares = new List<int>();
-             for (int i = 1; i < 25; i++)
-                 squares.Add((int)Math.Pow(i, 2));
-             foreach (int i in squares)
-             {
+        [Test]
+        public void ConvolutionLayer_ReturnsCorrectInputGradient_WhenChainedTogetherWithMSETanhAndConvolutionalLayer_KernelSameSizeAsImageSoNoStride()
+        {
+            List<int> squares = new List<int>();
+            for (int i = 1; i < 25; i++)
+                squares.Add((int)Math.Pow(i, 2));
+            foreach (int i in squares)
+            {
+                Vector<double> truthY = Vector<double>.Build.Random(1);
+                Vector<double> testX = Vector<double>.Build.Random(i);
 
-             }
-             Vector<double> truthY = Vector<double>.Build.Random(1);
-             Vector<double> testX = Vector<double>.Build.Random(4);
+                Network network = new Network(i);
+                network.Add(new ConvolutionalLayer(kernel: (int)Math.Sqrt(i), filters: 1, stride: 1));
+                network.Add(new ActivationLayer(ActivationType.Tanh));
+                network.Add(new SoftmaxActivationLayer());
+                network.UseLoss(LossType.MeanSquaredError);
 
-             Network network = new Network();
-             network.Add(new ConvolutionalLayer(4, kernel: (int)Math.Sqrt(4), filters: 1, stride: 1));
-             network.Add(new ActivationLayer(ActivationType.Tanh));
-             network.UseLoss(LossFunctions.MeanSquaredError, LossFunctions.MeanSquaredErrorPrime);
+                double networkLoss(Vector<double> x)
+                {
+                    x = network.Predict(x);
+                    return network.Loss(truthY, x);
+                }
 
-             double networkLoss(Vector<double> x)
-             {
-                 x = network.Predict(x);
-                 return network.Loss(truthY, x);
-             }
+                Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, testX);
+                Vector<double> testGradient = LossFunctions.MeanSquaredErrorPrime(truthY, network.Predict(testX));
+                for (int k = network.Layers.Count - 1; k >= 0; k--)
+                {
+                    testGradient = network.Layers[k].BackPropagation(testGradient);
+                }
 
-             Vector<double> finiteDiffGradient = Utils.FiniteDifferencesGradient(networkLoss, testX);
-             Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
-             for (int k = network.Layers.Count - 1; k >= 0; k--)
-             {
-                 testGradient = network.Layers[k].BackPropagation(testGradient);
-             }
+                Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
+            }
+        }
 
-             Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
-         }*/
-
-        /*[Test]
-        public void ConvolutionLayer_ReturnsCorrectInputGradient_WhenChainedTogetherWithMSESoftmaxTanhAndConvolutionalLayer_WithStride1()
+        [Test]
+        public void ConvolutionLayer_ReturnsCorrectInputGradient_WhenChainedTogetherWithMSETanhAndConvolutionalLayer_WithStride1()
         {
             List<int> squares = new List<int>();
             for (int i = 1; i < 10; i++)
@@ -232,11 +231,11 @@ namespace UnitTests
                     Vector<double> truthY = Vector<double>.Build.Random(outdim * outdim);
                     Vector<double> testX = Vector<double>.Build.Random(i);
 
-                    Network network = new Network();
-                    network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: 1, stride: 1));
+                    Network network = new Network(i);
+                    network.Add(new ConvolutionalLayer(kernel: (int)Math.Sqrt(j), filters: 1, stride: 1));
                     network.Add(new ActivationLayer(ActivationType.Tanh));
                     network.Add(new SoftmaxActivationLayer());
-                    network.UseLoss(LossType.CategoricalCrossentropy);
+                    network.UseLoss(LossType.MeanSquaredError);
 
                     double networkLoss(Vector<double> x)
                     {
@@ -244,11 +243,11 @@ namespace UnitTests
                         return network.Loss(truthY, x);
                     }
 
-                    Vector<double> finiteDiffGradient = Utils.FiniteDifferencesGradient(networkLoss, testX);
-                    Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
+                    Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, testX);
+                    Vector<double> testGradient = LossFunctions.MeanSquaredErrorPrime(truthY, network.Predict(testX));
                     for (int k = network.Layers.Count - 1; k >= 0; k--)
                     {
-                        testGradient = network.Layers[k].BackPropagation(testGradient, OptimizerType.Adam, 1, 0.0001);
+                        testGradient = network.Layers[k].BackPropagation(testGradient);
                     }
 
                     Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
@@ -257,7 +256,7 @@ namespace UnitTests
         }
 
         [Test]
-        public void ConvolutionLayer_ReturnsCorrectWeightGradient_WhenChainedTogetherWithMSESoftmaxTanhAndConvolutionalLayer_KernelSameSizeAsImageSoNoStride()
+        public void ConvolutionLayer_ReturnsCorrectWeightGradient_WhenChainedTogetherWithMSETanhAndConvolutionalLayer_KernelSameSizeAsImageSoNoStride()
         {
             List<int> squares = new List<int>();
             for (int i = 1; i < 10; i++)
@@ -268,30 +267,30 @@ namespace UnitTests
                 Vector<double> testX = Vector<double>.Build.Random(i);
                 Vector<double> testWeight = Vector<double>.Build.Random(i);
 
-                Network network = new Network();
-                network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(i), filters: 1, stride: 1));
+                Network network = new Network(i);
+                network.Add(new ConvolutionalLayer(kernel: (int)Math.Sqrt(i), filters: 1, stride: 1));
                 network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
-                network.UseLoss(LossType.CategoricalCrossentropy);
+                network.UseLoss(LossType.MeanSquaredError);
 
                 double networkLossWithWeightAsVariable(Vector<double> x)
                 {
                     ConvolutionalLayer conv = (ConvolutionalLayer)network.Layers[0];
-                    conv.Weights[0] = Utils.Unflatten(x);
+                    conv.ChannelOperators[0].Weights[0] = MathUtils.Unflatten(x);
                     Vector<double> output = network.Predict(testX);
                     return network.Loss(truthY, output);
                 }
 
-                Vector<double> finiteDiffWeightGradient = Utils.FiniteDifferencesGradient(networkLossWithWeightAsVariable, testWeight);
+                Vector<double> finiteDiffWeightGradient = MathUtils.FiniteDifferencesGradient(networkLossWithWeightAsVariable, testWeight);
                 Vector<double> explicitWeightGradient = Vector<double>.Build.Dense(i);
 
-                Vector<double> outputGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
+                Vector<double> outputGradient = LossFunctions.MeanSquaredErrorPrime(truthY, network.Predict(testX));
 
                 for (int k = network.Layers.Count - 1; k >= 0; k--)
                 {
-                    outputGradient = network.Layers[k].BackPropagation(outputGradient, OptimizerType.Adam, 1, 0.0001);
+                    outputGradient = network.Layers[k].BackPropagation(outputGradient);
                     if (k == 0) // retrieve weight gradient from convolutional layer
-                        explicitWeightGradient = Utils.Flatten(((ConvolutionalLayer)network.Layers[0]).WeightGradient[0]);
+                        explicitWeightGradient = MathUtils.Flatten(((ConvolutionalLayer)network.Layers[0]).ChannelOperators[0].WeightGradients[0]);
                 }
 
                 Assert.IsTrue((finiteDiffWeightGradient - explicitWeightGradient).L2Norm() < 0.00001);
@@ -299,7 +298,7 @@ namespace UnitTests
         }
 
         [Test]
-        public void ConvolutionLayer_ReturnsCorrectWeightGradient_WhenChainedTogetherWithMSESoftmaxTanhAndConvolutionalLayer_WithStride1()
+        public void ConvolutionLayer_ReturnsCorrectWeightGradient_WhenChainedTogetherWithMSETanhAndConvolutionalLayer_WithStride1()
         {
             List<int> squares = new List<int>();
             for (int i = 1; i < 10; i++)
@@ -314,40 +313,41 @@ namespace UnitTests
                     Vector<double> testX = Vector<double>.Build.Random(i);
                     Vector<double> testWeight = Vector<double>.Build.Random(j);
 
-                    Network network = new Network();
-                    network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: 1, stride: 1));
+                    Network network = new Network(i);
+                    network.Add(new ConvolutionalLayer(kernel: (int)Math.Sqrt(j), filters: 1, stride: 1));
                     network.Add(new ActivationLayer(ActivationType.Tanh));
                     network.Add(new SoftmaxActivationLayer());
-                    network.UseLoss(LossType.CategoricalCrossentropy);
+                    network.UseLoss(LossType.MeanSquaredError);
 
                     double networkLossWithWeightAsVariable(Vector<double> x)
                     {
                         ConvolutionalLayer conv = (ConvolutionalLayer)network.Layers[0];
-                        conv.Weights[0] = Utils.Unflatten(x);
+                        conv.ChannelOperators[0].Weights[0] = MathUtils.Unflatten(x);
                         Vector<double> output = network.Predict(testX);
                         return network.Loss(truthY, output);
                     }
 
-                    Vector<double> finiteDiffWeightGradient = Utils.FiniteDifferencesGradient(networkLossWithWeightAsVariable, testWeight);
+                    Vector<double> finiteDiffWeightGradient = MathUtils.FiniteDifferencesGradient(networkLossWithWeightAsVariable, testWeight);
                     Vector<double> explicitWeightGradient = Vector<double>.Build.Dense(j);
 
-                    Vector<double> outputGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
+                    Vector<double> outputGradient = LossFunctions.MeanSquaredErrorPrime(truthY, network.Predict(testX));
 
                     for (int k = network.Layers.Count - 1; k >= 0; k--)
                     {
-                        outputGradient = network.Layers[k].BackPropagation(outputGradient, OptimizerType.Adam, 1, 0.0001);
+                        outputGradient = network.Layers[k].BackPropagation(outputGradient);
                         if (k == 0) // retrieve weight gradient from convolutional layer
-                            explicitWeightGradient = Utils.Flatten(((ConvolutionalLayer)network.Layers[0]).WeightGradient[0]);
+                            explicitWeightGradient = MathUtils.Flatten(((ConvolutionalLayer)network.Layers[0]).ChannelOperators[0].WeightGradients[0]);
                     }
 
                     Assert.IsTrue((finiteDiffWeightGradient - explicitWeightGradient).L2Norm() < 0.0001);
                 }
             }
-        }*/
+        }
         #endregion
 
         #region Stride >= 1 Tests
         //Stride >= 1 (but multiple of input)
+        //todo test for non-multiples
         [Test]
         public void ConvolutionLayer_ReturnsCorrectInputGradient_WhenChainedTogetherWithCategoricalCrossentropySoftmaxTanhAndConvolutionalLayer_WithStrideMoreThan1()
         {

@@ -16,9 +16,42 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
         public void Setup()
         {
         }
+        
+        [Test]
+        public void DenseOnlyLayer_PropagatesCorrectGradientBackwards_MeanSquaredError()
+        {
+            for(int i = 1; i < 50; i++)
+            {
+                for(int j = 1; j < 50; j++)
+                {
+                    Vector<double> truthY = Vector<double>.Build.Random(j);
+                    Vector<double> testX = Vector<double>.Build.Random(i);
+
+                    Network network = new Network(i);
+                    network.Add(new FullyConnectedLayer(j));
+                    network.Add(new ActivationLayer(ActivationType.Tanh));
+                    network.UseLoss(LossType.MeanSquaredError);
+
+                    double networkLoss(Vector<double> x)
+                    {
+                        x = network.Predict(x);
+                        return network.Loss(truthY, x);
+                    }
+
+                    Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, testX);
+                    Vector<double> testGradient = LossFunctions.MeanSquaredErrorPrime(truthY, network.Predict(testX));
+                    for (int k = network.Layers.Count - 1; k >= 0; k--)
+                    {
+                        testGradient = network.Layers[k].BackPropagation(testGradient);
+                    }
+
+                    Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.03);
+                }
+            }
+        }
 
         [Test]
-        public void DenseOnlyLayer_PropagatesCorrectGradientBackwards()
+        public void DenseOnlyLayer_PropagatesCorrectGradientBackwards_CategoricalCrossentropy()
         {
             for(int i = 1; i < 50; i++)
             {

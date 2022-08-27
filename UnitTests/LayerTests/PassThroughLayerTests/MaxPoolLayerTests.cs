@@ -156,6 +156,70 @@ namespace UnitTests
                 Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
             }
         }
+        
+        [Test]
+        public void MaxPoolLayer_ReturnsCorrectInputGradient_WhenChainedTogetherWithCategoricalCrossentropySoftmaxReluConvolution_MultipleFilterInput_StrideMoreThan1()
+        {
+            for(int i = 1; i <= 5; i++)
+            {
+                for (int j = 1; j <= 5; j++)
+                {
+                    Vector<double> truthY = Vector<double>.Build.Random(5);
+                    Vector<double> testX = Vector<double>.Build.Random(64 * 3);
+
+                    Network network = new Network(64 * 3);
+                    network.Add(new ConvolutionalLayer(kernel: 2, filters: 5, stride: 1, channels: 3));
+                    network.Add(new ActivationLayer(ActivationType.ReLu));
+                    network.Add(new MaxPoolingLayer(poolSize: i, stride: j));
+                    network.Add(new FullyConnectedLayer(5));
+                    network.Add(new SoftmaxActivationLayer());
+                    network.UseLoss(LossType.CategoricalCrossentropy);
+
+                    double networkLoss(Vector<double> x)
+                    {
+                        x = network.Predict(x);
+                        return network.Loss(truthY, x);
+                    }
+
+                    Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, testX);
+                    Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
+                    for (int k = network.Layers.Count - 1; k >= 0; k--)
+                    {
+                        testGradient = network.Layers[k].BackPropagation(testGradient);
+                    }
+
+                    Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
+                }
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                Vector<double> truthY = Vector<double>.Build.Random(4 * 4 * 20);
+                Vector<double> testX = Vector<double>.Build.Random(100);
+
+                Network network = new Network(100);
+                network.Add(new ConvolutionalLayer(kernel: 5, filters: 20, stride: 1));
+                network.Add(new ActivationLayer(ActivationType.ReLu));
+                network.Add(new MaxPoolingLayer(poolSize: 3));
+                network.Add(new SoftmaxActivationLayer());
+                network.UseLoss(LossType.CategoricalCrossentropy);
+
+                double networkLoss(Vector<double> x)
+                {
+                    x = network.Predict(x);
+                    return network.Loss(truthY, x);
+                }
+
+                Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, testX);
+                Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
+                for (int k = network.Layers.Count - 1; k >= 0; k--)
+                {
+                    testGradient = network.Layers[k].BackPropagation(testGradient);
+                }
+
+                Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
+            }
+        }
 
         [Test]
         public void MaxPool_ReturnsCorrectMaxPool_WhenPassedSquareMatrix()
@@ -205,6 +269,82 @@ namespace UnitTests
         }
 
         [Test]
+        public void MaxPool_ReturnsCorrectMaxPool_WhenPassedSquareMatrixStrideMoreThan1()
+        {
+            #region Max Pool Setup 1
+            double[,] mtx = new double[,]
+            {
+                { 1, 2, 3, 4 },
+                { 5, 6, 7, 8 },
+                { 9, 10, 11, 12 },
+                { 13, 14, 15, 16 },
+            };
+
+            double[,] exp = new double[,]
+            {
+                { 6, 8 },
+                { 14, 16 }
+            };
+
+            Matrix<double> matrix1 = Matrix<double>.Build.DenseOfArray(mtx);
+            Matrix<double> expected1 = Matrix<double>.Build.DenseOfArray(exp);
+            List<(int, int)> expectedPositions1 = new List<(int, int)>() { (1, 1), (1, 3), (3, 1), (3, 3) };
+            #endregion
+            #region Max Pool Setup 2
+            mtx = new double[,]
+            {
+                { 1, 2, 3, 4, 17, 18 },
+                { 5, 6, 7, 8, 19, 20 },
+                { 9, 10, 11, 12, 21, 22 },
+                { 13, 14, 15, 16, 23, 24 },
+                { 25, 26, 27, 28, 36, 30 },
+                { 31, 32, 33, 34, 35, 29 },
+            };
+
+            exp = new double[,]
+            {
+                { 11, 22 },
+                { 33, 36 }
+            };
+
+            Matrix<double> matrix2 = Matrix<double>.Build.DenseOfArray(mtx);
+            Matrix<double> expected2 = Matrix<double>.Build.DenseOfArray(exp);
+            List<(int, int)> expectedPositions2 = new List<(int, int)>() { (2, 2), (2, 5), (5, 2), (4, 4) };
+            #endregion
+            
+            #region Max Pool Setup 3
+            mtx = new double[,]
+            {
+                { 1, 2, 3, 4, 17, 18 },
+                { 5, 6, 7, 8, 19, 20 },
+                { 9, 10, 11, 12, 21, 22 },
+                { 13, 14, 15, 16, 23, 24 },
+                { 25, 26, 27, 28, 36, 30 },
+                { 31, 32, 33, 34, 35, 29 },
+            };
+
+            exp = new double[,]
+            {
+                { 16, 24 },
+                { 34, 36 }
+            };
+
+            Matrix<double> matrix3 = Matrix<double>.Build.DenseOfArray(mtx);
+            Matrix<double> expected3 = Matrix<double>.Build.DenseOfArray(exp);
+            List<(int, int)> expectedPositions3 = new List<(int, int)>() { (3, 3), (3, 5), (5, 3), (4, 4) };
+            #endregion
+
+            Assert.AreEqual(expected1, MaxPoolingLayer.MaxPool(matrix1, 2, 2).Item1);
+            Assert.AreEqual(expectedPositions1, MaxPoolingLayer.MaxPool(matrix1, 2, 2).Item2);
+
+            Assert.AreEqual(expected2, MaxPoolingLayer.MaxPool(matrix2, 3, 3).Item1);
+            Assert.AreEqual(expectedPositions2, MaxPoolingLayer.MaxPool(matrix2, 3, 3).Item2);
+            
+            Assert.AreEqual(expected3, MaxPoolingLayer.MaxPool(matrix2, 4, 2).Item1);
+            Assert.AreEqual(expectedPositions3, MaxPoolingLayer.MaxPool(matrix2, 4, 2).Item2);
+        }
+
+        [Test]
         public void SliceFlattenedMatrixIntoSquares_ReturnsListOfSquareMatrices_WhenPassesFlattenedListOfConcatMatrices()
         {
             #region Slicer Setup 1
@@ -231,7 +371,5 @@ namespace UnitTests
             Assert.AreEqual(expected1, MaxPoolingLayer.SliceFlattenedMatrixIntoSquares(input1, 3));
             Assert.AreEqual(expected2, MaxPoolingLayer.SliceFlattenedMatrixIntoSquares(input2, 2));
         }
-        
-        //todo: write tests for max pooling with stride > 1
     }
 }

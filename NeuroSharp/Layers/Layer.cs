@@ -21,6 +21,5 @@ namespace NeuroSharp
             InputSize = Id > 0 ? ParentNetwork.Layers[Id - 1].OutputSize : ParentNetwork.EntrySize;
             OutputSize = OutputSize == 0 ? InputSize : OutputSize;
         }
-        //todo: add automatically calculated input, output, parameter, etc size
     }
 }
