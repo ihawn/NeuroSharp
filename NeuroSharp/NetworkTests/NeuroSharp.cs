@@ -18,10 +18,11 @@ namespace NeuroSharp
 
             //XOR_Test();
             //Mnist_Digits_Test(6000, 100, 5, "digits");
-            Mnist_Digits_Test_Conv(600, 100, 5, "digits");
+            //Mnist_Digits_Test_Conv(6000, 100, 5, "digits");
             //Conv_Base_Test(1000, 100, 10, "digits");
             //Conv_Vs_Non_Conv(5000, 1000, 15, 20, "digits");
-            //IntelImageClassification_Test(epochs: 25);
+            IntelImageClassification_Conv(epochs: 1);
+            //IntelImageClassification_Dense(epochs: 1);
             //BirdSpecies_Test(epochs: 5);
 
             #region testing
@@ -240,7 +241,7 @@ namespace NeuroSharp
             Network network = new Network(28 * 28);
             network.Add(new ConvolutionalLayer(kernel: 2, filters: 2, channels: 1, stride: 2));
             network.Add(new ActivationLayer(ActivationType.ReLu));
-            //network.Add(new MaxPoolingLayer(14 * 14 * 2, prevFilterCount: 2, poolSize: 2));
+            network.Add(new MaxPoolingLayer(poolSize: 2));
             network.Add(new FullyConnectedLayer(128));
             network.Add(new ActivationLayer(ActivationType.Tanh));
             network.Add(new FullyConnectedLayer(10));
@@ -308,21 +309,67 @@ namespace NeuroSharp
             Console.WriteLine("Dense Network Average Accuracy: " + denseNetAcc);
             Console.WriteLine("Convolutional Network Average Accuracy: " + convNetAcc);
         }
-        static void IntelImageClassification_Test(int epochs)
+        static void IntelImageClassification_Conv(int epochs)
         {
-            ImageDataAggregate trainData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\IntelImageClassification\seg_train\seg_train", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 150, expectedWidth: 150);
-            ImageDataAggregate testData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\IntelImageClassification\seg_test\seg_test", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 150, expectedWidth: 150);
+            ImageDataAggregate trainData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\IntelImageClassification_Smaller\seg_train\seg_train", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 150, expectedWidth: 150);
+            ImageDataAggregate testData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\IntelImageClassification_Smaller\seg_test\seg_test", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 150, expectedWidth: 150);
 
             Network network = new Network(150 * 150 * 3);
-            network.Add(new ConvolutionalLayer(kernel: 3, filters: 32, stride: 3, channels: 3));
+            network.Add(new ConvolutionalLayer(kernel: 3, filters: 16, stride: 3, channels: 3));
             network.Add(new ActivationLayer(ActivationType.ReLu));
-            network.Add(new MaxPoolingLayer(50 * 50 * 32, prevFilterCount: 32, poolSize: 3));
-            network.Add(new ConvolutionalLayer(kernel: 2, filters: 4, stride: 2, channels: 32));
+            network.Add(new MaxPoolingLayer(poolSize: 3));
+            network.Add(new ConvolutionalLayer(kernel: 2, filters: 4, stride: 2, channels: 16));
             network.Add(new ActivationLayer(ActivationType.ReLu));
-            network.Add(new MaxPoolingLayer(24 * 24 * 4, prevFilterCount: 4, poolSize: 2));
+            network.Add(new MaxPoolingLayer(poolSize: 2));
             network.Add(new FullyConnectedLayer(256));
             network.Add(new ActivationLayer(ActivationType.Tanh));
             network.Add(new FullyConnectedLayer(6));
+            network.Add(new SoftmaxActivationLayer());
+            network.UseLoss(LossType.CategoricalCrossentropy);
+
+            //train
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            network.Train(trainData.XValues, trainData.YValues, epochs: epochs, TrainingConfiguration.Minibatch, OptimizerType.Adam, batchSize: 64, learningRate: 0.002f);
+            var elapsedMs = watch.ElapsedMilliseconds;
+
+            //test
+            string[] labels = new string[] { "buildings", "forest", "glacier", "mountain", "sea", "street" };
+            int i = 0;
+            int wrongCount = 0;
+            foreach (var test in testData.XValues)
+            {
+                var output = network.Predict(test);
+                int prediction = output.ToList().IndexOf(output.Max());
+                int actual = testData.YValues[i].ToList().IndexOf(testData.YValues[i].Max());
+                Console.WriteLine("Prediction: " + labels[prediction]);
+                Console.WriteLine("Actual: " + labels[actual] + "\n");
+
+                if (prediction != actual)
+                    wrongCount++;
+
+                i++;
+            }
+            double acc = (1f - ((double)wrongCount) / ((double)i));
+            Console.WriteLine("Accuracy: " + acc);
+            Console.WriteLine("Training Runtime: " + (elapsedMs / 1000f).ToString() + "s");
+
+            string modelJson = network.SerializeToJSON();
+            System.IO.File.WriteAllText (@"C:\Users\Isaac\Desktop\intel_image_classification_model.txt", modelJson);
+        }
+        static void IntelImageClassification_Dense(int epochs)
+        {
+            ImageDataAggregate trainData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\IntelImageClassification_Smaller\seg_train\seg_train", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 150, expectedWidth: 150);
+            ImageDataAggregate testData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\IntelImageClassification_Smaller\seg_test\seg_test", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 150, expectedWidth: 150);
+
+            Network network = new Network(150 * 150 * 3);
+            network.Add(new FullyConnectedLayer(256));
+            network.Add(new ActivationLayer(ActivationType.Tanh));
+            network.Add(new FullyConnectedLayer(128));
+            network.Add(new ActivationLayer(ActivationType.Tanh));
+            network.Add(new FullyConnectedLayer(64));
+            network.Add(new ActivationLayer(ActivationType.Tanh));
+            network.Add(new FullyConnectedLayer(6));
+            network.Add(new ActivationLayer(ActivationType.Tanh));
             network.Add(new SoftmaxActivationLayer());
             network.UseLoss(LossType.CategoricalCrossentropy);
 
@@ -363,16 +410,16 @@ namespace NeuroSharp
             Network network = new Network(224 * 224 * 3);
             network.Add(new ConvolutionalLayer(kernel: 2, filters: 4, stride: 3, channels: 3));
             network.Add(new ActivationLayer(ActivationType.ReLu));
-            network.Add(new MaxPoolingLayer(75 * 75 * 4, prevFilterCount: 4, poolSize: 3));
+            network.Add(new MaxPoolingLayer(poolSize: 3));
             network.Add(new ConvolutionalLayer(kernel: 3, filters: 3, stride: 2, channels: 4));
             network.Add(new ActivationLayer(ActivationType.ReLu));
-            network.Add(new MaxPoolingLayer(36 * 36 * 3, prevFilterCount: 3, poolSize: 3));
+            network.Add(new MaxPoolingLayer(poolSize: 3));
             network.Add(new ConvolutionalLayer(kernel: 2, filters: 2, stride: 2, channels: 3));
             network.Add(new ActivationLayer(ActivationType.ReLu));
-            network.Add(new MaxPoolingLayer(17 * 17 * 2, prevFilterCount: 2, poolSize: 3));
+            network.Add(new MaxPoolingLayer(poolSize: 3));
             network.Add(new ConvolutionalLayer(kernel: 3, filters: 1, stride: 1, channels: 2));
             network.Add(new ActivationLayer(ActivationType.ReLu));
-            network.Add(new MaxPoolingLayer(13 * 13 * 1, prevFilterCount: 1, poolSize: 2));
+            network.Add(new MaxPoolingLayer(poolSize: 2));
             network.Add(new FullyConnectedLayer(37));
             network.Add(new ActivationLayer(ActivationType.Tanh));
             network.Add(new SoftmaxActivationLayer());

@@ -7,6 +7,7 @@ namespace NeuroSharp
     public class ConvolutionalLayer : ParameterizedLayer
     {
         public ConvolutionalOperator[] ChannelOperators { get; set; }
+        public int FilterCount { get; set; }
         public int ChannelInputSize { get; set; }
         public int ChannelCount { get; set; }
 
@@ -19,12 +20,13 @@ namespace NeuroSharp
 
         public ConvolutionalLayer(int kernel, int filters, int stride = 1, int channels = 1)
         {
-            LayerType = LayerType.MultiChannelConvolutional;
+            LayerType = LayerType.Convolutional;
             ChannelOperators = new ConvolutionalOperator[channels];
             _channelOutputs = new Vector<double>[channels];
             _channelInputs = new Vector<double>[channels];
             _channelBackpropagationOutputs = new Vector<double>[channels];
             ChannelCount = channels;
+            FilterCount = filters;
 
             for (int i = 0; i < channels; i++)
                 ChannelOperators[i] = new ConvolutionalOperator(this, kernel, filters, stride);
@@ -33,14 +35,17 @@ namespace NeuroSharp
         //json constructor
         public ConvolutionalLayer(ConvolutionalOperator[] operators, Vector<double>[] channelOutputs,
             Vector<double>[] channelInputs, Vector<double>[] channelBackpropagationOutputs, int channelCount,
-            int channelInputSize, bool accumulateGradients)
+            int channelInputSize, bool accumulateGradients, int inputSize, int outputSize, int id)
         {
             ChannelOperators = operators;
+            Id = id;
             _channelOutputs = channelOutputs;
             _channelInputs = channelInputs;
             _channelBackpropagationOutputs = channelBackpropagationOutputs;
             ChannelCount = channelCount;
             ChannelInputSize = channelInputSize;
+            InputSize = inputSize;
+            OutputSize = outputSize;
             SetGradientAccumulation(accumulateGradients);
         }
 

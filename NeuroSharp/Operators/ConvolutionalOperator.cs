@@ -35,7 +35,6 @@ namespace NeuroSharp
         public ConvolutionalOperator(Matrix<double>[] weights, Matrix<double>[] weightGradients, int kernelSize,
             int stride, int inputSize, int outputSize, int filters, Adam adam, bool accumulateGradients)
         {
-            LayerType = LayerType.Convolutional;
             Weights = weights;
             WeightGradients = weightGradients;
             _kernelSize = kernelSize;
@@ -92,7 +91,7 @@ namespace NeuroSharp
         public override void SetSizeIO()
         {
             _rawInputSize = ParentLayer.ChannelInputSize;
-            InputSize = _rawInputSize;// * _filters;
+            InputSize = _rawInputSize;
             OutputSize = _filters * (int)Math.Pow((int)Math.Floor((Math.Sqrt(InputSize) - (double)_kernelSize) / _stride + 1), 2);
         }
 
@@ -154,14 +153,13 @@ namespace NeuroSharp
 
             Matrix<double> output = Matrix<double>.Build.Dense(outDim, outDim);
 
-            //Parallel.For(0, outDim, i =>
             for(int i = 0; i < outDim; i++)
             {
                 for (int j = 0; j < outDim; j++)
                     for (int a = 0; a < weights.RowCount; a++)
                         for (int b = 0; b < weights.RowCount; b++)
                             output[i, j] += image[j * stride + b, i * stride + a] * weights[a, b];
-            }//);
+            }
 
             if(transposeOutput)
                 output = output.Transpose();

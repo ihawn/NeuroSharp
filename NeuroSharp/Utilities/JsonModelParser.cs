@@ -1,4 +1,5 @@
-﻿using MathNet.Numerics.LinearAlgebra;
+﻿using System.Text.Json.Nodes;
+using MathNet.Numerics.LinearAlgebra;
 using NeuroSharp.Enumerations;
 using NeuroSharp.Training;
 using NeuroSharp.Optimizers;
@@ -26,28 +27,39 @@ namespace NeuroSharp.Utilities
                             bias: JsonArrayToVector(layer["Bias"]),
                             weightGradient: JsonArrayToMatrix(layer["WeightGradients"][0]),
                             biasGradient: JsonArrayToVector(layer["BiasGradient"]),
+                            inputSize: Int32.Parse((string)layer["InputSize"]),
+                            outputSize: Int32.Parse((string)layer["OutputSize"]),
                             adam: AdamFromJson(layer["_adam"]),
-                            accumulateGradients: bool.Parse((string)layer["AccumulateGradients"])
+                            accumulateGradients: bool.Parse((string)layer["AccumulateGradients"]),
+                            id: Int32.Parse((string)layer["Id"])
                     ) : 
-                GetLayerType(layer) == LayerType.Convolutional ? 
-                    ConvolutionalLayerFromJson(layer) :
-                GetLayerType(layer) == LayerType.MultiChannelConvolutional ?
+                GetLayerType(layer) == LayerType.Convolutional ?
                     new ConvolutionalLayer(
                             operators: layer["ChannelOperators"]
-                                .Select(conv => ConvolutionalLayerFromJson(conv)).ToArray(),
+                                .Select(conv => ConvolutionalOperatorFromJson(conv)).ToArray(),
                             channelOutputs: JsonToArrayOfVectors(layer["_channelOutputs"]),
                             channelInputs: JsonToArrayOfVectors(layer["_channelInputs"]),
                             channelBackpropagationOutputs: JsonToArrayOfVectors(layer["_channelBackpropagationOutputs"]),
-                            channelCount: Int32.Parse((string)layer["_channelCount"]),
-                            channelInputSize: Int32.Parse((string)layer["_channelInputSize"]),
-                            accumulateGradients: bool.Parse((string)layer["AccumulateGradients"])
+                            channelCount: Int32.Parse((string)layer["ChannelCount"]),
+                            channelInputSize: Int32.Parse((string)layer["ChannelInputSize"]),
+                            accumulateGradients: bool.Parse((string)layer["AccumulateGradients"]),
+                            inputSize: Int32.Parse((string)layer["InputSize"]),
+                            outputSize: Int32.Parse((string)layer["OutputSize"]),
+                            id: Int32.Parse((string)layer["Id"])
                     ) :
                 GetLayerType(layer) == LayerType.Activation ?
                     new ActivationLayer(
-                        type: (ActivationType)Int32.Parse((string)layer["ActivationType"])
+                        type: (ActivationType)Int32.Parse((string)layer["ActivationType"]),
+                        inputSize: Int32.Parse((string)layer["InputSize"]),
+                        outputSize: Int32.Parse((string)layer["OutputSize"]),
+                        id: Int32.Parse((string)layer["Id"])
                     ) as Layer : 
                 GetLayerType(layer) == LayerType.SoftmaxActivation ?
-                    new SoftmaxActivationLayer() :
+                    new SoftmaxActivationLayer(
+                        inputSize: Int32.Parse((string)layer["InputSize"]),
+                        outputSize: Int32.Parse((string)layer["OutputSize"]),
+                        id: Int32.Parse((string)layer["Id"])
+                    ) :
                 GetLayerType(layer) == LayerType.MaxPooling ? 
                     new MaxPoolingLayer(
                         maxPoolPositions: layer["MaxPoolPositions"]
@@ -56,18 +68,32 @@ namespace NeuroSharp.Utilities
                                     (Int32.Parse((string)y["Item1"]), Int32.Parse((string)y["Item2"]))
                                 ).ToList()
                             ).ToList(),
+                        inputSize: Int32.Parse((string)layer["InputSize"]),
+                        outputSize: Int32.Parse((string)layer["OutputSize"]),
                         poolSize: Int32.Parse((string)layer["_poolSize"]),
-                        inputSize: Int32.Parse((string)layer["_inputSize"]),
-                        outputSize: Int32.Parse((string)layer["_outputSize"]),
                         stride: Int32.Parse((string)layer["_stride"]),
-                        filters: Int32.Parse((string)layer["_filters"])
+                        filters: Int32.Parse((string)layer["_filters"]),
+                        id: Int32.Parse((string)layer["Id"])
                     ) : null
             ).ToList();
+
+            foreach (Layer layer in layers)
+            {
+                if (layer is ConvolutionalLayer)
+                {
+                    ConvolutionalLayer conv = (ConvolutionalLayer)layer;
+                    foreach (ConvolutionalOperator convolutionalOperator in conv.ChannelOperators)
+                    {
+                        convolutionalOperator.ParentLayer = conv;
+                    }
+                }
+            }
             
             string name = (string)jo["Name"];
             LossType lossType = (LossType)Int32.Parse((string)jo["LossType"]);
+            int entrySize = Int32.Parse((string)jo["EntrySize"]);
             
-            return new Network(layers, lossType, name);
+            return new Network(layers, lossType, name, entrySize);
         }
 
         public override bool CanWrite
@@ -120,15 +146,15 @@ namespace NeuroSharp.Utilities
             return (LayerType)Int32.Parse((string)obj["LayerType"]);
         }
 
-        public ConvolutionalOperator ConvolutionalLayerFromJson(JToken layer)
+        public ConvolutionalOperator ConvolutionalOperatorFromJson(JToken layer)
         {
             return new ConvolutionalOperator(
                 weights: JsonToArrayOfMatrices(layer["Weights"]),
                 weightGradients: JsonToArrayOfMatrices(layer["WeightGradients"]),
                 kernelSize: Int32.Parse((string)layer["_kernelSize"]),
                 stride: Int32.Parse((string)layer["_stride"]),
-                inputSize: Int32.Parse((string)layer["_inputSize"]),
-                outputSize: Int32.Parse((string)layer["_outputSize"]),
+                inputSize: Int32.Parse((string)layer["InputSize"]),
+                outputSize: Int32.Parse((string)layer["OutputSize"]),
                 filters: Int32.Parse((string)layer["_filters"]),
                 adam: AdamFromJson(layer["_adam"]),
                 accumulateGradients: bool.Parse((string)layer["AccumulateGradients"])

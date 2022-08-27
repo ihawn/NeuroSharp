@@ -32,7 +32,7 @@ namespace UnitTests
             network.Add(new ActivationLayer(ActivationType.ReLu));
             network.Add(new ConvolutionalLayer(kernel: 2, filters: 7, stride: 2, channels: 5));
             network.Add(new ActivationLayer(ActivationType.ReLu));
-            network.Add(new MaxPoolingLayer(4 * 4 * 7, prevFilterCount: 7, poolSize: 2));
+            network.Add(new MaxPoolingLayer(poolSize: 2));
             network.Add(new FullyConnectedLayer(10));
             network.Add(new ActivationLayer(ActivationType.Tanh));
             network.Add(new FullyConnectedLayer(4));
@@ -70,7 +70,7 @@ namespace UnitTests
             network.Add(new ActivationLayer(ActivationType.ReLu));
             network.Add(new ConvolutionalLayer(kernel: 2, filters: 7, stride: 2, channels: 5));
             network.Add(new ActivationLayer(ActivationType.ReLu));
-            network.Add(new MaxPoolingLayer(4 * 4 * 7, prevFilterCount: 7, poolSize: 2));
+            network.Add(new MaxPoolingLayer(poolSize: 2));
             network.Add(new FullyConnectedLayer(10));
             network.Add(new ActivationLayer(ActivationType.Tanh));
             network.Add(new FullyConnectedLayer(4));

@@ -82,7 +82,7 @@ namespace UnitTests.ModelTests
             network.Add(new ActivationLayer(ActivationType.ReLu));
             network.Add(new ConvolutionalLayer(kernel: 2, filters: 2, channels: 2, stride: 1));
             network.Add(new ActivationLayer(ActivationType.ReLu));
-            network.Add(new MaxPoolingLayer(23 * 23 * 2, prevFilterCount: 2, poolSize: 2));
+            network.Add(new MaxPoolingLayer(poolSize: 2));
             network.Add(new FullyConnectedLayer(128));
             network.Add(new ActivationLayer(ActivationType.Tanh));
             network.Add(new FullyConnectedLayer(10));

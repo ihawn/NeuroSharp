@@ -62,6 +62,9 @@ namespace UnitTests
             });
 
             ConvolutionalLayer layer1 = new ConvolutionalLayer(kernel: 2, filters: 1, stride: 1, channels: 1);
+            layer1.ParentNetwork = new Network(4);
+            layer1.SetSizeIO();
+            layer1.InitializeParameters();
             Vector<double> output1 = layer1.ForwardPropagation(input1);
 
             //setup 2
@@ -74,6 +77,9 @@ namespace UnitTests
             });
 
             ConvolutionalLayer layer2 = new ConvolutionalLayer(kernel: 2, filters: 1, stride: 1, channels: 3);
+            layer2.ParentNetwork = new Network(12);
+            layer2.SetSizeIO();
+            layer2.InitializeParameters();
             Vector<double> output2 = layer2.ForwardPropagation(input2);
 
             //setup 3
@@ -86,6 +92,9 @@ namespace UnitTests
             });
 
             ConvolutionalLayer layer3 = new ConvolutionalLayer(kernel: 2, filters: 7, stride: 1, channels: 3);
+            layer3.ParentNetwork = new Network(12);
+            layer3.SetSizeIO();
+            layer3.InitializeParameters();
             Vector<double> output3 = layer3.ForwardPropagation(input3);
 
             //setup 4
@@ -98,6 +107,9 @@ namespace UnitTests
             });
 
             ConvolutionalLayer layer4 = new ConvolutionalLayer(kernel: 2, filters: 7, stride: 1, channels: 3);
+            layer4.ParentNetwork = new Network(27);
+            layer4.SetSizeIO();
+            layer4.InitializeParameters();
             Vector<double> output4 = layer4.ForwardPropagation(input4);
 
 

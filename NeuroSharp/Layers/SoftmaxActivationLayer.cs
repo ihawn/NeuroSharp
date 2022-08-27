@@ -5,9 +5,14 @@ namespace NeuroSharp
 {
     public class SoftmaxActivationLayer : Layer
     {
-        public SoftmaxActivationLayer()
+        public SoftmaxActivationLayer(int? inputSize = null, int? outputSize = 0, int? id = null)
         {
             LayerType = LayerType.SoftmaxActivation;
+            
+            if (inputSize.HasValue)
+                InputSize = inputSize.Value;
+            if (outputSize.HasValue)
+                OutputSize = outputSize.Value;
         }
         
         public override Vector<double> ForwardPropagation(Vector<double> input)

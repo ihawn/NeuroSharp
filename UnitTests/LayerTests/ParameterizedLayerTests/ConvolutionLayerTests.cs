@@ -112,8 +112,8 @@ namespace UnitTests
 
                 double networkLossWithWeightAsVariable(Vector<double> x)
                 {
-                    ConvolutionalOperator conv = (ConvolutionalOperator)network.Layers[0];
-                    conv.Weights[0] = MathUtils.Unflatten(x);
+                    ConvolutionalLayer conv = (ConvolutionalLayer)network.Layers[0];
+                    conv.ChannelOperators[0].Weights[0] = MathUtils.Unflatten(x);
                     Vector<double> output = network.Predict(testX);
                     return network.Loss(truthY, output);
                 }
@@ -127,7 +127,7 @@ namespace UnitTests
                 {
                     outputGradient = network.Layers[k].BackPropagation(outputGradient);
                     if (k == 0) // retrieve weight gradient from convolutional layer
-                        explicitWeightGradient = MathUtils.Flatten(((ConvolutionalOperator)network.Layers[0]).WeightGradients[0]);
+                        explicitWeightGradient = MathUtils.Flatten(((ConvolutionalLayer)network.Layers[0]).ChannelOperators[0].WeightGradients[0]);
                 }
 
                 Assert.IsTrue((finiteDiffWeightGradient - explicitWeightGradient).L2Norm() < 0.00001);
@@ -158,8 +158,8 @@ namespace UnitTests
 
                     double networkLossWithWeightAsVariable(Vector<double> x)
                     {
-                        ConvolutionalOperator conv = (ConvolutionalOperator)network.Layers[0];
-                        conv.Weights[0] = MathUtils.Unflatten(x);
+                        ConvolutionalLayer conv = (ConvolutionalLayer)network.Layers[0];
+                        conv.ChannelOperators[0].Weights[0] = MathUtils.Unflatten(x);
                         Vector<double> output = network.Predict(testX);
                         return network.Loss(truthY, output);
                     }
@@ -173,7 +173,7 @@ namespace UnitTests
                     {
                         outputGradient = network.Layers[k].BackPropagation(outputGradient);
                         if (k == 0) // retrieve weight gradient from convolutional layer
-                            explicitWeightGradient = MathUtils.Flatten(((ConvolutionalOperator)network.Layers[0]).WeightGradients[0]);
+                            explicitWeightGradient = MathUtils.Flatten(((ConvolutionalLayer)network.Layers[0]).ChannelOperators[0].WeightGradients[0]);
                     }
 
                     Assert.IsTrue((finiteDiffWeightGradient - explicitWeightGradient).L2Norm() < 0.0001);
@@ -422,8 +422,8 @@ namespace UnitTests
 
                         double networkLossWithWeightAsVariable(Vector<double> x)
                         {
-                            ConvolutionalOperator conv = (ConvolutionalOperator)network.Layers[0];
-                            conv.Weights[0] = MathUtils.Unflatten(x);
+                            ConvolutionalLayer conv = (ConvolutionalLayer)network.Layers[0];
+                            conv.ChannelOperators[0].Weights[0] = MathUtils.Unflatten(x);
                             Vector<double> output = network.Predict(testX);
                             return network.Loss(truthY, output);
                         }
@@ -437,7 +437,7 @@ namespace UnitTests
                         {
                             outputGradient = network.Layers[k].BackPropagation(outputGradient);
                             if (k == 0) // retrieve weight gradient from convolutional layer
-                                explicitWeightGradient = MathUtils.Flatten(((ConvolutionalOperator)network.Layers[0]).WeightGradients[0]);
+                                explicitWeightGradient = MathUtils.Flatten(((ConvolutionalLayer)network.Layers[0]).ChannelOperators[0].WeightGradients[0]);
                         }
 
                         Assert.IsTrue((finiteDiffWeightGradient - explicitWeightGradient).L2Norm() < 0.0001);
@@ -516,13 +516,13 @@ namespace UnitTests
 
                         double networkLossWithWeightAsVariable(Vector<double> x)
                         {
-                            ConvolutionalOperator conv = (ConvolutionalOperator)network.Layers[0];
+                            ConvolutionalLayer conv = (ConvolutionalLayer)network.Layers[0];
                             for (int k = 0; k < n; k++)
                             {
                                 Vector<double> flattenedWeight = Vector<double>.Build.Dense(j);
                                 for (int y = 0; y < j; y++)
                                     flattenedWeight[y] = x[y + j * k];
-                                conv.Weights[k] = MathUtils.Unflatten(flattenedWeight);
+                                conv.ChannelOperators[0].Weights[k] = MathUtils.Unflatten(flattenedWeight);
                             }
                             Vector<double> output = network.Predict(testX);
                             return network.Loss(truthY, output);
@@ -538,10 +538,10 @@ namespace UnitTests
                             outputGradient = network.Layers[k].BackPropagation(outputGradient);
                             if (k == 0) // retrieve weight gradient from convolutional layer
                             {
-                                ConvolutionalOperator conv = (ConvolutionalOperator)network.Layers[0];
-                                for (int y = 0; y < conv.WeightGradients.Length; y++)
+                                ConvolutionalLayer conv = (ConvolutionalLayer)network.Layers[0];
+                                for (int y = 0; y < conv.ChannelOperators[0].WeightGradients.Length; y++)
                                 {
-                                    Vector<double> weightGrad = MathUtils.Flatten(conv.WeightGradients[y]);
+                                    Vector<double> weightGrad = MathUtils.Flatten(conv.ChannelOperators[0].WeightGradients[y]);
                                     for (int q = 0; q < weightGrad.Count; q++)
                                         explicitWeightGradientList.Add(weightGrad[q]);
                                 }
@@ -637,13 +637,13 @@ namespace UnitTests
 
                             double networkLossWithWeightAsVariable(Vector<double> x)
                             {
-                                ConvolutionalOperator conv = (ConvolutionalOperator)network.Layers[0];
+                                ConvolutionalLayer conv = (ConvolutionalLayer)network.Layers[0];
                                 for (int k = 0; k < n; k++)
                                 {
                                     Vector<double> flattenedWeight = Vector<double>.Build.Dense(j);
                                     for (int y = 0; y < j; y++)
                                         flattenedWeight[y] = x[y + j * k];
-                                    conv.Weights[k] = MathUtils.Unflatten(flattenedWeight);
+                                    conv.ChannelOperators[0].Weights[k] = MathUtils.Unflatten(flattenedWeight);
                                 }
                                 Vector<double> output = network.Predict(testX);
                                 return network.Loss(truthY, output);
@@ -659,10 +659,10 @@ namespace UnitTests
                                 outputGradient = network.Layers[k].BackPropagation(outputGradient);
                                 if (k == 0) // retrieve weight gradient from convolutional layer
                                 {
-                                    ConvolutionalOperator conv = (ConvolutionalOperator)network.Layers[0];
-                                    for (int y = 0; y < conv.WeightGradients.Length; y++)
+                                    ConvolutionalLayer conv = (ConvolutionalLayer)network.Layers[0];
+                                    for (int y = 0; y < conv.ChannelOperators[0].WeightGradients.Length; y++)
                                     {
-                                        Vector<double> weightGrad = MathUtils.Flatten(conv.WeightGradients[y]);
+                                        Vector<double> weightGrad = MathUtils.Flatten(conv.ChannelOperators[0].WeightGradients[y]);
                                         for (int q = 0; q < weightGrad.Count; q++)
                                             explicitWeightGradientList.Add(weightGrad[q]);
                                     }

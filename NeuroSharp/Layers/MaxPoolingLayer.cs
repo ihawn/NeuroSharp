@@ -1,6 +1,7 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using NeuroSharp.Utilities;
 using NeuroSharp.Enumerations;
+using NeuroSharp.Training;
 using Newtonsoft.Json;
 
 namespace NeuroSharp
@@ -8,39 +9,33 @@ namespace NeuroSharp
     public class MaxPoolingLayer : Layer
     {
         public List<List<(int, int)>> MaxPoolPositions { get; set; }
+        public ConvolutionalLayer PrecedingConvolutionalLayer { get; set; }
 
         [JsonProperty]
         private int _poolSize;
         [JsonProperty]
-        private int _inputSize;
-        [JsonProperty]
-        private int _outputSize;
-        [JsonProperty]
-        private int _stride;
+        private int _stride; //todo test stride > 1
         [JsonProperty]
         private int _filters;
 
-        public MaxPoolingLayer(int inputSize, int poolSize, int prevFilterCount, int stride = 1)
+        public MaxPoolingLayer(int poolSize, int stride = 1)
         {
             LayerType = LayerType.MaxPooling;
             MaxPoolPositions = new List<List<(int, int)>>();
             _poolSize = poolSize;
-            _inputSize = inputSize;
-            int dim = (int)Math.Round(Math.Sqrt(inputSize/prevFilterCount));
-            _outputSize = (int)Math.Floor(((double)dim - poolSize) / stride + 1);
             _stride = stride;
-            _filters = prevFilterCount;
         }
         
         //json constructor
         public MaxPoolingLayer(List<List<(int, int)>> maxPoolPositions, int poolSize, int inputSize, int outputSize,
-            int stride, int filters)
+            int stride, int filters, int id)
         {
             LayerType = LayerType.MaxPooling;
             MaxPoolPositions = maxPoolPositions;
+            InputSize = inputSize;
+            OutputSize = outputSize;
+            Id = id;
             _poolSize = poolSize;
-            _inputSize = inputSize;
-            _outputSize = outputSize;
             _stride = stride;
             _filters = filters;
         }
@@ -68,7 +63,7 @@ namespace NeuroSharp
 
         public override Vector<double> BackPropagation(Vector<double> outputError)
         {
-            int dim = (int)Math.Round(Math.Sqrt(_inputSize/_filters));
+            int dim = (int)Math.Round(Math.Sqrt(InputSize/_filters));
             int errorOffset = outputError.Count / _filters;
             List<double> rawBackpropData = new List<double>();
 
@@ -85,6 +80,28 @@ namespace NeuroSharp
             }
 
             return Vector<double>.Build.DenseOfEnumerable(rawBackpropData);
+        }
+
+        public override void SetSizeIO()
+        {
+            for (int i = Id - 1; i >= 0; i--)
+            {
+                if (ParentNetwork.Layers[i] is ConvolutionalLayer)
+                {
+                    PrecedingConvolutionalLayer = (ConvolutionalLayer)ParentNetwork.Layers[i];
+                    break;
+                }
+            }
+
+            InputSize = Id > 0 ? ParentNetwork.Layers[Id - 1].OutputSize : ParentNetwork.EntrySize;
+            _filters = PrecedingConvolutionalLayer != null ? PrecedingConvolutionalLayer.FilterCount : 1;
+            int dim = (int)Math.Round(Math.Sqrt(InputSize/_filters));
+            OutputSize = (int)Math.Pow(Math.Floor(((double)dim - _poolSize) / _stride + 1), 2) * _filters;
+        }
+
+        public void SetFilterCount(int count)
+        {
+            _filters = count;
         }
 
         public static (Matrix<double>, List<(int, int)>) MaxPool(Matrix<double> mtx, int poolSize, int stride)

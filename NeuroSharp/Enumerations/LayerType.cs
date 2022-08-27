@@ -10,7 +10,6 @@ namespace NeuroSharp.Enumerations
     {
         FullyConnected = 0,
         Convolutional = 1,
-        MultiChannelConvolutional = 2,
         Activation = 3,
         SoftmaxActivation = 4,
         MaxPooling = 5

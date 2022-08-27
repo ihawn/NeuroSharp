@@ -21,13 +21,16 @@ namespace NeuroSharp
         
         //json constructor
         public FullyConnectedLayer(Matrix<double> weight, Vector<double> bias, Matrix<double> weightGradient,
-            Vector<double> biasGradient, Adam adam, bool accumulateGradients)
+            Vector<double> biasGradient, int inputSize, int outputSize, Adam adam, bool accumulateGradients, int id)
         {
             LayerType = LayerType.FullyConnected;
+            Id = id;
             Weights = new Matrix<double>[] { weight };
             WeightGradients = new Matrix<double>[] { weightGradient };
             Bias = bias;
             BiasGradient = biasGradient;
+            InputSize = inputSize;
+            OutputSize = outputSize;
             _adam = adam;
             SetGradientAccumulation(accumulateGradients);
         }

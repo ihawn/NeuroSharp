@@ -9,7 +9,6 @@ namespace NeuroSharp.Training
     public class Network
     {
         public List<Layer> Layers { get; set; }
-        
         public int EntrySize { get; set; }
         
         [JsonIgnore]
@@ -31,10 +30,17 @@ namespace NeuroSharp.Training
         }
         
         //json constructor
-        public Network(List<Layer> layers, LossType lossType, string name)
+        public Network(List<Layer> layers, LossType lossType, string name, int entrySize)
         {
-            Layers = layers;
             Name = name;
+            Layers = new List<Layer>();
+            EntrySize = entrySize;
+            foreach (Layer layer in layers)
+            {
+                layer.ParentNetwork = this;
+                Layers.Add(layer);
+            }
+
             UseLoss(lossType);
         }
 

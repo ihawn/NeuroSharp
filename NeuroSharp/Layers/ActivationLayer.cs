@@ -10,7 +10,7 @@ namespace NeuroSharp
 
         public ActivationType ActivationType { get; set; }
 
-        public ActivationLayer(ActivationType type)
+        public ActivationLayer(ActivationType type, int? inputSize = null, int? outputSize = null, int? id = null)
         {
             LayerType = LayerType.Activation;
             ActivationType = type;
@@ -25,6 +25,13 @@ namespace NeuroSharp
                     _activationPrime= ActivationFunctions.TanhPrime;
                     break;
             }
+
+            if (inputSize.HasValue)
+                InputSize = inputSize.Value;
+            if (outputSize.HasValue)
+                OutputSize = outputSize.Value;
+            if (id.HasValue)
+                Id = id.Value;
         }
 
         public override Vector<double> ForwardPropagation(Vector<double> input)

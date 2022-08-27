@@ -33,7 +33,7 @@ namespace UnitTests
                     Vector<double> testX = Vector<double>.Build.Random(u);
 
                     Network network = new Network(u);
-                    network.Add(new MaxPoolingLayer(u, prevFilterCount: 1, poolSize: (int)Math.Sqrt(v)));
+                    network.Add(new MaxPoolingLayer(poolSize: (int)Math.Sqrt(v)));
                     network.Add(new SoftmaxActivationLayer());
                     network.UseLoss(LossType.CategoricalCrossentropy);
 
@@ -73,7 +73,8 @@ namespace UnitTests
                         Vector<double> testX = Vector<double>.Build.Random(u * q);
 
                         Network network = new Network(u * q);
-                        network.Add(new MaxPoolingLayer(u * q, prevFilterCount: q, poolSize: (int)Math.Sqrt(v)));
+                        network.Add(new MaxPoolingLayer(poolSize: (int)Math.Sqrt(v)));
+                        ((MaxPoolingLayer)network.Layers[0]).SetFilterCount(q);
                         network.Add(new SoftmaxActivationLayer());
                         network.UseLoss(LossType.CategoricalCrossentropy);
 
@@ -107,7 +108,7 @@ namespace UnitTests
                 Network network = new Network(16);
                 network.Add(new ConvolutionalLayer(kernel: 2, filters: 5, stride: 1));
                 network.Add(new ActivationLayer(ActivationType.ReLu));
-                network.Add(new MaxPoolingLayer(3 * 3 * 5, prevFilterCount: 5, poolSize: 2));
+                network.Add(new MaxPoolingLayer(poolSize: 2));
                 network.Add(new SoftmaxActivationLayer());
                 network.UseLoss(LossType.CategoricalCrossentropy);
 
@@ -135,7 +136,7 @@ namespace UnitTests
                 Network network = new Network(100);
                 network.Add(new ConvolutionalLayer(kernel: 5, filters: 20, stride: 1));
                 network.Add(new ActivationLayer(ActivationType.ReLu));
-                network.Add(new MaxPoolingLayer(6 * 6 * 20, prevFilterCount: 20, poolSize: 3));
+                network.Add(new MaxPoolingLayer(poolSize: 3));
                 network.Add(new SoftmaxActivationLayer());
                 network.UseLoss(LossType.CategoricalCrossentropy);
 
