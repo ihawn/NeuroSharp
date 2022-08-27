@@ -31,7 +31,7 @@ namespace UnitTests
                 Vector<double> testX = Vector<double>.Build.Random(i);
 
                 Network network = new Network(i);
-                network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(i), filters: 1, stride: 1));
+                network.Add(new ConvolutionalLayer(kernel: (int)Math.Sqrt(i), filters: 1, stride: 1));
                 network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
                 network.UseLoss(LossType.CategoricalCrossentropy);
@@ -69,7 +69,7 @@ namespace UnitTests
                     Vector<double> testX = Vector<double>.Build.Random(i);
 
                     Network network = new Network(i);
-                    network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: 1, stride: 1));
+                    network.Add(new ConvolutionalLayer(kernel: (int)Math.Sqrt(j), filters: 1, stride: 1));
                     network.Add(new ActivationLayer(ActivationType.Tanh));
                     network.Add(new SoftmaxActivationLayer());
                     network.UseLoss(LossType.CategoricalCrossentropy);
@@ -105,14 +105,14 @@ namespace UnitTests
                 Vector<double> testWeight = Vector<double>.Build.Random(i);
 
                 Network network = new Network(i);
-                network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(i), filters: 1, stride: 1));
+                network.Add(new ConvolutionalLayer(kernel: (int)Math.Sqrt(i), filters: 1, stride: 1));
                 network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
                 network.UseLoss(LossType.CategoricalCrossentropy);
 
                 double networkLossWithWeightAsVariable(Vector<double> x)
                 {
-                    ConvolutionalLayer conv = (ConvolutionalLayer)network.Layers[0];
+                    ConvolutionalOperator conv = (ConvolutionalOperator)network.Layers[0];
                     conv.Weights[0] = MathUtils.Unflatten(x);
                     Vector<double> output = network.Predict(testX);
                     return network.Loss(truthY, output);
@@ -127,7 +127,7 @@ namespace UnitTests
                 {
                     outputGradient = network.Layers[k].BackPropagation(outputGradient);
                     if (k == 0) // retrieve weight gradient from convolutional layer
-                        explicitWeightGradient = MathUtils.Flatten(((ConvolutionalLayer)network.Layers[0]).WeightGradients[0]);
+                        explicitWeightGradient = MathUtils.Flatten(((ConvolutionalOperator)network.Layers[0]).WeightGradients[0]);
                 }
 
                 Assert.IsTrue((finiteDiffWeightGradient - explicitWeightGradient).L2Norm() < 0.00001);
@@ -151,14 +151,14 @@ namespace UnitTests
                     Vector<double> testWeight = Vector<double>.Build.Random(j);
 
                     Network network = new Network(i);
-                    network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: 1, stride: 1));
+                    network.Add(new ConvolutionalLayer(kernel: (int)Math.Sqrt(j), filters: 1, stride: 1));
                     network.Add(new ActivationLayer(ActivationType.Tanh));
                     network.Add(new SoftmaxActivationLayer());
                     network.UseLoss(LossType.CategoricalCrossentropy);
 
                     double networkLossWithWeightAsVariable(Vector<double> x)
                     {
-                        ConvolutionalLayer conv = (ConvolutionalLayer)network.Layers[0];
+                        ConvolutionalOperator conv = (ConvolutionalOperator)network.Layers[0];
                         conv.Weights[0] = MathUtils.Unflatten(x);
                         Vector<double> output = network.Predict(testX);
                         return network.Loss(truthY, output);
@@ -173,7 +173,7 @@ namespace UnitTests
                     {
                         outputGradient = network.Layers[k].BackPropagation(outputGradient);
                         if (k == 0) // retrieve weight gradient from convolutional layer
-                            explicitWeightGradient = MathUtils.Flatten(((ConvolutionalLayer)network.Layers[0]).WeightGradients[0]);
+                            explicitWeightGradient = MathUtils.Flatten(((ConvolutionalOperator)network.Layers[0]).WeightGradients[0]);
                     }
 
                     Assert.IsTrue((finiteDiffWeightGradient - explicitWeightGradient).L2Norm() < 0.0001);
@@ -369,7 +369,7 @@ namespace UnitTests
                         Vector<double> testX = Vector<double>.Build.Random(i);
 
                         Network network = new Network(i);
-                        network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: 1, stride: s));
+                        network.Add(new ConvolutionalLayer(kernel: (int)Math.Sqrt(j), filters: 1, stride: s));
                         network.Add(new ActivationLayer(ActivationType.Tanh));
                         network.Add(new SoftmaxActivationLayer());
                         network.UseLoss(LossType.CategoricalCrossentropy);
@@ -415,14 +415,14 @@ namespace UnitTests
                         Vector<double> testWeight = Vector<double>.Build.Random(j);
 
                         Network network = new Network(i);
-                        network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: 1, stride: s));
+                        network.Add(new ConvolutionalLayer(kernel: (int)Math.Sqrt(j), filters: 1, stride: s));
                         network.Add(new ActivationLayer(ActivationType.Tanh));
                         network.Add(new SoftmaxActivationLayer());
                         network.UseLoss(LossType.CategoricalCrossentropy);
 
                         double networkLossWithWeightAsVariable(Vector<double> x)
                         {
-                            ConvolutionalLayer conv = (ConvolutionalLayer)network.Layers[0];
+                            ConvolutionalOperator conv = (ConvolutionalOperator)network.Layers[0];
                             conv.Weights[0] = MathUtils.Unflatten(x);
                             Vector<double> output = network.Predict(testX);
                             return network.Loss(truthY, output);
@@ -437,7 +437,7 @@ namespace UnitTests
                         {
                             outputGradient = network.Layers[k].BackPropagation(outputGradient);
                             if (k == 0) // retrieve weight gradient from convolutional layer
-                                explicitWeightGradient = MathUtils.Flatten(((ConvolutionalLayer)network.Layers[0]).WeightGradients[0]);
+                                explicitWeightGradient = MathUtils.Flatten(((ConvolutionalOperator)network.Layers[0]).WeightGradients[0]);
                         }
 
                         Assert.IsTrue((finiteDiffWeightGradient - explicitWeightGradient).L2Norm() < 0.0001);
@@ -466,7 +466,7 @@ namespace UnitTests
                         Vector<double> testX = Vector<double>.Build.Random(i);
 
                         Network network = new Network(i);
-                        network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: n, stride: 1));
+                        network.Add(new ConvolutionalLayer(kernel: (int)Math.Sqrt(j), filters: n, stride: 1));
                         network.Add(new ActivationLayer(ActivationType.Tanh));
                         network.Add(new SoftmaxActivationLayer());
                         network.UseLoss(LossType.CategoricalCrossentropy);
@@ -509,14 +509,14 @@ namespace UnitTests
                         Vector<double> testWeights = Vector<double>.Build.Random(j * n);
 
                         Network network = new Network(i);
-                        network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: n, stride: 1));
+                        network.Add(new ConvolutionalLayer(kernel: (int)Math.Sqrt(j), filters: n, stride: 1));
                         network.Add(new ActivationLayer(ActivationType.Tanh));
                         network.Add(new SoftmaxActivationLayer());
                         network.UseLoss(LossType.CategoricalCrossentropy);
 
                         double networkLossWithWeightAsVariable(Vector<double> x)
                         {
-                            ConvolutionalLayer conv = (ConvolutionalLayer)network.Layers[0];
+                            ConvolutionalOperator conv = (ConvolutionalOperator)network.Layers[0];
                             for (int k = 0; k < n; k++)
                             {
                                 Vector<double> flattenedWeight = Vector<double>.Build.Dense(j);
@@ -538,7 +538,7 @@ namespace UnitTests
                             outputGradient = network.Layers[k].BackPropagation(outputGradient);
                             if (k == 0) // retrieve weight gradient from convolutional layer
                             {
-                                ConvolutionalLayer conv = (ConvolutionalLayer)network.Layers[0];
+                                ConvolutionalOperator conv = (ConvolutionalOperator)network.Layers[0];
                                 for (int y = 0; y < conv.WeightGradients.Length; y++)
                                 {
                                     Vector<double> weightGrad = MathUtils.Flatten(conv.WeightGradients[y]);
@@ -581,7 +581,7 @@ namespace UnitTests
                             Vector<double> testX = Vector<double>.Build.Random(i);
 
                             Network network = new Network(i);
-                            network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: n, stride: s));
+                            network.Add(new ConvolutionalLayer(kernel: (int)Math.Sqrt(j), filters: n, stride: s));
                             network.Add(new ActivationLayer(ActivationType.Tanh));
                             network.Add(new SoftmaxActivationLayer());
                             network.UseLoss(LossType.CategoricalCrossentropy);
@@ -630,14 +630,14 @@ namespace UnitTests
                             Vector<double> testWeights = Vector<double>.Build.Random(j * n);
 
                             Network network = new Network(i);
-                            network.Add(new ConvolutionalLayer(i, kernel: (int)Math.Sqrt(j), filters: n, stride: s));
+                            network.Add(new ConvolutionalLayer(kernel: (int)Math.Sqrt(j), filters: n, stride: s));
                             network.Add(new ActivationLayer(ActivationType.Tanh));
                             network.Add(new SoftmaxActivationLayer());
                             network.UseLoss(LossType.CategoricalCrossentropy);
 
                             double networkLossWithWeightAsVariable(Vector<double> x)
                             {
-                                ConvolutionalLayer conv = (ConvolutionalLayer)network.Layers[0];
+                                ConvolutionalOperator conv = (ConvolutionalOperator)network.Layers[0];
                                 for (int k = 0; k < n; k++)
                                 {
                                     Vector<double> flattenedWeight = Vector<double>.Build.Dense(j);
@@ -659,7 +659,7 @@ namespace UnitTests
                                 outputGradient = network.Layers[k].BackPropagation(outputGradient);
                                 if (k == 0) // retrieve weight gradient from convolutional layer
                                 {
-                                    ConvolutionalLayer conv = (ConvolutionalLayer)network.Layers[0];
+                                    ConvolutionalOperator conv = (ConvolutionalOperator)network.Layers[0];
                                     for (int y = 0; y < conv.WeightGradients.Length; y++)
                                     {
                                         Vector<double> weightGrad = MathUtils.Flatten(conv.WeightGradients[y]);
@@ -938,15 +938,15 @@ namespace UnitTests
             Matrix<double> expected10 = Matrix<double>.Build.DenseOfArray(exp);
             #endregion
 
-            Assert.AreEqual(expected1, ConvolutionalLayer.Convolution(mtx1, filt1, 1).Item2);
-            Assert.AreEqual(expected2, ConvolutionalLayer.Convolution(mtx2, filt2, 1).Item2);
-            Assert.AreEqual(expected3, ConvolutionalLayer.Convolution(mtx3, filt3, 2).Item2);
-            Assert.AreEqual(expected5, ConvolutionalLayer.Convolution(mtx5, filt5, 2).Item2);
-            Assert.AreEqual(expected6, ConvolutionalLayer.Convolution(mtx6, filt6, 1).Item2);
-            Assert.AreEqual(expected7, ConvolutionalLayer.Convolution(mtx7, filt7, 3).Item2);
-            Assert.AreEqual(expected8, ConvolutionalLayer.Convolution(mtx8, filt8, 4).Item2);
-            Assert.AreEqual(expected9, ConvolutionalLayer.Convolution(mtx9, filt9, 2).Item2);
-            Assert.AreEqual(expected10, ConvolutionalLayer.Convolution(mtx10, filt10, 3).Item2);
+            Assert.AreEqual(expected1, ConvolutionalOperator.Convolution(mtx1, filt1, 1).Item2);
+            Assert.AreEqual(expected2, ConvolutionalOperator.Convolution(mtx2, filt2, 1).Item2);
+            Assert.AreEqual(expected3, ConvolutionalOperator.Convolution(mtx3, filt3, 2).Item2);
+            Assert.AreEqual(expected5, ConvolutionalOperator.Convolution(mtx5, filt5, 2).Item2);
+            Assert.AreEqual(expected6, ConvolutionalOperator.Convolution(mtx6, filt6, 1).Item2);
+            Assert.AreEqual(expected7, ConvolutionalOperator.Convolution(mtx7, filt7, 3).Item2);
+            Assert.AreEqual(expected8, ConvolutionalOperator.Convolution(mtx8, filt8, 4).Item2);
+            Assert.AreEqual(expected9, ConvolutionalOperator.Convolution(mtx9, filt9, 2).Item2);
+            Assert.AreEqual(expected10, ConvolutionalOperator.Convolution(mtx10, filt10, 3).Item2);
         }
 
         [Test]
@@ -1030,10 +1030,10 @@ namespace UnitTests
             Matrix<double> expected4 = Matrix<double>.Build.DenseOfArray(exp);
             #endregion
 
-            Assert.AreEqual(expected1, ConvolutionalLayer.Dilate(grad1, 2));
-            Assert.AreEqual(expected2, ConvolutionalLayer.Dilate(grad2, 2));
-            Assert.AreEqual(expected3, ConvolutionalLayer.Dilate(grad3, 3));
-            Assert.AreEqual(expected4, ConvolutionalLayer.Dilate(grad4, 1));
+            Assert.AreEqual(expected1, ConvolutionalOperator.Dilate(grad1, 2));
+            Assert.AreEqual(expected2, ConvolutionalOperator.Dilate(grad2, 2));
+            Assert.AreEqual(expected3, ConvolutionalOperator.Dilate(grad3, 3));
+            Assert.AreEqual(expected4, ConvolutionalOperator.Dilate(grad4, 1));
         }
 
         [Test]
@@ -1111,9 +1111,9 @@ namespace UnitTests
             Matrix<double> expected3 = Matrix<double>.Build.DenseOfArray(exp).Transpose();
             #endregion
 
-            Assert.AreEqual(expected1, ConvolutionalLayer.PadAndDilate(grad1, 2, 3));
-            Assert.AreEqual(expected2, ConvolutionalLayer.PadAndDilate(grad2, 2, 3));
-            Assert.AreEqual(expected3, ConvolutionalLayer.PadAndDilate(grad3, 3, 3));
+            Assert.AreEqual(expected1, ConvolutionalOperator.PadAndDilate(grad1, 2, 3));
+            Assert.AreEqual(expected2, ConvolutionalOperator.PadAndDilate(grad2, 2, 3));
+            Assert.AreEqual(expected3, ConvolutionalOperator.PadAndDilate(grad3, 3, 3));
         }
 
         [Test]
@@ -1186,10 +1186,10 @@ namespace UnitTests
             Matrix<double> expected4 = Matrix<double>.Build.DenseOfArray(exp);
             #endregion
 
-            Assert.AreEqual(expected1, ConvolutionalLayer.Rotate180(mtx1));
-            Assert.AreEqual(expected2, ConvolutionalLayer.Rotate180(mtx2));
-            Assert.AreEqual(expected3, ConvolutionalLayer.Rotate180(mtx3));
-            Assert.AreEqual(expected4, ConvolutionalLayer.Rotate180(mtx4));
+            Assert.AreEqual(expected1, ConvolutionalOperator.Rotate180(mtx1));
+            Assert.AreEqual(expected2, ConvolutionalOperator.Rotate180(mtx2));
+            Assert.AreEqual(expected3, ConvolutionalOperator.Rotate180(mtx3));
+            Assert.AreEqual(expected4, ConvolutionalOperator.Rotate180(mtx4));
         }
         #endregion
     }

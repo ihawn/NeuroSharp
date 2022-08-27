@@ -154,7 +154,7 @@ namespace UnitTests.OptimizerTests
             };
 
             Network network = new Network(25);
-            network.Add(new MultiChannelConvolutionalLayer(5 * 5, kernel: 2, filters: 2, channels: 1, stride: 1));
+            network.Add(new ConvolutionalLayer(kernel: 2, filters: 2, channels: 1, stride: 1));
             network.Add(new ActivationLayer(ActivationType.ReLu));
             network.Add(new FullyConnectedLayer(24));
             network.Add(new ActivationLayer(ActivationType.ReLu));
@@ -237,9 +237,9 @@ namespace UnitTests.OptimizerTests
             };
 
             Network network = new Network(25);
-            network.Add(new MultiChannelConvolutionalLayer(5 * 5, kernel: 2, filters: 8, channels: 1, stride: 1));
+            network.Add(new ConvolutionalLayer(kernel: 2, filters: 8, channels: 1, stride: 1));
             network.Add(new ActivationLayer(ActivationType.ReLu));
-            network.Add(new MultiChannelConvolutionalLayer(4 * 4 * 8, kernel: 2, filters: 1, channels: 8, stride: 2));
+            network.Add(new ConvolutionalLayer(kernel: 2, filters: 1, channels: 8, stride: 2));
             network.Add(new SoftmaxActivationLayer());
             network.UseLoss(LossType.CategoricalCrossentropy);
             
@@ -402,7 +402,7 @@ namespace UnitTests.OptimizerTests
             };
 
             Network network = new Network(25);
-            network.Add(new MultiChannelConvolutionalLayer(5 * 5, kernel: 2, filters: 2, channels: 1, stride: 1));
+            network.Add(new ConvolutionalLayer(kernel: 2, filters: 2, channels: 1, stride: 1));
             network.Add(new ActivationLayer(ActivationType.ReLu));
             network.Add(new FullyConnectedLayer(24));
             network.Add(new ActivationLayer(ActivationType.ReLu));
@@ -485,9 +485,9 @@ namespace UnitTests.OptimizerTests
             };
 
             Network network = new Network(25);
-            network.Add(new MultiChannelConvolutionalLayer(5 * 5, kernel: 2, filters: 8, channels: 1, stride: 1));
+            network.Add(new ConvolutionalLayer(kernel: 2, filters: 8, channels: 1, stride: 1));
             network.Add(new ActivationLayer(ActivationType.ReLu));
-            network.Add(new MultiChannelConvolutionalLayer(4 * 4 * 8, kernel: 2, filters: 1, channels: 8, stride: 2));
+            network.Add(new ConvolutionalLayer(kernel: 2, filters: 1, channels: 8, stride: 2));
             network.Add(new SoftmaxActivationLayer());
             network.UseLoss(LossType.CategoricalCrossentropy);
             

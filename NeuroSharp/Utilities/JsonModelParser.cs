@@ -32,7 +32,7 @@ namespace NeuroSharp.Utilities
                 GetLayerType(layer) == LayerType.Convolutional ? 
                     ConvolutionalLayerFromJson(layer) :
                 GetLayerType(layer) == LayerType.MultiChannelConvolutional ?
-                    new MultiChannelConvolutionalLayer(
+                    new ConvolutionalLayer(
                             operators: layer["ChannelOperators"]
                                 .Select(conv => ConvolutionalLayerFromJson(conv)).ToArray(),
                             channelOutputs: JsonToArrayOfVectors(layer["_channelOutputs"]),
@@ -120,9 +120,9 @@ namespace NeuroSharp.Utilities
             return (LayerType)Int32.Parse((string)obj["LayerType"]);
         }
 
-        public ConvolutionalLayer ConvolutionalLayerFromJson(JToken layer)
+        public ConvolutionalOperator ConvolutionalLayerFromJson(JToken layer)
         {
-            return new ConvolutionalLayer(
+            return new ConvolutionalOperator(
                 weights: JsonToArrayOfMatrices(layer["Weights"]),
                 weightGradients: JsonToArrayOfMatrices(layer["WeightGradients"]),
                 kernelSize: Int32.Parse((string)layer["_kernelSize"]),

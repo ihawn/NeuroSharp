@@ -26,11 +26,11 @@ namespace UnitTests
 
             //note that the number of filters on a convolutional layer turns into the number of channels on the next one
             Network network = new Network(56 * 56 * 2);
-            network.Add(new MultiChannelConvolutionalLayer(56 * 56 * 2, kernel: 8, filters: 6, stride: 2, channels: 2));
+            network.Add(new ConvolutionalLayer(kernel: 8, filters: 6, stride: 2, channels: 2));
             network.Add(new ActivationLayer(ActivationType.Tanh));
-            network.Add(new MultiChannelConvolutionalLayer(25 * 25 * 6, kernel: 4, filters: 5, stride: 3, channels: 6));
+            network.Add(new ConvolutionalLayer(kernel: 4, filters: 5, stride: 3, channels: 6));
             network.Add(new ActivationLayer(ActivationType.ReLu));
-            network.Add(new MultiChannelConvolutionalLayer(8 * 8 * 5, kernel: 2, filters: 7, stride: 2, channels: 5));
+            network.Add(new ConvolutionalLayer(kernel: 2, filters: 7, stride: 2, channels: 5));
             network.Add(new ActivationLayer(ActivationType.ReLu));
             network.Add(new MaxPoolingLayer(4 * 4 * 7, prevFilterCount: 7, poolSize: 2));
             network.Add(new FullyConnectedLayer(10));
@@ -64,11 +64,11 @@ namespace UnitTests
 
             //note that the number of filters on a convolutional layer turns into the number of channels on the next one
             Network network = new Network(56 * 56 * 3);
-            network.Add(new MultiChannelConvolutionalLayer(56 * 56 * 3, kernel: 8, filters: 6, stride: 2, channels: 3));
+            network.Add(new ConvolutionalLayer(kernel: 8, filters: 6, stride: 2, channels: 3));
             network.Add(new ActivationLayer(ActivationType.Tanh));
-            network.Add(new MultiChannelConvolutionalLayer(25 * 25 * 6, kernel: 4, filters: 5, stride: 3, channels: 6));
+            network.Add(new ConvolutionalLayer(kernel: 4, filters: 5, stride: 3, channels: 6));
             network.Add(new ActivationLayer(ActivationType.ReLu));
-            network.Add(new MultiChannelConvolutionalLayer(8 * 8 * 5, kernel: 2, filters: 7, stride: 2, channels: 5));
+            network.Add(new ConvolutionalLayer(kernel: 2, filters: 7, stride: 2, channels: 5));
             network.Add(new ActivationLayer(ActivationType.ReLu));
             network.Add(new MaxPoolingLayer(4 * 4 * 7, prevFilterCount: 7, poolSize: 2));
             network.Add(new FullyConnectedLayer(10));
@@ -79,11 +79,11 @@ namespace UnitTests
 
             double networkLossWithWeightAsVariable(Vector<double> x)
             {
-                Vector<double>[] splitWeights = MultiChannelConvolutionalLayer.SplitInputToChannels(x, 3, 6 * 64);
+                Vector<double>[] splitWeights = ConvolutionalLayer.SplitInputToChannels(x, 3, 6 * 64);
                 for (int p = 0; p < 3; p++)
                 {
-                    Vector<double>[] splitWeights2 = MultiChannelConvolutionalLayer.SplitInputToChannels(splitWeights[p], 6, 64);
-                    ConvolutionalLayer conv = ((MultiChannelConvolutionalLayer)network.Layers[0]).ChannelOperators[p];
+                    Vector<double>[] splitWeights2 = ConvolutionalLayer.SplitInputToChannels(splitWeights[p], 6, 64);
+                    ConvolutionalOperator conv = ((ConvolutionalLayer)network.Layers[0]).ChannelOperators[p];
                     for (int k = 0; k < 6; k++)
                     {
                         conv.Weights[k] = MathUtils.Unflatten(splitWeights2[k]);
@@ -106,7 +106,7 @@ namespace UnitTests
                 {
                     for (int p = 0; p < 3; p++)
                     {
-                        ConvolutionalLayer conv = ((MultiChannelConvolutionalLayer)network.Layers[0]).ChannelOperators[p];
+                        ConvolutionalOperator conv = ((ConvolutionalLayer)network.Layers[0]).ChannelOperators[p];
                         for (int y = 0; y < conv.WeightGradients.Length; y++)
                         {
                             Vector<double> weightGrad = MathUtils.Flatten(conv.WeightGradients[y]);

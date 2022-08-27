@@ -1,255 +1,127 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.Distributions;
-using NeuroSharp.Optimizers;
 using NeuroSharp.Enumerations;
-using NeuroSharp.Utilities;
 using Newtonsoft.Json;
 
 namespace NeuroSharp
 {
     public class ConvolutionalLayer : ParameterizedLayer
     {
-        [JsonProperty]
-        private Adam _adam;
-        [JsonProperty]
-        private int _stride;
-        [JsonProperty]
-        private int _outputSize;
-        [JsonProperty]
-        private int _inputSize;
-        [JsonProperty]
-        private int _rawInputSize;
-        [JsonProperty]
-        private int _filters;
-        [JsonProperty]
-        private int _kernelSize;
+        public ConvolutionalOperator[] ChannelOperators { get; set; }
+        public int ChannelInputSize { get; set; }
+        public int ChannelCount { get; set; }
 
-        public ConvolutionalLayer(int inputSize, int kernel, int filters, int stride = 1)
+        [JsonProperty]
+        private Vector<double>[] _channelOutputs;
+        [JsonProperty]
+        private Vector<double>[] _channelInputs;
+        [JsonProperty]
+        private Vector<double>[] _channelBackpropagationOutputs;
+
+        public ConvolutionalLayer(int kernel, int filters, int stride = 1, int channels = 1)
         {
-            LayerType = LayerType.Convolutional;
-            WeightGradients = new Matrix<double>[filters];
-            Weights = new Matrix<double>[filters];
+            LayerType = LayerType.MultiChannelConvolutional;
+            ChannelOperators = new ConvolutionalOperator[channels];
+            _channelOutputs = new Vector<double>[channels];
+            _channelInputs = new Vector<double>[channels];
+            _channelBackpropagationOutputs = new Vector<double>[channels];
+            ChannelCount = channels;
 
-            for (int i = 0; i < filters; i++)
-            {
-                Weights[i] = Matrix<double>.Build.Random(kernel, kernel);
-                WeightGradients[i] = Matrix<double>.Build.Dense(kernel, kernel);
-                for (int x = 0; x < kernel; x++)
-                    for (int y = 0; y < kernel; y++)
-                        Weights[i][x, y] = MathUtils.GetInitialWeight(inputSize);
-            }
-
-            _kernelSize = kernel;
-            _adam = new Adam(kernel, kernel, weightCount: filters);
-            _stride = stride;
-            _inputSize = filters * inputSize;
-            _rawInputSize = inputSize;
-            _outputSize = filters * (int)Math.Pow((int)Math.Floor((Math.Sqrt(inputSize) - (double)kernel) / stride + 1), 2);
-            _filters = filters;
+            for (int i = 0; i < channels; i++)
+                ChannelOperators[i] = new ConvolutionalOperator(this, kernel, filters, stride);
         }
         
         //json constructor
-        public ConvolutionalLayer(Matrix<double>[] weights, Matrix<double>[] weightGradients, int kernelSize,
-            int stride, int inputSize, int outputSize, int filters, Adam adam, bool accumulateGradients)
+        public ConvolutionalLayer(ConvolutionalOperator[] operators, Vector<double>[] channelOutputs,
+            Vector<double>[] channelInputs, Vector<double>[] channelBackpropagationOutputs, int channelCount,
+            int channelInputSize, bool accumulateGradients)
         {
-            LayerType = LayerType.Convolutional;
-            Weights = weights;
-            WeightGradients = weightGradients;
-            _kernelSize = kernelSize;
-            _stride = stride;
-            _inputSize = inputSize;
-            _outputSize = outputSize;
-            _filters = filters;
-            _adam = adam;
+            ChannelOperators = operators;
+            _channelOutputs = channelOutputs;
+            _channelInputs = channelInputs;
+            _channelBackpropagationOutputs = channelBackpropagationOutputs;
+            ChannelCount = channelCount;
+            ChannelInputSize = channelInputSize;
             SetGradientAccumulation(accumulateGradients);
         }
 
         public override Vector<double> ForwardPropagation(Vector<double> input)
         {
+            _channelInputs = SplitInputToChannels(input, ChannelCount, ChannelInputSize);
             Input = input;
-            Output = Vector<double>.Build.Dense(_outputSize);
 
-            //Parallel.For(0, _filters, i =>
-            for (int i = 0; i < _filters; i++)
+            Parallel.For(0, ChannelCount, i =>
             {
-                Vector<double> singleFilterOutput = Convolution(Input, Weights[i], _stride).Item1;
-                for (int j = 0; j < singleFilterOutput.Count; j++)
-                    Output[i * singleFilterOutput.Count + j] = singleFilterOutput[j];
-            }//);
+                _channelOutputs[i] = ChannelOperators[i].ForwardPropagation(_channelInputs[i]);
+            });
+
+            Output = Vector<double>.Build.Dense(_channelOutputs[0].Count);
+            for (int i = 0; i < ChannelCount; i++)
+                Output += _channelOutputs[i];
             return Output;
         }
 
         public override Vector<double> BackPropagation(Vector<double> outputError)
         {
-            Vector<double> inputGradient = Vector<double>.Build.Dense(_inputSize);
-            Vector<double>[] jacobianSlices = new Vector<double>[_filters];
-            Matrix<double> inputGradientMatrix = Matrix<double>.Build.Dense((int)Math.Sqrt(_rawInputSize), (int)Math.Sqrt(_rawInputSize));
-            Matrix<double>[] inputGradientPieces = new Matrix<double>[_filters];
-
-            for(int i = 0; i < _filters; i++)
-            //Parallel.For(0, _filters, i =>
+            Parallel.For(0, ChannelCount, i =>
             {
-                jacobianSlices[i] = Vector<double>.Build.Dense(outputError.Count / _filters); // ∂L/∂Y
-                for (int j = 0; j < jacobianSlices[i].Count; j++)
-                    jacobianSlices[i][j] = outputError[i * jacobianSlices[i].Count + j];
+                _channelBackpropagationOutputs[i] = ChannelOperators[i].BackPropagation(outputError);
+            });
 
-                WeightGradients[i] = AccumulateGradients ? 
-                WeightGradients[i] + ComputeWeightGradient(Input, MathUtils.Unflatten(jacobianSlices[i]), _stride) :
-                ComputeWeightGradient(Input, MathUtils.Unflatten(jacobianSlices[i]), _stride);
-
-                Vector<double> singleGradient = ComputeInputGradient(Weights[i], MathUtils.Unflatten(jacobianSlices[i]), _stride);
-                for (int j = 0; j < singleGradient.Count; j++)
-                    inputGradient[i * singleGradient.Count + j] = singleGradient[j];
-                inputGradientPieces[i] = MathUtils.Unflatten(singleGradient);
-            }//);
-
-            for (int i = 0; i < _filters; i++)
-                inputGradientMatrix += inputGradientPieces[i];
-
-            return MathUtils.Flatten(inputGradientMatrix.Transpose());
+            return CombineChannelBackPropagation(_channelBackpropagationOutputs, ChannelCount, ChannelInputSize);
         }
 
+        public override void SetSizeIO()
+        {
+            InputSize = Id > 0 ? ParentNetwork.Layers[Id - 1].OutputSize : ParentNetwork.EntrySize;
+            ChannelInputSize = InputSize / ChannelCount;
+            for (int i = 0; i < ChannelCount; i++)
+                ChannelOperators[i].SetSizeIO();
+            OutputSize = ChannelOperators[0].OutputSize;
+        }
+        
         public override void InitializeParameters()
         {
-            
+            for(int i = 0; i < ChannelCount; i++)
+                ChannelOperators[i].InitializeParameters();
         }
 
         public override void DrainGradients()
         {
-            for (int i = 0; i < _filters; i++)
-                WeightGradients[i] = Matrix<double>.Build.Dense(_kernelSize, _kernelSize);
+            for (int i = 0; i < ChannelCount; i++)
+                ChannelOperators[i].DrainGradients();
         }
 
         public override void SetGradientAccumulation(bool acc)
         {
-            AccumulateGradients = acc;
+            for (int i = 0; i < ChannelCount; i++)
+                ChannelOperators[i].SetGradientAccumulation(acc);
         }
 
         public override void UpdateParameters(OptimizerType optimizerType, int sampleIndex, double learningRate)
         {
-            switch (optimizerType)
+            Parallel.For(0, ChannelCount, i =>
             {
-                case OptimizerType.GradientDescent:
-                    for (int i = 0; i < _filters; i++)
-                        Weights[i] -= learningRate * WeightGradients[i];
-                    break;
+                ChannelOperators[i].UpdateParameters(optimizerType, sampleIndex, learningRate);
+            });
 
-                case OptimizerType.Adam:
-                    _adam.Step(this, sampleIndex + 1, eta: learningRate, includeBias: false);
-                    break;
-            }
-
-            if(AccumulateGradients)
-                DrainGradients();
+            DrainGradients();
         }
 
-
-        #region Operator Methods
-        public static (Vector<double>, Matrix<double>) Convolution(Vector<double> flattenedImage, Matrix<double> weights, int stride, bool transposeOutput = false)
+        public static Vector<double>[] SplitInputToChannels(Vector<double> input, int channelCount, int channelInputSize)
         {
-            int dim = (int)Math.Round(Math.Sqrt(flattenedImage.Count));
-            double imageQuotient = ((double)dim - weights.RowCount) / stride + 1;
-            int outDim = (int)Math.Floor(imageQuotient);
-
-            Matrix<double> image = MathUtils.Unflatten(flattenedImage);
-
-            Matrix<double> output = Matrix<double>.Build.Dense(outDim, outDim);
-
-            //Parallel.For(0, outDim, i =>
-            for(int i = 0; i < outDim; i++)
-            {
-                for (int j = 0; j < outDim; j++)
-                    for (int a = 0; a < weights.RowCount; a++)
-                        for (int b = 0; b < weights.RowCount; b++)
-                            output[i, j] += image[j * stride + b, i * stride + a] * weights[a, b];
-            }//);
-
-            if(transposeOutput)
-                output = output.Transpose();
-
-            return (Utilities.MathUtils.Flatten(output), output);
+            Vector<double>[] channels = new Vector<double>[channelCount];
+            for (int i = 0; i < channelCount; i++)
+                channels[i] = input.SubVector(i * channelInputSize, channelInputSize);
+            return channels;
         }
 
-        // ∂L/∂W
-        public static Matrix<double> ComputeWeightGradient(Vector<double> input, Matrix<double> outputJacobian, int stride)
+        public static Vector<double> CombineChannelBackPropagation(Vector<double>[] input, int channelCount, int channelInputSize)
         {
-            Matrix<double> dilatedGradient = Dilate(outputJacobian, stride).Transpose();
-            return Convolution(input, dilatedGradient, stride: 1, transposeOutput: true).Item2;
-        }
-
-        // ∂L/∂X
-        public static Vector<double> ComputeInputGradient(Matrix<double> weight, Matrix<double> outputJacobian, int stride)
-        {
-            Matrix<double> rotatedWeight = Rotate180(weight);
-            Matrix<double> paddedDilatedGradient = PadAndDilate(outputJacobian, stride, rotatedWeight.RowCount);
-            return Convolution(MathUtils.Flatten(paddedDilatedGradient), rotatedWeight, stride: 1).Item1;
-        }
-
-
-        public static Matrix<double> PadAndDilate(Matrix<double> passedGradient, int stride, int kernel)
-        {
-            int weightsDim = passedGradient.RowCount;
-            int dilation = stride - 1;
-            int padding = kernel - 1;
-            int unpaddedSize = weightsDim + dilation * (weightsDim - 1);
-            int outDim = 2 * padding + unpaddedSize;
-
-            Matrix<double> paddedDilatedMatrix = Matrix<double>.Build.Dense(outDim, outDim);
-
-            int x = 0;
-            for (int i = padding; i < outDim - padding; i += stride)
-            {
-                int y = 0;
-                for (int j = padding; j < outDim - padding; j += stride)
-                {
-                    paddedDilatedMatrix[i, j] = passedGradient[x, y];
-                    y++;
-                }
-                x++;
-            }
-
-            return paddedDilatedMatrix.Transpose();
-        }
-
-
-        public static Matrix<double> Dilate(Matrix<double> passedGradient, int stride)
-        {
-            int dilation = stride - 1;
-            int gradientDim = passedGradient.RowCount;
-            int outDim = gradientDim + dilation * (gradientDim - 1);
-
-            Matrix<double> dilatedMatrix = Matrix<double>.Build.Dense(outDim, outDim);
-
-            int x = 0;
-            for(int i = 0; i < outDim; i += stride)
-            {
-                int y = 0;
-                for(int j = 0; j < outDim; j += stride)
-                {
-                    dilatedMatrix[i, j] = passedGradient[x, y];
-                    y++;
-                }
-                x++;
-            }
-
-            return dilatedMatrix;
-        }
-
-
-        public static Matrix<double> Rotate180(Matrix<double> mtx)
-        {
-            Matrix<double> temp = Matrix<double>.Build.Dense(mtx.RowCount, mtx.ColumnCount);
-            for (int i = 0; i < mtx.RowCount; i++)
-                for (int j = 0; j < mtx.ColumnCount; j++)
-                    temp[i, j] = mtx[i, mtx.ColumnCount - j - 1];
-            Matrix<double> output = Matrix<double>.Build.Dense(mtx.RowCount, mtx.ColumnCount);
-            for (int i = 0; i < mtx.RowCount; i++)
-                for (int j = 0; j < mtx.ColumnCount; j++)
-                    output[i, j] = temp[mtx.RowCount - i - 1, j];
+            Vector<double> output = Vector<double>.Build.Dense(channelCount * channelInputSize);
+            for (int i = 0; i < channelCount; i++)
+                for (int j = 0; j < channelInputSize; j++)
+                    output[i * channelInputSize + j] = input[i][j];
             return output;
         }
-        #endregion
-        
-        //todo: add support for non-square images
     }
 }

@@ -76,11 +76,11 @@ namespace UnitTests.ModelTests
             }
 
             Network network = new Network(28 * 28);
-            network.Add(new MultiChannelConvolutionalLayer(28 * 28, kernel: 3, filters: 8, channels: 1, stride: 1));
+            network.Add(new ConvolutionalLayer(kernel: 3, filters: 8, channels: 1, stride: 1));
             network.Add(new ActivationLayer(ActivationType.ReLu));
-            network.Add(new MultiChannelConvolutionalLayer(26 * 26 * 8, kernel: 3, filters: 2, channels: 8, stride: 1));
+            network.Add(new ConvolutionalLayer(kernel: 3, filters: 2, channels: 8, stride: 1));
             network.Add(new ActivationLayer(ActivationType.ReLu));
-            network.Add(new MultiChannelConvolutionalLayer(24 * 24 * 2, kernel: 2, filters: 2, channels: 2, stride: 1));
+            network.Add(new ConvolutionalLayer(kernel: 2, filters: 2, channels: 2, stride: 1));
             network.Add(new ActivationLayer(ActivationType.ReLu));
             network.Add(new MaxPoolingLayer(23 * 23 * 2, prevFilterCount: 2, poolSize: 2));
             network.Add(new FullyConnectedLayer(128));

@@ -17,8 +17,8 @@ namespace NeuroSharp
             //Control.UseManaged();
 
             //XOR_Test();
-            Mnist_Digits_Test(6000, 100, 5, "digits");
-            //Mnist_Digits_Test_Conv(6000, 100, 5, "digits");
+            //Mnist_Digits_Test(6000, 100, 5, "digits");
+            Mnist_Digits_Test_Conv(600, 100, 5, "digits");
             //Conv_Base_Test(1000, 100, 10, "digits");
             //Conv_Vs_Non_Conv(5000, 1000, 15, 20, "digits");
             //IntelImageClassification_Test(epochs: 25);
@@ -238,9 +238,9 @@ namespace NeuroSharp
 
             //build network
             Network network = new Network(28 * 28);
-            network.Add(new MultiChannelConvolutionalLayer(28 * 28, kernel: 2, filters: 2, channels: 1, stride: 2));
+            network.Add(new ConvolutionalLayer(kernel: 2, filters: 2, channels: 1, stride: 2));
             network.Add(new ActivationLayer(ActivationType.ReLu));
-            network.Add(new MaxPoolingLayer(14 * 14 * 2, prevFilterCount: 2, poolSize: 2));
+            //network.Add(new MaxPoolingLayer(14 * 14 * 2, prevFilterCount: 2, poolSize: 2));
             network.Add(new FullyConnectedLayer(128));
             network.Add(new ActivationLayer(ActivationType.Tanh));
             network.Add(new FullyConnectedLayer(10));
@@ -314,11 +314,10 @@ namespace NeuroSharp
             ImageDataAggregate testData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\IntelImageClassification\seg_test\seg_test", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 150, expectedWidth: 150);
 
             Network network = new Network(150 * 150 * 3);
-            network.Add(new ActivationLayer(ActivationType.Tanh));
-            network.Add(new MultiChannelConvolutionalLayer(150 * 150 * 3, kernel: 3, filters: 32, stride: 3, channels: 3));
+            network.Add(new ConvolutionalLayer(kernel: 3, filters: 32, stride: 3, channels: 3));
             network.Add(new ActivationLayer(ActivationType.ReLu));
             network.Add(new MaxPoolingLayer(50 * 50 * 32, prevFilterCount: 32, poolSize: 3));
-            network.Add(new MultiChannelConvolutionalLayer(48 * 48 * 32, kernel: 2, filters: 4, stride: 2, channels: 32));
+            network.Add(new ConvolutionalLayer(kernel: 2, filters: 4, stride: 2, channels: 32));
             network.Add(new ActivationLayer(ActivationType.ReLu));
             network.Add(new MaxPoolingLayer(24 * 24 * 4, prevFilterCount: 4, poolSize: 2));
             network.Add(new FullyConnectedLayer(256));
@@ -362,16 +361,16 @@ namespace NeuroSharp
             ImageDataAggregate testData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\Birds\test", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 224, expectedWidth: 224);
 
             Network network = new Network(224 * 224 * 3);
-            network.Add(new MultiChannelConvolutionalLayer(224 * 224 * 3, kernel: 2, filters: 4, stride: 3, channels: 3));
+            network.Add(new ConvolutionalLayer(kernel: 2, filters: 4, stride: 3, channels: 3));
             network.Add(new ActivationLayer(ActivationType.ReLu));
             network.Add(new MaxPoolingLayer(75 * 75 * 4, prevFilterCount: 4, poolSize: 3));
-            network.Add(new MultiChannelConvolutionalLayer(73 * 73 * 4, kernel: 3, filters: 3, stride: 2, channels: 4));
+            network.Add(new ConvolutionalLayer(kernel: 3, filters: 3, stride: 2, channels: 4));
             network.Add(new ActivationLayer(ActivationType.ReLu));
             network.Add(new MaxPoolingLayer(36 * 36 * 3, prevFilterCount: 3, poolSize: 3));
-            network.Add(new MultiChannelConvolutionalLayer(34 * 34 * 3, kernel: 2, filters: 2, stride: 2, channels: 3));
+            network.Add(new ConvolutionalLayer(kernel: 2, filters: 2, stride: 2, channels: 3));
             network.Add(new ActivationLayer(ActivationType.ReLu));
             network.Add(new MaxPoolingLayer(17 * 17 * 2, prevFilterCount: 2, poolSize: 3));
-            network.Add(new MultiChannelConvolutionalLayer(15 * 15 * 2, kernel: 3, filters: 1, stride: 1, channels: 2));
+            network.Add(new ConvolutionalLayer(kernel: 3, filters: 1, stride: 1, channels: 2));
             network.Add(new ActivationLayer(ActivationType.ReLu));
             network.Add(new MaxPoolingLayer(13 * 13 * 1, prevFilterCount: 1, poolSize: 2));
             network.Add(new FullyConnectedLayer(37));

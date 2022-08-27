@@ -23,7 +23,7 @@ namespace UnitTests
         public void SplitInputToChannels_ReturnsCorrectChannelSplit()
         {
             Vector<double> input1 = Vector<double>.Build.DenseOfArray(new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 });
-            Vector<double>[] output1 = MultiChannelConvolutionalLayer.SplitInputToChannels(input1, 3, 5);
+            Vector<double>[] output1 = ConvolutionalLayer.SplitInputToChannels(input1, 3, 5);
             Vector<double>[] expected1 = new Vector<double>[]
             {
                 Vector<double>.Build.DenseOfArray(new double[] {1, 2, 3, 4, 5}),
@@ -44,7 +44,7 @@ namespace UnitTests
                 Vector<double>.Build.DenseOfArray(new double[] {11, 12, 13, 14, 15}),
             };
             Vector<double> expected1 = Vector<double>.Build.DenseOfArray(new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 });
-            Vector<double> output1 = MultiChannelConvolutionalLayer.CombineChannelBackPropagation(input1, 3, 5);
+            Vector<double> output1 = ConvolutionalLayer.CombineChannelBackPropagation(input1, 3, 5);
 
             Assert.AreEqual(expected1, output1);
         }
@@ -61,7 +61,7 @@ namespace UnitTests
                 1, 2, 3, 4
             });
 
-            MultiChannelConvolutionalLayer layer1 = new MultiChannelConvolutionalLayer(inputSize: 4, kernel: 2, filters: 1, stride: 1, channels: 1);
+            ConvolutionalLayer layer1 = new ConvolutionalLayer(kernel: 2, filters: 1, stride: 1, channels: 1);
             Vector<double> output1 = layer1.ForwardPropagation(input1);
 
             //setup 2
@@ -73,7 +73,7 @@ namespace UnitTests
                 9, 10, 11, 12 // blue
             });
 
-            MultiChannelConvolutionalLayer layer2 = new MultiChannelConvolutionalLayer(inputSize: 12, kernel: 2, filters: 1, stride: 1, channels: 3);
+            ConvolutionalLayer layer2 = new ConvolutionalLayer(kernel: 2, filters: 1, stride: 1, channels: 3);
             Vector<double> output2 = layer2.ForwardPropagation(input2);
 
             //setup 3
@@ -85,7 +85,7 @@ namespace UnitTests
                 9, 10, 11, 12 // blue
             });
 
-            MultiChannelConvolutionalLayer layer3 = new MultiChannelConvolutionalLayer(inputSize: 12, kernel: 2, filters: 7, stride: 1, channels: 3);
+            ConvolutionalLayer layer3 = new ConvolutionalLayer(kernel: 2, filters: 7, stride: 1, channels: 3);
             Vector<double> output3 = layer3.ForwardPropagation(input3);
 
             //setup 4
@@ -97,7 +97,7 @@ namespace UnitTests
                 9, 10, 11, 12, 23, 24, 25, 26, 27   // blue
             });
 
-            MultiChannelConvolutionalLayer layer4 = new MultiChannelConvolutionalLayer(inputSize: 27, kernel: 2, filters: 7, stride: 1, channels: 3);
+            ConvolutionalLayer layer4 = new ConvolutionalLayer(kernel: 2, filters: 7, stride: 1, channels: 3);
             Vector<double> output4 = layer4.ForwardPropagation(input4);
 
 
@@ -116,7 +116,7 @@ namespace UnitTests
                 Vector<double> truthY = Vector<double>.Build.Random(28);
 
                 Network network = new Network(27);
-                network.Add(new MultiChannelConvolutionalLayer(27, kernel: 2, filters: 7, stride: 1, channels: 3));
+                network.Add(new ConvolutionalLayer(kernel: 2, filters: 7, stride: 1, channels: 3));
                 network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
                 network.UseLoss(LossType.CategoricalCrossentropy);
@@ -147,7 +147,7 @@ namespace UnitTests
                 Vector<double> truthY = Vector<double>.Build.Random(28);
 
                 Network network = new Network(48);
-                network.Add(new MultiChannelConvolutionalLayer(48, kernel: 2, filters: 7, stride: 2, channels: 3));
+                network.Add(new ConvolutionalLayer(kernel: 2, filters: 7, stride: 2, channels: 3));
                 network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
                 network.UseLoss(LossType.CategoricalCrossentropy);
@@ -179,18 +179,18 @@ namespace UnitTests
                 Vector<double> testWeights = Vector<double>.Build.Random(4 * 13 * 4);
 
                 Network network = new Network(36);
-                network.Add(new MultiChannelConvolutionalLayer(inputSize: 36, kernel: 2, filters: 13, stride: 1, channels: 4));
+                network.Add(new ConvolutionalLayer(kernel: 2, filters: 13, stride: 1, channels: 4));
                 network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
                 network.UseLoss(LossType.CategoricalCrossentropy);
 
                 double networkLossWithWeightAsVariable(Vector<double> x)
                 {
-                    Vector<double>[] splitWeights = MultiChannelConvolutionalLayer.SplitInputToChannels(x, 4, 13 * 4);
+                    Vector<double>[] splitWeights = ConvolutionalLayer.SplitInputToChannels(x, 4, 13 * 4);
                     for (int p = 0; p < 4; p++)
                     {
-                        Vector<double>[] splitWeights2 = MultiChannelConvolutionalLayer.SplitInputToChannels(splitWeights[p], 13, 4);
-                        ConvolutionalLayer conv = ((MultiChannelConvolutionalLayer)network.Layers[0]).ChannelOperators[p];
+                        Vector<double>[] splitWeights2 = ConvolutionalLayer.SplitInputToChannels(splitWeights[p], 13, 4);
+                        ConvolutionalOperator conv = ((ConvolutionalLayer)network.Layers[0]).ChannelOperators[p];
                         for (int k = 0; k < 13; k++)
                         {
                             conv.Weights[k] = MathUtils.Unflatten(splitWeights2[k]);
@@ -213,7 +213,7 @@ namespace UnitTests
                     {
                         for (int p = 0; p < 4; p++)
                         {
-                            ConvolutionalLayer conv = ((MultiChannelConvolutionalLayer)network.Layers[0]).ChannelOperators[p];
+                            ConvolutionalOperator conv = ((ConvolutionalLayer)network.Layers[0]).ChannelOperators[p];
                             for (int y = 0; y < conv.WeightGradients.Length; y++)
                             {
                                 Vector<double> weightGrad = MathUtils.Flatten(conv.WeightGradients[y]);
@@ -240,18 +240,18 @@ namespace UnitTests
                 Vector<double> testWeights = Vector<double>.Build.Random(5 * 13 * 4);
 
                 Network network = new Network(80);
-                network.Add(new MultiChannelConvolutionalLayer(inputSize: 80, kernel: 2, filters: 13, stride: 2, channels: 5));
+                network.Add(new ConvolutionalLayer(kernel: 2, filters: 13, stride: 2, channels: 5));
                 network.Add(new ActivationLayer(ActivationType.Tanh));
                 network.Add(new SoftmaxActivationLayer());
                 network.UseLoss(LossType.CategoricalCrossentropy);
 
                 double networkLossWithWeightAsVariable(Vector<double> x)
                 {
-                    Vector<double>[] splitWeights = MultiChannelConvolutionalLayer.SplitInputToChannels(x, 5, 13 * 4);
+                    Vector<double>[] splitWeights = ConvolutionalLayer.SplitInputToChannels(x, 5, 13 * 4);
                     for (int p = 0; p < 5; p++)
                     {
-                        Vector<double>[] splitWeights2 = MultiChannelConvolutionalLayer.SplitInputToChannels(splitWeights[p], 13, 4);
-                        ConvolutionalLayer conv = ((MultiChannelConvolutionalLayer)network.Layers[0]).ChannelOperators[p];
+                        Vector<double>[] splitWeights2 = ConvolutionalLayer.SplitInputToChannels(splitWeights[p], 13, 4);
+                        ConvolutionalOperator conv = ((ConvolutionalLayer)network.Layers[0]).ChannelOperators[p];
                         for (int k = 0; k < 13; k++)
                         {
                             conv.Weights[k] = MathUtils.Unflatten(splitWeights2[k]);
@@ -274,7 +274,7 @@ namespace UnitTests
                     {
                         for (int p = 0; p < 5; p++)
                         {
-                            ConvolutionalLayer conv = ((MultiChannelConvolutionalLayer)network.Layers[0]).ChannelOperators[p];
+                            ConvolutionalOperator conv = ((ConvolutionalLayer)network.Layers[0]).ChannelOperators[p];
                             for (int y = 0; y < conv.WeightGradients.Length; y++)
                             {
                                 Vector<double> weightGrad = MathUtils.Flatten(conv.WeightGradients[y]);
