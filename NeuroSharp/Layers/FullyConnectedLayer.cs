@@ -59,9 +59,9 @@ namespace NeuroSharp
 
             for (int i = 0; i < InputSize; i++)
                 for (int j = 0; j < OutputSize; j++)
-                    Weights[0][i, j] = MathUtils.GetInitialWeight(InputSize);
+                    Weights[0][i, j] = MathUtils.GetInitialWeightFromInputSize(InputSize);
             for (int i = 0; i < OutputSize; i++)
-                Bias[i] = MathUtils.GetInitialWeight(InputSize);
+                Bias[i] = MathUtils.GetInitialWeightFromInputSize(InputSize);
         }
 
         public override void DrainGradients()

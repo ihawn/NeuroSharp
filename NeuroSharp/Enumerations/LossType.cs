@@ -9,6 +9,7 @@ namespace NeuroSharp.Enumerations
     public enum LossType
     {
         MeanSquaredError = 0,
-        CategoricalCrossentropy = 1
+        CategoricalCrossentropy = 1,
+        BinaryCrossentropy = 2
     }
 }

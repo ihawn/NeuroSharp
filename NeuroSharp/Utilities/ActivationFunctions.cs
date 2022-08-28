@@ -10,9 +10,25 @@ namespace NeuroSharp
             return Math.Tanh(x);
         }
 
+        public static Vector<double> PointwiseTanh(Vector<double> x)
+        {
+            Vector<double> output = Vector<double>.Build.Dense(x.Count);
+            for (int i = 0; i < x.Count; i++)
+                output[i] = Tanh(x[i]);
+            return output;
+        }
+
         public static double TanhPrime(double x)
         {
             return 1 - Math.Pow(Math.Tanh(x), 2);
+        }
+        
+        public static Vector<double> PointwiseTanhPrime(Vector<double> x)
+        {
+            Vector<double> output = Vector<double>.Build.Dense(x.Count);
+            for (int i = 0; i < x.Count; i++)
+                output[i] = TanhPrime(x[i]);
+            return output;
         }
 
         public static double Relu(double x)

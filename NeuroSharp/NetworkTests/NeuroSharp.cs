@@ -19,6 +19,7 @@ namespace NeuroSharp
             //XOR_Test();
             //Mnist_Digits_Test(6000, 100, 5, "digits");
             //Mnist_Digits_Test_Conv(6000, 100, 5, "digits");
+            Mnist_Digits_Test_Binary(6000, 100, 5, "digits");
             //Conv_Base_Test(1000, 100, 10, "digits");
             //Conv_Vs_Non_Conv(5000, 1000, 15, 20, "digits");
             IntelImageClassification_Conv(epochs: 1);
@@ -165,6 +166,85 @@ namespace NeuroSharp
             network.Add(new FullyConnectedLayer(10));
             network.Add(new SoftmaxActivationLayer());
             network.UseLoss(LossType.CategoricalCrossentropy);
+
+            //train
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            network.Train(xTrain, yTrain, epochs: epochs, TrainingConfiguration.Minibatch, OptimizerType.Adam, batchSize: 64, learningRate: 0.001f);
+            var elapsedMs = watch.ElapsedMilliseconds;
+
+            //test
+            int i = 0;
+            int wrongCount = 0;
+            foreach(var test in xTest)
+            {
+                var output = network.Predict(test);
+                int prediction = output.ToList().IndexOf(output.Max());
+                int actual = yTest[i].ToList().IndexOf(yTest[i].Max());
+                Console.WriteLine("Prediction: " + prediction);
+                Console.WriteLine("Actual: " + actual + "\n");
+
+                if(prediction != actual)
+                    wrongCount++;
+
+                i++;
+            }
+            double acc = (1f - ((double)wrongCount) / ((double)i));
+            Console.WriteLine("Accuracy: " + acc);
+            Console.WriteLine("Training Runtime: " + (elapsedMs / 1000f).ToString() + "s");
+
+            string networkJson = network.SerializeToJSON();
+            
+            return acc;
+        }
+        static double Mnist_Digits_Test_Binary(int trainSize, int testSize, int epochs, string data)
+        {
+            //training data
+            List<Vector<double>> xTrain = new List<Vector<double>>();
+            List<Vector<double>> yTrain = new List<Vector<double>>();
+
+            var trainData = MnistReader.ReadTrainingData(data).ToList();
+            for(int n = 0; n < trainSize; n++)
+            {
+                var image = trainData[n];
+                if(image.Label > 1)
+                    continue;
+
+                double[] flattenedNormalized = image.Data.Cast<byte>().Select(t => t/256d).ToArray();
+                xTrain.Add(Vector<double>.Build.DenseOfArray(flattenedNormalized));
+
+                double[] categorical = new double[2];
+                categorical[image.Label] = 1;
+                yTrain.Add(Vector<double>.Build.DenseOfArray(categorical));
+            }
+
+            //testing data
+            List<Vector<double>> xTest = new List<Vector<double>>();
+            List<Vector<double>> yTest = new List<Vector<double>>();
+
+            var testData = MnistReader.ReadTestData(data).ToList();
+            for (int n = 0; n < testSize; n++)
+            {
+                var image = testData[n];
+                if(image.Label > 1)
+                    continue;
+
+                double[] flattenedNormalized = image.Data.Cast<byte>().Select(t => t / 256d).ToArray();
+                xTest.Add(Vector<double>.Build.DenseOfArray(flattenedNormalized));
+
+                double[] categorical = new double[2];
+                categorical[image.Label] = 1;
+                yTest.Add(Vector<double>.Build.DenseOfArray(categorical));
+            }
+
+            //build network
+            Network network = new Network(28 * 28);
+            network.Add(new FullyConnectedLayer(256));
+            network.Add(new ActivationLayer(ActivationType.ReLu));
+            network.Add(new FullyConnectedLayer(128));
+            network.Add(new ActivationLayer(ActivationType.ReLu));
+            network.Add(new FullyConnectedLayer(2));
+            network.Add(new SoftmaxActivationLayer());
+            network.UseLoss(LossType.BinaryCrossentropy);
 
             //train
             var watch = System.Diagnostics.Stopwatch.StartNew();

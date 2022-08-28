@@ -67,6 +67,10 @@ namespace NeuroSharp.Training
                     Loss = LossFunctions.CategoricalCrossentropy;
                     LossPrime = LossFunctions.CategoricalCrossentropyPrime;
                     break;
+                case LossType.BinaryCrossentropy:
+                    Loss = LossFunctions.BinaryCrossentropy;
+                    LossPrime = LossFunctions.CategoricalCrossentropyPrime;
+                    break;
             }
         }
 

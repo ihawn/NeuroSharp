@@ -4,7 +4,7 @@ using NeuroSharp.Training;
 
 namespace NeuroSharp
 {
-    public abstract class Layer
+    public abstract class Layer //todo: dropout layer
     {
         public int Id { get; set; }
         public Vector<double> Input { get; set; }

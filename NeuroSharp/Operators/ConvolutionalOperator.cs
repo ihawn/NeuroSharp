@@ -108,7 +108,7 @@ namespace NeuroSharp
                 WeightGradients[i] = Matrix<double>.Build.Dense(_kernelSize, _kernelSize);
                 for (int x = 0; x < _kernelSize; x++)
                     for (int y = 0; y < _kernelSize; y++)
-                        Weights[i][x, y] = MathUtils.GetInitialWeight(InputSize);
+                        Weights[i][x, y] = MathUtils.GetInitialWeightFromInputSize(InputSize);
             }
             
             _adam = new Adam(_kernelSize, _kernelSize, weightCount: _filters);

@@ -12,6 +12,7 @@ namespace NeuroSharp.Enumerations
         Convolutional = 1,
         Activation = 3,
         SoftmaxActivation = 4,
-        MaxPooling = 5
+        MaxPooling = 5,
+        Recurrent = 6
     }
 }
