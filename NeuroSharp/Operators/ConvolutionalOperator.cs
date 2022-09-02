@@ -65,7 +65,6 @@ namespace NeuroSharp
 
         public override Vector<double> BackPropagation(Vector<double> outputError)
         {
-            Vector<double> inputGradient = Vector<double>.Build.Dense(InputSize);
             Vector<double>[] jacobianSlices = new Vector<double>[_filters];
             Matrix<double> inputGradientMatrix = Matrix<double>.Build.Dense((int)Math.Sqrt(_rawInputSize), (int)Math.Sqrt(_rawInputSize));
             Matrix<double>[] inputGradientPieces = new Matrix<double>[_filters];

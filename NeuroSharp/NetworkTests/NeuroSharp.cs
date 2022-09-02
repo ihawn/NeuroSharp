@@ -17,13 +17,13 @@ namespace NeuroSharp
             //Control.UseManaged();
 
             //XOR_Test();
-            //Mnist_Digits_Test(6000, 100, 5, "digits");
+            Mnist_Digits_Test(60000, 10000, 5, "digits");
             //Mnist_Digits_Test_Conv(6000, 100, 5, "digits");
-            Mnist_Digits_Test_Binary(6000, 100, 5, "digits");
+            //Mnist_Digits_Test_Binary(60000, 10000, 5, "digits");
             //Conv_Base_Test(1000, 100, 10, "digits");
             //Conv_Vs_Non_Conv(5000, 1000, 15, 20, "digits");
-            IntelImageClassification_Conv(epochs: 1);
-            //IntelImageClassification_Dense(epochs: 1);
+            //IntelImageClassification_Conv(epochs: 5);
+            //IntelImageClassification_Dense(epochs: 5);
             //BirdSpecies_Test(epochs: 5);
 
             #region testing
@@ -159,9 +159,7 @@ namespace NeuroSharp
 
             //build network
             Network network = new Network(28 * 28);
-            network.Add(new FullyConnectedLayer(256));
-            network.Add(new ActivationLayer(ActivationType.ReLu));
-            network.Add(new FullyConnectedLayer(128));
+            network.Add(new FullyConnectedLayer(200));
             network.Add(new ActivationLayer(ActivationType.ReLu));
             network.Add(new FullyConnectedLayer(10));
             network.Add(new SoftmaxActivationLayer());
@@ -391,14 +389,14 @@ namespace NeuroSharp
         }
         static void IntelImageClassification_Conv(int epochs)
         {
-            ImageDataAggregate trainData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\IntelImageClassification_Smaller\seg_train\seg_train", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 150, expectedWidth: 150);
-            ImageDataAggregate testData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\IntelImageClassification_Smaller\seg_test\seg_test", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 150, expectedWidth: 150);
+            ImageDataAggregate trainData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\IntelImageClassification\seg_train\seg_train", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 150, expectedWidth: 150);
+            ImageDataAggregate testData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\IntelImageClassification\seg_test\seg_test", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 150, expectedWidth: 150);
 
             Network network = new Network(150 * 150 * 3);
-            network.Add(new ConvolutionalLayer(kernel: 3, filters: 16, stride: 3, channels: 3));
+            network.Add(new ConvolutionalLayer(kernel: 3, filters: 8, stride: 3, channels: 3));
             network.Add(new ActivationLayer(ActivationType.ReLu));
             network.Add(new MaxPoolingLayer(poolSize: 3));
-            network.Add(new ConvolutionalLayer(kernel: 2, filters: 4, stride: 2, channels: 16));
+            network.Add(new ConvolutionalLayer(kernel: 2, filters: 4, stride: 2, channels: 8));
             network.Add(new ActivationLayer(ActivationType.ReLu));
             network.Add(new MaxPoolingLayer(poolSize: 2));
             network.Add(new FullyConnectedLayer(256));
@@ -433,13 +431,13 @@ namespace NeuroSharp
             Console.WriteLine("Accuracy: " + acc);
             Console.WriteLine("Training Runtime: " + (elapsedMs / 1000f).ToString() + "s");
 
-            string modelJson = network.SerializeToJSON();
-            System.IO.File.WriteAllText (@"C:\Users\Isaac\Desktop\intel_image_classification_model.txt", modelJson);
+            //string modelJson = network.SerializeToJSON();
+            //System.IO.File.WriteAllText (@"C:\Users\Isaac\Desktop\intel_image_classification_model.txt", modelJson);
         }
         static void IntelImageClassification_Dense(int epochs)
         {
-            ImageDataAggregate trainData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\IntelImageClassification_Smaller\seg_train\seg_train", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 150, expectedWidth: 150);
-            ImageDataAggregate testData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\IntelImageClassification_Smaller\seg_test\seg_test", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 150, expectedWidth: 150);
+            ImageDataAggregate trainData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\IntelImageClassification\seg_train\seg_train", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 150, expectedWidth: 150);
+            ImageDataAggregate testData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\IntelImageClassification\seg_test\seg_test", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 150, expectedWidth: 150);
 
             Network network = new Network(150 * 150 * 3);
             network.Add(new FullyConnectedLayer(256));
@@ -479,8 +477,8 @@ namespace NeuroSharp
             Console.WriteLine("Accuracy: " + acc);
             Console.WriteLine("Training Runtime: " + (elapsedMs / 1000f).ToString() + "s");
 
-            string modelJson = network.SerializeToJSON();
-            System.IO.File.WriteAllText (@"C:\Users\Isaac\Desktop\intel_image_classification_model.txt", modelJson);
+            //string modelJson = network.SerializeToJSON();
+            //System.IO.File.WriteAllText (@"C:\Users\Isaac\Desktop\intel_image_classification_model.txt", modelJson);
         }
         static void BirdSpecies_Test(int epochs)
         {

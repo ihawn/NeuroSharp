@@ -16,6 +16,8 @@ namespace NeuroSharp
         public Vector<double>[] HiddenMemory { get; set; }
         public Vector<double>[] OutputMemory { get; set; }
         public Vector<double> PreviousHidden { get; set; }
+        public RNNCache Cache { get; set; }
+        public RNNGradientCache GradientCache { get; set; }
 
         [JsonProperty]
         private Adam _adam;
@@ -36,40 +38,46 @@ namespace NeuroSharp
             _sequenceLength = sequenceLength;
         }
         
-
+        //todo: write test for this (output shape, runtime issues, etc)
         public override Vector<double> ForwardPropagation(Vector<double> input)
         {
-            InputMemory = new Vector<double>[input.Count];
-            HiddenMemory = new Vector<double>[input.Count];
-            OutputMemory = new Vector<double>[input.Count];
             Input = input;
+            Vector<double>[] unflattenedOutput = new Vector<double>[input.Count / _vocabSize];
+            Vector<double>[] unflattenedInput = UnflattenInputVector(input);
+            HiddenMemory = new Vector<double>[unflattenedInput.Length];
 
-            for (int i = 0; i < input.Count; i++)
+            // n_y = _vocabSize
+            // n_a = _hiddenSize
+
+            Cache = new RNNCache { NextState = Vector<double>.Build.Dense(_hiddenSize) };
+
+            for (int i = 0; i < unflattenedInput.Length; i++)
             {
-                InputMemory[i] = Vector<double>.Build.Dense(_vocabSize);
-                InputMemory[i][(int)Math.Round(input[i])] = 1;
-                HiddenMemory[i] = ActivationFunctions.PointwiseTanh(Weights[(int)RNNWeight.U] * InputMemory[i] + 
-                                                                 Weights[(int)RNNWeight.W] * 
-                                                                    (i > 0 ? HiddenMemory[i - 1] : PreviousHidden));
-                OutputMemory[i] = Weights[(int)RNNWeight.V] * HiddenMemory[i];
+                Cache = RecurrentCellForward(unflattenedInput[i], Cache.NextState);
+                HiddenMemory[i] = Cache.NextState; // a
+                unflattenedOutput[i] = Cache.PredictionVector; // y_pred
             }
 
-            return MathUtils.Flatten(OutputMemory);
+            Output = MathUtils.Flatten(unflattenedOutput);
+            return Output;
         }
+        
+        // Wya = V
+        // Wax = U
 
         public override Vector<double> BackPropagation(Vector<double> outputError)
         {
+            DrainGradients();
             Vector<double>[] unflattenedError = MathUtils.UnflattenVecArray(outputError, Input.Count, _vocabSize);
-            Vector<double> passedGradient = Vector<double>.Build.Dense(outputError.Count);
+            Vector<double> prevState = Vector<double>.Build.Dense(_hiddenSize);
 
             for (int i = outputError.Count - 1; i >= 0; i--)
             {
-                /*WeightGradients[(int)RNNWeight.V] += unflattenedError[i] * HiddenMemory[i];
-                Vector<double> gradientWRTState = unflattenedError[i] * Weights[(int)RNNWeight.V] * 
-                                                  ActivationFunctions.PointwiseTanhPrime(InputMemory[i]);*/
+                GradientCache = RecurrentCellBackwards(unflattenedError[i] + prevState, i);
+                prevState = GradientCache.PrevStateGradient;
             }
 
-            return passedGradient;
+            return GradientCache.InputGradient;
         }
         
         public override void InitializeParameters()
@@ -100,6 +108,7 @@ namespace NeuroSharp
 
             Bias = Vector<double>.Build.Random(OutputSize);
             BiasGradient = Vector<double>.Build.Dense(OutputSize);
+            PreviousHidden = Vector<double>.Build.Dense(_hiddenSize);
             _adam = new Adam(InputSize, OutputSize);
 
             for (int n = 0; n < 3; n++)
@@ -121,7 +130,12 @@ namespace NeuroSharp
 
         public override void DrainGradients()
         {
-
+            WeightGradients = new Matrix<double>[]
+            {
+                Matrix<double>.Build.Dense(_hiddenSize, _vocabSize), // ∂U/L
+                Matrix<double>.Build.Dense(_vocabSize, _hiddenSize), // ∂V/L
+                Matrix<double>.Build.Dense(_hiddenSize, _hiddenSize) // ∂W/L
+            };
         }
 
         public override void SetGradientAccumulation(bool acc)
@@ -146,5 +160,62 @@ namespace NeuroSharp
             if(AccumulateGradients)
                 DrainGradients();
         }
+        
+        // input.Count = _hiddenSize
+        public RNNCache RecurrentCellForward(Vector<double> input, Vector<double> prevState)
+        {
+            Vector<double> nextState = ActivationFunctions.PointwiseTanh(Weights[(int)RNNWeight.U] * input + 
+                                                                        Weights[(int)RNNWeight.W] * prevState +
+                                                                        Biases[(int)RNNBias.b]);
+            Vector<double> predictionVector =
+                ActivationFunctions.Softmax(Weights[(int)RNNWeight.V] * nextState + Biases[(int)RNNBias.c]);
+
+            return new RNNCache
+            {
+                NextState = nextState,
+                PreviousState = prevState,
+                Input = input,
+                PredictionVector = predictionVector
+            };
+        }
+
+        public RNNGradientCache RecurrentCellBackwards(Vector<double> nextState, int biasIndex)
+        {
+            Vector<double> activationGradient = ActivationFunctions.PointwiseTanhPrime(nextState).PointwiseMultiply(Cache.NextState);
+            Vector<double> inputGradient = Weights[(int)RNNWeight.U] * activationGradient;
+            WeightGradients[(int)RNNWeight.U] = activationGradient.OuterProduct(Input);
+            WeightGradients[(int)RNNWeight.W] = activationGradient.OuterProduct(Cache.PreviousState);
+            Vector<double> previousOutputGradient = WeightGradients[(int)RNNWeight.W] * activationGradient;
+            BiasGradients[(int)RNNBias.b][biasIndex] = activationGradient.Sum();
+
+            return new RNNGradientCache
+            {
+                PrevStateGradient = previousOutputGradient,
+                InputGradient = inputGradient
+            };
+        }
+
+        //todo: write test for this or even better make this calculation implicit elsewhere
+        public Vector<double>[] UnflattenInputVector(Vector<double> concatVec)
+        {
+            Vector<double>[] output = new Vector<double>[concatVec.Count / _vocabSize];
+            for (int i = 0; i < output.Length; i++)
+                output[i] = concatVec.SubVector(i * _vocabSize, _vocabSize);
+            return output;
+        }
+    }
+
+    public struct RNNCache
+    {
+        public Vector<double> NextState { get; set; }
+        public Vector<double> PreviousState { get; set; }
+        public Vector<double> Input { get; set; }
+        public Vector<double> PredictionVector { get; set; }
+    }
+
+    public struct RNNGradientCache
+    {
+        public Vector<double> InputGradient { get; set; }
+        public Vector<double> PrevStateGradient { get; set; }
     }
 }

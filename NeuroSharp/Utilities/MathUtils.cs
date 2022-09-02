@@ -23,7 +23,7 @@ namespace NeuroSharp.Utilities
             return Vector<double>.Build.DenseOfArray(f.ToArray());
         }
 
-        public static Vector<double> Flatten(Vector<double>[] mtx)
+        public static Vector<double> Flatten(Vector<double>[] mtx) //todo: write test for this
         {
             List<double> f = new List<double>();
             for (int i = 0; i < mtx.Length; i++)
@@ -41,7 +41,7 @@ namespace NeuroSharp.Utilities
             return mtx;
         }
 
-        public static Vector<double>[] UnflattenVecArray(Vector<double> vec, int w, int h)
+        public static Vector<double>[] UnflattenVecArray(Vector<double> vec, int w, int h) //todo: write test for this
         {
             Vector<double>[] output = new Vector<double>[w];
             for (int i = 0; i < w; i++)
