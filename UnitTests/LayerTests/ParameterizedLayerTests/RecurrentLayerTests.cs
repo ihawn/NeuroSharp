@@ -169,5 +169,108 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
 
             Assert.IsTrue((finiteDiffGradient - explicitWeightGradient).L2Norm() < 0.00001);
         }
+        
+        [Test]
+        public void BackwardPass_ReturnsCorrectWGradient()
+        {
+            Random rand = new Random();
+            int hiddenSize = 1;//rand.Next(1, 25);
+            int vocabSize = 1;//rand.Next(1, 25);
+            int sequenceLength = 1;//rand.Next(1, 25);
+                
+            Vector<double> xTest = Vector<double>.Build.Random(hiddenSize * vocabSize);
+            Vector<double> yTruth = Vector<double>.Build.Random(hiddenSize * vocabSize);
+            Vector<double> testW = Vector<double>.Build.Random(sequenceLength * sequenceLength);
+
+            Network network = new Network(vocabSize * hiddenSize);
+            network.Add(new RecurrentLayer(hiddenSize, vocabSize, sequenceLength));
+            network.UseLoss(LossType.MeanSquaredError);
+            
+            double networkLoss(Vector<double> x)
+            {
+                RecurrentLayer rec = (RecurrentLayer)network.Layers[0];
+                rec.Weights[(int)RNNWeight.W] = MathUtils.Unflatten(x, sequenceLength, vocabSize);
+                Vector<double> output = network.Predict(xTest);
+                return network.Loss(yTruth, output);
+            }
+
+            Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, testW);
+            Vector<double> outputGradient = LossFunctions.MeanSquaredErrorPrime(yTruth, network.Predict(xTest));
+            outputGradient = network.Layers[0].BackPropagation(outputGradient);
+            Vector<double> explicitWeightGradient =
+                MathUtils.Flatten(((RecurrentLayer)network.Layers[0]).WeightGradients[(int)RNNWeight.W]);
+
+            Assert.IsTrue((finiteDiffGradient - explicitWeightGradient).L2Norm() < 0.00001);
+        }
+
+        [Test]
+        public void BackwardPass_ReturnsCorrect_bGradient()
+        {
+            for (int i = 0; i < 250; i++)
+            {
+                Random rand = new Random();
+                int hiddenSize = rand.Next(1, 25);
+                int vocabSize = rand.Next(1, 25);
+                int sequenceLength = rand.Next(1, 25);
+                
+                Vector<double> xTest = Vector<double>.Build.Random(hiddenSize * vocabSize);
+                Vector<double> yTruth = Vector<double>.Build.Random(hiddenSize * vocabSize);
+                Vector<double> bTest = Vector<double>.Build.Random(sequenceLength);
+
+                Network network = new Network(vocabSize * hiddenSize);
+                network.Add(new RecurrentLayer(hiddenSize, vocabSize, sequenceLength));
+                network.UseLoss(LossType.MeanSquaredError);
+            
+                double networkLoss(Vector<double> x)
+                {
+                    RecurrentLayer rec = (RecurrentLayer)network.Layers[0];
+                    rec.Biases[(int)RNNBias.b] = x;
+                    Vector<double> output = network.Predict(xTest);
+                    return network.Loss(yTruth, output);
+                }
+
+                Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, bTest);
+                Vector<double> outputGradient = LossFunctions.MeanSquaredErrorPrime(yTruth, network.Predict(xTest));
+                outputGradient = network.Layers[0].BackPropagation(outputGradient);
+                Vector<double> explicitBiasGradient = ((RecurrentLayer)network.Layers[0]).BiasGradients[(int)RNNBias.b];
+
+                Assert.IsTrue((finiteDiffGradient - explicitBiasGradient).L2Norm() < 0.00001);
+            }
+        }
+        
+        [Test]
+        public void BackwardPass_ReturnsCorrect_cGradient()
+        {
+            for (int i = 0; i < 250; i++)
+            {
+                Random rand = new Random();
+                int hiddenSize = rand.Next(1, 25);
+                int vocabSize = rand.Next(1, 25);
+                int sequenceLength = rand.Next(1, 25);
+                
+                Vector<double> xTest = Vector<double>.Build.Random(hiddenSize * vocabSize);
+                Vector<double> yTruth = Vector<double>.Build.Random(hiddenSize * vocabSize);
+                Vector<double> cTest = Vector<double>.Build.Random(vocabSize);
+
+                Network network = new Network(vocabSize * hiddenSize);
+                network.Add(new RecurrentLayer(hiddenSize, vocabSize, sequenceLength));
+                network.UseLoss(LossType.MeanSquaredError);
+            
+                double networkLoss(Vector<double> x)
+                {
+                    RecurrentLayer rec = (RecurrentLayer)network.Layers[0];
+                    rec.Biases[(int)RNNBias.c] = x;
+                    Vector<double> output = network.Predict(xTest);
+                    return network.Loss(yTruth, output);
+                }
+
+                Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, cTest);
+                Vector<double> outputGradient = LossFunctions.MeanSquaredErrorPrime(yTruth, network.Predict(xTest));
+                outputGradient = network.Layers[0].BackPropagation(outputGradient);
+                Vector<double> explicitBiasGradient = ((RecurrentLayer)network.Layers[0]).BiasGradients[(int)RNNBias.c];
+
+                Assert.IsTrue((finiteDiffGradient - explicitBiasGradient).L2Norm() < 0.00001);
+            }
+        }
     }
 }
