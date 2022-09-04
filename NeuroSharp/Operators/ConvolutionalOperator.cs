@@ -23,6 +23,7 @@ namespace NeuroSharp
         private int _kernelSize;
         
         //todo: profile memory and remove excess mem allocations
+        //todo: make unflatten implicit in the operations
 
         public ConvolutionalOperator(ConvolutionalLayer parent, int kernel, int filters, int stride = 1)
         {

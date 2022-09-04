@@ -62,6 +62,15 @@ namespace NeuroSharp.Utilities
                     mtx[i, j] = vec[j * rowCount + i];
             return mtx;
         }
+
+        public static Matrix<double> VectorArrayToMatrix(Vector<double>[] vecs)
+        {
+            Matrix<double> mtx = Matrix<double>.Build.Dense(vecs.Length, vecs[0].Count);
+            for(int i = 0; i < vecs.Length; i++)
+                for (int j = 0; j < vecs[0].Count; j++)
+                    mtx[i, j] = vecs[i][j];
+            return mtx;
+        }
         public static double GetInitialWeightFromInputSize(int layerInputSize)
         {
             double sigma = Math.Sqrt(2f/layerInputSize);
@@ -101,6 +110,15 @@ namespace NeuroSharp.Utilities
             }
 
             return grad;
+        }
+        
+        public static Matrix<double> TransposianShift(Matrix<double> mtx) //todo check if this is really necessary
+        {
+            List<double> f = new List<double>();
+            for (int j = 0; j < mtx.ColumnCount; j++)
+                for (int i = 0; i < mtx.RowCount; i++)
+                    f.Add(mtx[i, j]);
+            return Unflatten(Vector<double>.Build.DenseOfEnumerable(f), mtx.ColumnCount, mtx.RowCount);
         }
     }
 }
