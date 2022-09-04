@@ -95,7 +95,7 @@ namespace NeuroSharp
             DrainGradients();
             Matrix<double> unflattenedError = MathUtils.VectorArrayToMatrix(UnflattenInputVector(outputError));
             Matrix<double> stateInput = MathUtils.VectorArrayToMatrix(StateInput);
-            Matrix<double> unflattenedLayerInput = MathUtils.Unflatten(Input, _hiddenSize, _vocabSize);
+            Vector<double>[] unflattenedInput = UnflattenInputVector(Input);
             RecurrentGradient = new Vector<double>[_hiddenSize];
 
             Vector<double> nextStateGradient = Vector<double>.Build.Dense(_sequenceLength);
@@ -105,15 +105,15 @@ namespace NeuroSharp
                 WeightGradients[(int)RNNWeight.V] += 
                     MathUtils.TransposianShift(unflattenedError.Row(i).OuterProduct(States[i])).Transpose();
                 
-                BiasGradients[(int)RNNBias.c] += unflattenedError.Row(i);
-
                 Vector<double> dh = Weights[(int)RNNWeight.V].Transpose() * unflattenedError.Row(i) + nextStateGradient;
                 Vector<double> dhrec = dh.PointwiseMultiply(ActivationFunctions.PointwiseTanhPrime(stateInput.Row(i)));
 
                 BiasGradients[(int)RNNBias.b] += dhrec;
+                BiasGradients[(int)RNNBias.c] += unflattenedError.Row(i);
                 
                 RecurrentGradient[i] = Weights[(int)RNNWeight.U].Transpose() * dhrec;
-                WeightGradients[(int)RNNWeight.U] += unflattenedLayerInput.Row(i).OuterProduct(dh).Transpose(); //todo
+                WeightGradients[(int)RNNWeight.U] += 
+                    MathUtils.TransposianShift(dhrec.OuterProduct(unflattenedInput[i])).Transpose();
                 if(i > 0) WeightGradients[(int)RNNWeight.W] += dhrec.OuterProduct(States[i - 1]).Transpose();
 
                 nextStateGradient = Weights[(int)RNNWeight.W].Transpose() * dhrec;
@@ -133,8 +133,8 @@ namespace NeuroSharp
             WeightGradients = new Matrix<double>[]
             {
                 Matrix<double>.Build.Dense(_sequenceLength, _vocabSize), // ∂U/L
-                Matrix<double>.Build.Dense(_vocabSize, _sequenceLength), // ∂V/L
-                Matrix<double>.Build.Dense(_sequenceLength, _sequenceLength) // ∂W/L
+                Matrix<double>.Build.Dense(_vocabSize, _sequenceLength), // ∂V/V
+                Matrix<double>.Build.Dense(_sequenceLength, _sequenceLength) // ∂W/W
             };
 
             Biases = new Vector<double>[]
@@ -175,8 +175,13 @@ namespace NeuroSharp
             WeightGradients = new Matrix<double>[]
             {
                 Matrix<double>.Build.Dense(_sequenceLength, _vocabSize), // ∂U/L
-                Matrix<double>.Build.Dense(_vocabSize, _sequenceLength), // ∂V/L
-                Matrix<double>.Build.Dense(_sequenceLength, _sequenceLength) // ∂W/L
+                Matrix<double>.Build.Dense(_vocabSize, _sequenceLength), // ∂V/V
+                Matrix<double>.Build.Dense(_sequenceLength, _sequenceLength) // ∂W/W
+            };
+            BiasGradients = new Vector<double>[]
+            {
+                Vector<double>.Build.Dense(_sequenceLength), // ∂b/L
+                Vector<double>.Build.Dense(_vocabSize) // ∂c/L
             };
         }
 
@@ -211,7 +216,5 @@ namespace NeuroSharp
                 output[i] = concatVec.SubVector(i * _vocabSize, _vocabSize);
             return output;
         }
-
-
     }
 }
