@@ -70,27 +70,35 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
         [Test]
         public void BackwardPass_ReturnsCorrectInputGradient()
         {
-            Vector<double> xTest = Vector<double>.Build.Random(2 * 4);
-            Vector<double> yTruth = Vector<double>.Build.Random(2 * 4);
-
-            Network network = new Network(2 * 4);
-            network.Add(new RecurrentLayer(2, 4, 3));
-            network.UseLoss(LossType.MeanSquaredError);
+            for (int i = 0; i < 250; i++)
+            {
+                Random rand = new Random();
+                int hiddenSize = rand.Next(1, 25);
+                int vocabSize = rand.Next(1, 25);
+                int sequenceLength = rand.Next(1, 25);
             
-            double networkLoss(Vector<double> x)
-            {
-                x = network.Predict(x);
-                return network.Loss(yTruth, x);
-            }
+                Vector<double> xTest = Vector<double>.Build.Random(hiddenSize * vocabSize);
+                Vector<double> yTruth = Vector<double>.Build.Random(hiddenSize * vocabSize);
 
-            Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, xTest);
-            Vector<double> testGradient = LossFunctions.MeanSquaredErrorPrime(yTruth, network.Predict(xTest));
-            for (int k = network.Layers.Count - 1; k >= 0; k--)
-            {
-                testGradient = network.Layers[k].BackPropagation(testGradient);
-            }
+                Network network = new Network(vocabSize * hiddenSize);
+                network.Add(new RecurrentLayer(hiddenSize, vocabSize, sequenceLength));
+                network.UseLoss(LossType.MeanSquaredError);
+            
+                double networkLoss(Vector<double> x)
+                {
+                    x = network.Predict(x);
+                    return network.Loss(yTruth, x);
+                }
 
-            Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
+                Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, xTest);
+                Vector<double> testGradient = LossFunctions.MeanSquaredErrorPrime(yTruth, network.Predict(xTest));
+                for (int k = network.Layers.Count - 1; k >= 0; k--)
+                {
+                    testGradient = network.Layers[k].BackPropagation(testGradient);
+                }
+
+                Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
+            }
         }
         
         [Test]
@@ -99,7 +107,7 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
             for (int i = 0; i < 250; i++)
             {
                 Random rand = new Random();
-                int hiddenSize = rand.Next(1, 10);
+                int hiddenSize = rand.Next(1, 25);
                 int vocabSize = rand.Next(1, 25);
                 int sequenceLength = rand.Next(1, 25);
                 
@@ -127,6 +135,39 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
 
                 Assert.IsTrue((finiteDiffGradient - explicitWeightGradient).L2Norm() < 0.00001);
             }
+        }
+        
+        [Test]
+        public void BackwardPass_ReturnsCorrectUGradient()
+        {
+            Random rand = new Random();
+            int hiddenSize = 2;//rand.Next(1, 25);
+            int vocabSize = 1;//rand.Next(1, 25);
+            int sequenceLength = 1;//rand.Next(1, 25);
+                
+            Vector<double> xTest = Vector<double>.Build.Random(hiddenSize * vocabSize);
+            Vector<double> yTruth = Vector<double>.Build.Random(hiddenSize * vocabSize);
+            Vector<double> testU = Vector<double>.Build.Random(sequenceLength * vocabSize);
+
+            Network network = new Network(vocabSize * hiddenSize);
+            network.Add(new RecurrentLayer(hiddenSize, vocabSize, sequenceLength));
+            network.UseLoss(LossType.MeanSquaredError);
+            
+            double networkLoss(Vector<double> x)
+            {
+                RecurrentLayer rec = (RecurrentLayer)network.Layers[0];
+                rec.Weights[(int)RNNWeight.U] = MathUtils.Unflatten(x, sequenceLength, vocabSize);
+                Vector<double> output = network.Predict(xTest);
+                return network.Loss(yTruth, output);
+            }
+
+            Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, testU);
+            Vector<double> outputGradient = LossFunctions.MeanSquaredErrorPrime(yTruth, network.Predict(xTest));
+            outputGradient = network.Layers[0].BackPropagation(outputGradient);
+            Vector<double> explicitWeightGradient =
+                MathUtils.Flatten(((RecurrentLayer)network.Layers[0]).WeightGradients[(int)RNNWeight.U]);
+
+            Assert.IsTrue((finiteDiffGradient - explicitWeightGradient).L2Norm() < 0.00001);
         }
     }
 }

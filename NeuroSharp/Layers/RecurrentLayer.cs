@@ -100,30 +100,29 @@ namespace NeuroSharp
             DrainGradients();
             Matrix<double> unflattenedError = MathUtils.VectorArrayToMatrix(UnflattenInputVector(outputError));
             Matrix<double> stateInput = MathUtils.VectorArrayToMatrix(StateInput);
+            Matrix<double> unflattenedLayerInput = MathUtils.Unflatten(Input, _hiddenSize, _vocabSize);
             RecurrentGradient = new Vector<double>[_hiddenSize];
+
+            Vector<double> nextStateGradient = Vector<double>.Build.Dense(_sequenceLength);
 
             for (int i = _hiddenSize - 1; i >= 0; i--)
             {
                 WeightGradients[(int)RNNWeight.V] += 
                     MathUtils.TransposianShift(unflattenedError.Row(i).OuterProduct(States[i])).Transpose();
 
-                Vector<double> gradientWrtState = Weights[(int)RNNWeight.V].Transpose() * unflattenedError.Row(i);
-                gradientWrtState = gradientWrtState.PointwiseMultiply(ActivationFunctions.PointwiseTanhPrime(stateInput.Row(i)));
+                Vector<double> dh = Weights[(int)RNNWeight.V].Transpose() * unflattenedError.Row(i) + nextStateGradient; // + dhnext
+                Vector<double> dhrec = dh.PointwiseMultiply(ActivationFunctions.PointwiseTanhPrime(stateInput.Row(i)));
                 
-                RecurrentGradient[i] = Weights[(int)RNNWeight.U].Transpose() * gradientWrtState;
-            }
-            
-            /*Vector<double>[] unflattenedError = UnflattenInputVector(outputError);
-            Vector<double> prevState = Vector<double>.Build.Dense(_vocabSize);
-            GradientCache = new RNNGradientCache[_hiddenSize];
+                RecurrentGradient[i] = Weights[(int)RNNWeight.U].Transpose() * dhrec;
 
-            for (int i = _hiddenSize - 1; i >= 0; i--)
-            {
-                GradientCache[i] = RecurrentCellBackwards(unflattenedError[i], i);
-                prevState = GradientCache[i].PrevStateGradient;
-            }
+                /*for (int j = i; j >= 0; j--)
+                {
+                    
+                }*/
+                WeightGradients[(int)RNNWeight.U] += unflattenedLayerInput.Row(i).OuterProduct(dh).Transpose();
 
-            return MathUtils.Flatten(GradientCache.Select(c => c.InputGradient).ToArray());*/
+                nextStateGradient = Weights[(int)RNNWeight.W].Transpose() * dhrec;
+            }
 
             return MathUtils.Flatten(RecurrentGradient);
         }
