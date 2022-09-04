@@ -114,7 +114,7 @@ namespace NeuroSharp
                 
                 RecurrentGradient[i] = Weights[(int)RNNWeight.U].Transpose() * dhrec;
                 WeightGradients[(int)RNNWeight.U] += unflattenedLayerInput.Row(i).OuterProduct(dh).Transpose(); //todo
-                //[(int)RNNWeight.W] += 
+                if(i > 0) WeightGradients[(int)RNNWeight.W] += dhrec.OuterProduct(States[i - 1]).Transpose();
 
                 nextStateGradient = Weights[(int)RNNWeight.W].Transpose() * dhrec;
             }
