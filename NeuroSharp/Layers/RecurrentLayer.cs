@@ -12,8 +12,8 @@ namespace NeuroSharp
     {
         public Vector<double>[] StateInput { get; set; }
         public Vector<double>[] States { get; set; }
-        public Vector<double>[] Outputs { get; set; }
-        public Vector<double>[] RecurrentGradient { get; set; }
+        public Vector<double> Outputs { get; set; }
+        public Vector<double> RecurrentGradient { get; set; }
 
         private ActivationLayer _stateActivation;
         [JsonProperty] private ActivationType _stateActivationType;
@@ -36,8 +36,8 @@ namespace NeuroSharp
         
         //json constructor
         public RecurrentLayer(int sequenceLength, int vocabSize, int hiddenSize, ActivationType stateActivationType,
-            Vector<double>[] stateInput, Vector<double>[] states, Vector<double>[] outputs,
-            Vector<double>[] recurrentGradient, Matrix<double>[] weights, Vector<double>[] biases, Adam adam,
+            Vector<double>[] stateInput, Vector<double>[] states, Vector<double> outputs,
+            Vector<double> recurrentGradient, Matrix<double>[] weights, Vector<double>[] biases, Adam adam,
             int inputSize, int outputSize, bool accumulateGradients, int id)
         {
             _sequenceLength = sequenceLength;
@@ -63,57 +63,61 @@ namespace NeuroSharp
         public override Vector<double> ForwardPropagation(Vector<double> input)
         {
             Input = input;
-            Vector<double>[] unflattenedInput = UnflattenInputVector(input);
             StateInput = new Vector<double>[_sequenceLength];
             States = new Vector<double>[_sequenceLength];
-            Outputs = new Vector<double>[_sequenceLength];
+            Outputs = Vector<double>.Build.Dense(_sequenceLength * _vocabSize);
 
             Vector<double> lastState = Vector<double>.Build.Dense(_hiddenSize);
 
             for (int i = 0; i < _sequenceLength; i++)
             {
-                StateInput[i] = Weights[(int)RNNWeight.U] * unflattenedInput[i] + 
+                StateInput[i] = Weights[(int)RNNWeight.U] * input.SubVector(i * _vocabSize, _vocabSize) + 
                                 Weights[(int)RNNWeight.W] * (i == 0 ? lastState : States[i - 1]) +
                                 Biases[(int)RNNBias.b];
 
                 States[i] = _stateActivation.ForwardPropagation(StateInput[i]);
 
-                Outputs[i] = Weights[(int)RNNWeight.V] * States[i] + Biases[(int)RNNBias.c];
+                Outputs.SetSubVector(_vocabSize * i, _vocabSize, Weights[(int)RNNWeight.V] * States[i] + Biases[(int)RNNBias.c]);
             }
 
-            return MathUtils.Flatten(Outputs);
+            return Outputs;
         }
 
         public override Vector<double> BackPropagation(Vector<double> outputError)
         {
             if(!AccumulateGradients) DrainGradients();
-            Matrix<double> unflattenedError = MathUtils.VectorArrayToMatrix(UnflattenInputVector(outputError));
-            Matrix<double> stateInput = MathUtils.VectorArrayToMatrix(StateInput);
-            Vector<double>[] unflattenedInput = UnflattenInputVector(Input);
-            RecurrentGradient = new Vector<double>[_sequenceLength];
-
+            
+            Matrix<double> unflattenedError = MathUtils.Unflatten(outputError, _vocabSize, _sequenceLength).Transpose();
             Vector<double> nextStateGradient = Vector<double>.Build.Dense(_hiddenSize);
+
+            RecurrentGradient = Vector<double>.Build.Dense(_sequenceLength * _vocabSize);
 
             for (int i = _sequenceLength - 1; i >= 0; i--)
             {
-                WeightGradients[(int)RNNWeight.V] += 
-                    MathUtils.TransposianShift(unflattenedError.Row(i).OuterProduct(States[i])).Transpose();
-                
-                Vector<double> dh = Weights[(int)RNNWeight.V].Transpose() * unflattenedError.Row(i) + nextStateGradient;
-                Vector<double> dhrec = dh.PointwiseMultiply(ActivationFunctions.PointwiseTanhPrime(stateInput.Row(i)));
+                Vector<double> stateGradient = Weights[(int)RNNWeight.V].TransposeThisAndMultiply(unflattenedError.Row(i))
+                        .Add(nextStateGradient).PointwiseMultiply(_stateActivation.GradientPass(StateInput[i]));
 
-                BiasGradients[(int)RNNBias.b] += dhrec;
+                RecurrentGradient.SetSubVector(_vocabSize * i, _vocabSize, Weights[(int)RNNWeight.U].TransposeThisAndMultiply(stateGradient));
+                
+                BiasGradients[(int)RNNBias.b] += stateGradient;
                 BiasGradients[(int)RNNBias.c] += unflattenedError.Row(i);
-                
-                RecurrentGradient[i] = Weights[(int)RNNWeight.U].Transpose() * dhrec;
-                WeightGradients[(int)RNNWeight.U] += 
-                    MathUtils.TransposianShift(dhrec.OuterProduct(unflattenedInput[i])).Transpose();
-                if(i > 0) WeightGradients[(int)RNNWeight.W] += dhrec.OuterProduct(States[i - 1]).Transpose();
 
-                nextStateGradient = Weights[(int)RNNWeight.W].Transpose() * dhrec;
+                WeightGradients[(int)RNNWeight.U] =
+                    MathUtils.TransposianAdd(
+                        WeightGradients[(int)RNNWeight.U],
+                        stateGradient.OuterProduct(Input.SubVector(i * _vocabSize, _vocabSize)));
+                
+                WeightGradients[(int)RNNWeight.V] = 
+                    MathUtils.TransposianAdd(
+                        WeightGradients[(int)RNNWeight.V],
+                        unflattenedError.Row(i).OuterProduct(States[i]));
+                
+                if(i > 0) WeightGradients[(int)RNNWeight.W] += stateGradient.OuterProduct(States[i - 1]).Transpose();
+
+                nextStateGradient = Weights[(int)RNNWeight.W].TransposeThisAndMultiply(stateGradient);
             }
 
-            return MathUtils.Flatten(RecurrentGradient);
+            return RecurrentGradient;
         }
         
         public override void InitializeParameters()

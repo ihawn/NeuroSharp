@@ -180,9 +180,9 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
             for (int i = 0; i < 500; i++)
             {
                 Random rand = new Random();
-                int hiddenSize = rand.Next(1, 15);
-                int vocabSize = rand.Next(1, 25);
-                int sequenceLength = rand.Next(1, 25);
+                int hiddenSize = 2;//rand.Next(1, 15);
+                int vocabSize = 4;//rand.Next(1, 25);
+                int sequenceLength = 3;//rand.Next(1, 25);
                 
                 Vector<double> xTest = Vector<double>.Build.Random(hiddenSize * vocabSize);
                 Vector<double> yTruth = Vector<double>.Build.Random(hiddenSize * vocabSize);

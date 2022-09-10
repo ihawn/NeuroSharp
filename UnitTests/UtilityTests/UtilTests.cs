@@ -95,5 +95,23 @@ namespace UnitTests.UtilityTests
             Assert.AreEqual(expected1, MathUtils.Unflatten(input1, 2, 4));
             Assert.AreEqual(expected2, MathUtils.Unflatten(input2, 4, 2));
         }
+
+        [Test]
+        public void TransposianAdd_ReturnsCorrectSum_WhenPassedTwoMatrices()
+        {
+            for (int i = 1; i < 100; i++)
+            {
+                for (int j = 1; j < 100; j++)
+                {
+                    Matrix<double> mtx1 = Matrix<double>.Build.Dense(i, j);
+                    Matrix<double> mtx2 = Matrix<double>.Build.Dense(i, j);
+
+                    Matrix<double> result1 = mtx1 + MathUtils.TransposianShift(mtx2).Transpose();
+                    Matrix<double> result2 = MathUtils.TransposianAdd(mtx1, mtx2);
+                    
+                    Assert.AreEqual(result1, result2);
+                }
+            }
+        }
     }
 }

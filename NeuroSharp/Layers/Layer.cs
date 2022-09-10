@@ -4,6 +4,7 @@ using NeuroSharp.Training;
 
 namespace NeuroSharp
 {
+    //todo: try to replace all flatten and unflatten with implicit indexing (maybe profile first to see if this is necessary)
     public abstract class Layer //todo: dropout layer
     {
         public int Id { get; set; }

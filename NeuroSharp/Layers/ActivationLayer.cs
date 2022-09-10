@@ -46,10 +46,15 @@ namespace NeuroSharp
 
         public override Vector<double> BackPropagation(Vector<double> outputError)
         {
-            Vector<double> vec = Vector<double>.Build.Dense(Input.Count);
-            for (int i = 0; i < Input.Count; i++)
-                vec[i] = _activationPrime(Input[i]);
-            return vec.PointwiseMultiply(outputError);
+            return GradientPass(Input).PointwiseMultiply(outputError);
+        }
+
+        public Vector<double> GradientPass(Vector<double> error)
+        {
+            Vector<double> vec = Vector<double>.Build.Dense(error.Count);
+            for (int i = 0; i < error.Count; i++)
+                vec[i] = _activationPrime(error[i]);
+            return vec;
         }
     }
 }
