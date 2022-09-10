@@ -101,6 +101,40 @@ namespace UnitTests.ModelTests
             }
         }
         
-        //todo: write tests for continuing training after deserializing a model
+        [Test]
+        public void SerializeToJSON_NetworkSerializesToJsonAndDeserializes_WithDenseConvolutionalAndRecurrent()
+        {
+            List<Vector<double>> xTrain = new List<Vector<double>>();
+            List<Vector<double>> yTrain = new List<Vector<double>>();
+
+            for (int i = 0; i < 15; i++)
+            {
+                xTrain.Add(Vector<double>.Build.Random(8 * 16));
+                yTrain.Add(Vector<double>.Build.Random(2));
+            }
+
+            Network network = new Network(8 * 16);
+            network.Add(new RecurrentLayer(8, 16, 32));
+            network.Add(new ActivationLayer(ActivationType.Tanh));
+            network.Add(new ConvolutionalLayer(kernel: 2, filters: 2, channels: 2, stride: 2));
+            network.Add(new ActivationLayer(ActivationType.ReLu));
+            network.Add(new MaxPoolingLayer(poolSize: 2));
+            network.Add(new FullyConnectedLayer(128));
+            network.Add(new ActivationLayer(ActivationType.Tanh));
+            network.Add(new FullyConnectedLayer(2));
+            network.Add(new SoftmaxActivationLayer());
+            network.UseLoss(LossType.CategoricalCrossentropy);
+
+            network.MinibatchTrain(xTrain, yTrain, epochs: 2, OptimizerType.Adam, batchSize: 64, learningRate: 0.001f);
+            string modelJson = network.SerializeToJSON();
+            Network deserializedNetwork = Network.DeserializeNetworkJSON(modelJson);
+
+            foreach (Vector<double> x in xTrain)
+            {
+                Vector<double> pred1 = network.Predict(x);
+                Vector<double> pred2 = deserializedNetwork.Predict(x);
+                Assert.AreEqual(pred1, pred2);
+            }
+        }
     }
 }

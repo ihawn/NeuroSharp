@@ -23,29 +23,47 @@ namespace NeuroSharp.Utilities
             List<Layer> layers = jo["Layers"].Select(layer => 
                 GetLayerType(layer) == LayerType.FullyConnected ? 
                     new FullyConnectedLayer(
-                            weight: JsonArrayToMatrix(layer["Weights"][0]),
-                            bias: JsonArrayToVector(layer["Bias"]),
-                            weightGradient: JsonArrayToMatrix(layer["WeightGradients"][0]),
-                            biasGradient: JsonArrayToVector(layer["BiasGradient"]),
-                            inputSize: Int32.Parse((string)layer["InputSize"]),
-                            outputSize: Int32.Parse((string)layer["OutputSize"]),
-                            adam: AdamFromJson(layer["_adam"]),
-                            accumulateGradients: bool.Parse((string)layer["AccumulateGradients"]),
-                            id: Int32.Parse((string)layer["Id"])
+                        weight: JsonArrayToMatrix(layer["Weights"][0]),
+                        bias: JsonArrayToVector(layer["Biases"][0]),
+                        weightGradient: JsonArrayToMatrix(layer["WeightGradients"][0]),
+                        biasGradient: JsonArrayToVector(layer["BiasGradients"][0]),
+                        inputSize: Int32.Parse((string)layer["InputSize"]),
+                        outputSize: Int32.Parse((string)layer["OutputSize"]),
+                        adam: AdamFromJson(layer["_adam"]),
+                        accumulateGradients: bool.Parse((string)layer["AccumulateGradients"]),
+                        id: Int32.Parse((string)layer["Id"])
                     ) : 
                 GetLayerType(layer) == LayerType.Convolutional ?
                     new ConvolutionalLayer(
-                            operators: layer["ChannelOperators"]
-                                .Select(conv => ConvolutionalOperatorFromJson(conv)).ToArray(),
-                            channelOutputs: JsonToArrayOfVectors(layer["_channelOutputs"]),
-                            channelInputs: JsonToArrayOfVectors(layer["_channelInputs"]),
-                            channelBackpropagationOutputs: JsonToArrayOfVectors(layer["_channelBackpropagationOutputs"]),
-                            channelCount: Int32.Parse((string)layer["ChannelCount"]),
-                            channelInputSize: Int32.Parse((string)layer["ChannelInputSize"]),
-                            accumulateGradients: bool.Parse((string)layer["AccumulateGradients"]),
-                            inputSize: Int32.Parse((string)layer["InputSize"]),
-                            outputSize: Int32.Parse((string)layer["OutputSize"]),
-                            id: Int32.Parse((string)layer["Id"])
+                        operators: layer["ChannelOperators"]
+                            .Select(conv => ConvolutionalOperatorFromJson(conv)).ToArray(),
+                        channelOutputs: JsonToArrayOfVectors(layer["_channelOutputs"]),
+                        channelInputs: JsonToArrayOfVectors(layer["_channelInputs"]),
+                        channelBackpropagationOutputs: JsonToArrayOfVectors(layer["_channelBackpropagationOutputs"]),
+                        channelCount: Int32.Parse((string)layer["ChannelCount"]),
+                        channelInputSize: Int32.Parse((string)layer["ChannelInputSize"]),
+                        accumulateGradients: bool.Parse((string)layer["AccumulateGradients"]),
+                        inputSize: Int32.Parse((string)layer["InputSize"]),
+                        outputSize: Int32.Parse((string)layer["OutputSize"]),
+                        id: Int32.Parse((string)layer["Id"])
+                    ) :
+                GetLayerType(layer) == LayerType.Recurrent ?
+                    new RecurrentLayer(
+                        sequenceLength: Int32.Parse((string)layer["_sequenceLength"]),
+                        vocabSize: Int32.Parse((string)layer["_vocabSize"]),
+                        hiddenSize: Int32.Parse((string)layer["_hiddenSize"]),
+                        stateActivationType: (ActivationType)Int32.Parse((string)layer["_stateActivationType"]),
+                        stateInput: JsonToArrayOfVectors(layer["StateInput"]),
+                        states: JsonToArrayOfVectors(layer["States"]),
+                        outputs: JsonToArrayOfVectors(layer["Outputs"]),
+                        recurrentGradient: JsonToArrayOfVectors(layer["RecurrentGradient"]),
+                        weights: JsonToArrayOfMatrices(layer["Weights"]),
+                        biases: JsonToArrayOfVectors(layer["Biases"]),
+                        adam: AdamFromJson(layer["_adam"]),
+                        inputSize: Int32.Parse((string)layer["InputSize"]),
+                        outputSize: Int32.Parse((string)layer["OutputSize"]),
+                        accumulateGradients: bool.Parse((string)layer["AccumulateGradients"]),
+                        id: Int32.Parse((string)layer["Id"])
                     ) :
                 GetLayerType(layer) == LayerType.Activation ?
                     new ActivationLayer(
@@ -75,8 +93,10 @@ namespace NeuroSharp.Utilities
                         filters: Int32.Parse((string)layer["_filters"]),
                         id: Int32.Parse((string)layer["Id"])
                     ) : null
-            ).ToList();
+            ).ToList(); //todo add recurrent layer support. Also check that binary crossentropy is supported
 
+            //todo: support model saving without the intention to train further (will reduce model size)
+            
             foreach (Layer layer in layers)
             {
                 if (layer is ConvolutionalLayer)
@@ -129,9 +149,9 @@ namespace NeuroSharp.Utilities
         {
             return new Adam(
                 meanWeightGradient: JsonToArrayOfMatrices(obj["_meanWeightGradient"]),
-                meanBiasGradient: JsonArrayToVector(obj["_meanBiasGradient"]),
+                meanBiasGradient: JsonToArrayOfVectors(obj["_meanBiasGradient"]),
                 varianceWeightGradient: JsonToArrayOfMatrices(obj["_varianceWeightGradient"]),
-                varianceBiasGradient: JsonArrayToVector(obj["_varianceBiasGradient"]),
+                varianceBiasGradient: JsonToArrayOfVectors(obj["_varianceBiasGradient"]),
                 beta1: Double.Parse((string)obj["_beta1"]),
                 beta2: Double.Parse((string)obj["_beta2"]),
                 epsilon: Double.Parse((string)obj["_epsilon"])

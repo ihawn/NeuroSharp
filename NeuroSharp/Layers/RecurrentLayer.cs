@@ -10,97 +10,91 @@ namespace NeuroSharp
 {
     public class RecurrentLayer : ParameterizedLayer
     {
-        public Vector<double>[] Biases { get; set; } //todo make this an inherited property (will need to update other layers)
-        public Vector<double>[] BiasGradients { get; set; }
-        public Vector<double>[] InputMemory { get; set; }
-        public Vector<double>[] HiddenMemory { get; set; }
-        public Vector<double>[] OutputMemory { get; set; }
-        
-        
         public Vector<double>[] StateInput { get; set; }
         public Vector<double>[] States { get; set; }
         public Vector<double>[] Outputs { get; set; }
-        public Vector<double>[] UnflattenedInput { get; set; }
         public Vector<double>[] RecurrentGradient { get; set; }
-        
-        
-        public Vector<double> PreviousHidden { get; set; }
 
-        [JsonProperty]
-        private Adam _adam;
-        [JsonProperty] 
-        private int _hiddenSize;
-        [JsonProperty] 
-        private int _vocabSize;
-        [JsonProperty] 
-        private int _sequenceLength;
+        private ActivationLayer _stateActivation;
+        [JsonProperty] private ActivationType _stateActivationType;
+        [JsonProperty] private Adam _adam;
+        [JsonProperty] private int _sequenceLength;
+        [JsonProperty] private int _vocabSize;
+        [JsonProperty] private int _hiddenSize;
 
-        public RecurrentLayer(int hiddenSize, int vocabSize, int sequenceLength)
+        public RecurrentLayer(int sequenceLength, int vocabSize, int hiddenSize, ActivationType stateActivation = ActivationType.Tanh)
         {
             LayerType = LayerType.Recurrent;
+            _stateActivation = new ActivationLayer(stateActivation);
+            _stateActivationType = stateActivation;
             InputSize = vocabSize;
             OutputSize = vocabSize;
-            _hiddenSize = hiddenSize;
-            _vocabSize = vocabSize;
             _sequenceLength = sequenceLength;
+            _vocabSize = vocabSize;
+            _hiddenSize = hiddenSize;
         }
         
+        //json constructor
+        public RecurrentLayer(int sequenceLength, int vocabSize, int hiddenSize, ActivationType stateActivationType,
+            Vector<double>[] stateInput, Vector<double>[] states, Vector<double>[] outputs,
+            Vector<double>[] recurrentGradient, Matrix<double>[] weights, Vector<double>[] biases, Adam adam,
+            int inputSize, int outputSize, bool accumulateGradients, int id)
+        {
+            _sequenceLength = sequenceLength;
+            _vocabSize = vocabSize;
+            _hiddenSize = hiddenSize;
+            _stateActivation = new ActivationLayer(stateActivationType);
+            _stateActivationType = stateActivationType;
+            _adam = adam;
+
+            Id = id;
+            AccumulateGradients = accumulateGradients;
+            InputSize = inputSize;
+            OutputSize = outputSize;
+
+            StateInput = stateInput;
+            States = states;
+            Outputs = outputs;
+            RecurrentGradient = recurrentGradient;
+            Weights = weights;
+            Biases = biases;
+        }
+
         public override Vector<double> ForwardPropagation(Vector<double> input)
         {
             Input = input;
             Vector<double>[] unflattenedInput = UnflattenInputVector(input);
-            UnflattenedInput = unflattenedInput;
-            StateInput = new Vector<double>[_hiddenSize];
-            States = new Vector<double>[_hiddenSize];
-            Outputs = new Vector<double>[_hiddenSize];
+            StateInput = new Vector<double>[_sequenceLength];
+            States = new Vector<double>[_sequenceLength];
+            Outputs = new Vector<double>[_sequenceLength];
 
-            Vector<double> lastState = Vector<double>.Build.Dense(_sequenceLength);
+            Vector<double> lastState = Vector<double>.Build.Dense(_hiddenSize);
 
-            for (int i = 0; i < _hiddenSize; i++)
+            for (int i = 0; i < _sequenceLength; i++)
             {
                 StateInput[i] = Weights[(int)RNNWeight.U] * unflattenedInput[i] + 
                                 Weights[(int)RNNWeight.W] * (i == 0 ? lastState : States[i - 1]) +
                                 Biases[(int)RNNBias.b];
 
-                States[i] = ActivationFunctions.PointwiseTanh(StateInput[i]);
+                States[i] = _stateActivation.ForwardPropagation(StateInput[i]);
 
                 Outputs[i] = Weights[(int)RNNWeight.V] * States[i] + Biases[(int)RNNBias.c];
             }
-
-            /*Input = input;
-            Vector<double>[] unflattenedOutput = new Vector<double>[_hiddenSize];
-            Vector<double>[] unflattenedInput = UnflattenInputVector(input);
-            HiddenMemory = new Vector<double>[unflattenedInput.Length];
-
-            // n_y = _vocabSize
-            // n_a = _hiddenSize
-
-            Cache = new RNNCache { NextState = Vector<double>.Build.Dense(_hiddenSize) };
-
-            for (int i = 0; i < _hiddenSize; i++)
-            {
-                Cache = RecurrentCellForward(unflattenedInput[i], Cache.NextState);
-                HiddenMemory[i] = Cache.NextState; // a
-                unflattenedOutput[i] = Cache.PredictionVector; // y_pred
-            }
-
-            Output = MathUtils.Flatten(unflattenedOutput);
-            return Output;*/
 
             return MathUtils.Flatten(Outputs);
         }
 
         public override Vector<double> BackPropagation(Vector<double> outputError)
         {
-            DrainGradients();
+            if(!AccumulateGradients) DrainGradients();
             Matrix<double> unflattenedError = MathUtils.VectorArrayToMatrix(UnflattenInputVector(outputError));
             Matrix<double> stateInput = MathUtils.VectorArrayToMatrix(StateInput);
             Vector<double>[] unflattenedInput = UnflattenInputVector(Input);
-            RecurrentGradient = new Vector<double>[_hiddenSize];
+            RecurrentGradient = new Vector<double>[_sequenceLength];
 
-            Vector<double> nextStateGradient = Vector<double>.Build.Dense(_sequenceLength);
+            Vector<double> nextStateGradient = Vector<double>.Build.Dense(_hiddenSize);
 
-            for (int i = _hiddenSize - 1; i >= 0; i--)
+            for (int i = _sequenceLength - 1; i >= 0; i--)
             {
                 WeightGradients[(int)RNNWeight.V] += 
                     MathUtils.TransposianShift(unflattenedError.Row(i).OuterProduct(States[i])).Transpose();
@@ -126,32 +120,29 @@ namespace NeuroSharp
         {
             Weights = new Matrix<double>[]
             {
-                Matrix<double>.Build.Dense(_sequenceLength, _vocabSize), // U
-                Matrix<double>.Build.Dense(_vocabSize, _sequenceLength), // V
-                Matrix<double>.Build.Dense(_sequenceLength, _sequenceLength) // W
+                Matrix<double>.Build.Dense(_hiddenSize, _vocabSize), // U
+                Matrix<double>.Build.Dense(_vocabSize, _hiddenSize), // V
+                Matrix<double>.Build.Dense(_hiddenSize, _hiddenSize) // W
             };
             WeightGradients = new Matrix<double>[]
             {
-                Matrix<double>.Build.Dense(_sequenceLength, _vocabSize), // ∂U/L
-                Matrix<double>.Build.Dense(_vocabSize, _sequenceLength), // ∂V/V
-                Matrix<double>.Build.Dense(_sequenceLength, _sequenceLength) // ∂W/W
+                Matrix<double>.Build.Dense(_hiddenSize, _vocabSize), // ∂U/L
+                Matrix<double>.Build.Dense(_vocabSize, _hiddenSize), // ∂V/V
+                Matrix<double>.Build.Dense(_hiddenSize, _hiddenSize) // ∂W/W
             };
 
             Biases = new Vector<double>[]
             {
-                Vector<double>.Build.Dense(_sequenceLength), // b
+                Vector<double>.Build.Dense(_hiddenSize), // b
                 Vector<double>.Build.Dense(_vocabSize)   // c
             };
             BiasGradients = new Vector<double>[]
             {
-                Vector<double>.Build.Dense(_sequenceLength), // ∂b/L
+                Vector<double>.Build.Dense(_hiddenSize), // ∂b/L
                 Vector<double>.Build.Dense(_vocabSize) // ∂c/L
             };
-
-            Bias = Vector<double>.Build.Random(OutputSize);
-            BiasGradient = Vector<double>.Build.Dense(OutputSize);
-            PreviousHidden = Vector<double>.Build.Dense(_hiddenSize);
-            _adam = new Adam(InputSize, OutputSize);
+            
+            _adam = new Adam(InputSize, OutputSize, weightCount: 3, biasCount: 2);
 
             for (int n = 0; n < 3; n++)
             {
@@ -163,8 +154,8 @@ namespace NeuroSharp
                             Weights[n][i, j] = MathUtils.GetInitialWeightFromRange(-Math.Sqrt(1d / _vocabSize),
                                 Math.Sqrt(1d / _vocabSize));
                         else // V or W
-                            Weights[n][i, j] = MathUtils.GetInitialWeightFromRange(-Math.Sqrt(1d / _sequenceLength),
-                                Math.Sqrt(1d / _sequenceLength));
+                            Weights[n][i, j] = MathUtils.GetInitialWeightFromRange(-Math.Sqrt(1d / _hiddenSize),
+                                Math.Sqrt(1d / _hiddenSize));
                     }
                 }
             }
@@ -174,15 +165,21 @@ namespace NeuroSharp
         {
             WeightGradients = new Matrix<double>[]
             {
-                Matrix<double>.Build.Dense(_sequenceLength, _vocabSize), // ∂U/L
-                Matrix<double>.Build.Dense(_vocabSize, _sequenceLength), // ∂V/V
-                Matrix<double>.Build.Dense(_sequenceLength, _sequenceLength) // ∂W/W
+                Matrix<double>.Build.Dense(_hiddenSize, _vocabSize), // ∂U/L
+                Matrix<double>.Build.Dense(_vocabSize, _hiddenSize), // ∂V/V
+                Matrix<double>.Build.Dense(_hiddenSize, _hiddenSize) // ∂W/W
             };
             BiasGradients = new Vector<double>[]
             {
-                Vector<double>.Build.Dense(_sequenceLength), // ∂b/L
+                Vector<double>.Build.Dense(_hiddenSize), // ∂b/L
                 Vector<double>.Build.Dense(_vocabSize) // ∂c/L
             };
+        }
+
+        public override void SetSizeIO()
+        {
+            InputSize = _vocabSize * _sequenceLength;
+            OutputSize = InputSize;
         }
 
         public override void SetGradientAccumulation(bool acc)
@@ -195,11 +192,13 @@ namespace NeuroSharp
             switch (optimizerType)
             {
                 case OptimizerType.GradientDescent:
-                    Weights[0] -= learningRate * WeightGradients[0];
-                    Bias -= learningRate * BiasGradient;
+                    for(int i = 0; i < Weights.Length; i++)
+                        Weights[i] -= learningRate * WeightGradients[i];
+                    for(int i = 0; i < Biases.Length; i++)
+                        Biases[i] -= learningRate * base.BiasGradients[i];
                     break;
 
-                case OptimizerType.Adam: //todo update this to include the RNN biases
+                case OptimizerType.Adam:
                     _adam.Step(this, sampleIndex + 1, eta: learningRate);
                     break;
             }
@@ -211,7 +210,7 @@ namespace NeuroSharp
         //todo: write test for this or even better make this calculation implicit elsewhere
         public Vector<double>[] UnflattenInputVector(Vector<double> concatVec)
         {
-            Vector<double>[] output = new Vector<double>[_hiddenSize];
+            Vector<double>[] output = new Vector<double>[_sequenceLength];
             for (int i = 0; i < output.Length; i++)
                 output[i] = concatVec.SubVector(i * _vocabSize, _vocabSize);
             return output;

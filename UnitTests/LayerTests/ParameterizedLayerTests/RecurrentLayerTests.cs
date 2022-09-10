@@ -102,6 +102,43 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
         }
         
         [Test]
+        public void BackwardPass_ReturnsCorrectInputGradient_WithSoftmaxAndDenseLayers()
+        {
+            for (int i = 0; i < 250; i++)
+            {
+                Random rand = new Random();
+                int hiddenSize = rand.Next(1, 25);
+                int vocabSize = rand.Next(1, 25);
+                int sequenceLength = rand.Next(1, 25);
+            
+                Vector<double> xTest = Vector<double>.Build.Random(20);
+                Vector<double> yTruth = Vector<double>.Build.Random(hiddenSize * vocabSize);
+
+                Network network = new Network(20);
+                network.Add(new FullyConnectedLayer(vocabSize * hiddenSize));
+                network.Add(new RecurrentLayer(hiddenSize, vocabSize, sequenceLength));
+                network.Add(new FullyConnectedLayer(vocabSize * hiddenSize));
+                network.Add(new SoftmaxActivationLayer());
+                network.UseLoss(LossType.MeanSquaredError);
+            
+                double networkLoss(Vector<double> x)
+                {
+                    x = network.Predict(x);
+                    return network.Loss(yTruth, x);
+                }
+
+                Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, xTest);
+                Vector<double> testGradient = LossFunctions.MeanSquaredErrorPrime(yTruth, network.Predict(xTest));
+                for (int k = network.Layers.Count - 1; k >= 0; k--)
+                {
+                    testGradient = network.Layers[k].BackPropagation(testGradient);
+                }
+
+                Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
+            }
+        }
+        
+        [Test]
         public void BackwardPass_ReturnsCorrectVGradient()
         {
             for (int i = 0; i < 250; i++)
