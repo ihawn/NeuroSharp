@@ -93,7 +93,7 @@ namespace NeuroSharp.Utilities
                         filters: Int32.Parse((string)layer["_filters"]),
                         id: Int32.Parse((string)layer["Id"])
                     ) : null
-            ).ToList(); //todo add recurrent layer support. Also check that binary crossentropy is supported
+            ).ToList();
 
             //todo: support model saving without the intention to train further (will reduce model size)
             

@@ -938,15 +938,32 @@ namespace UnitTests
             Matrix<double> expected10 = Matrix<double>.Build.DenseOfArray(exp);
             #endregion
 
-            Assert.AreEqual(expected1, ConvolutionalOperator.Convolution(mtx1, filt1, 1).Item2);
-            Assert.AreEqual(expected2, ConvolutionalOperator.Convolution(mtx2, filt2, 1).Item2);
-            Assert.AreEqual(expected3, ConvolutionalOperator.Convolution(mtx3, filt3, 2).Item2);
-            Assert.AreEqual(expected5, ConvolutionalOperator.Convolution(mtx5, filt5, 2).Item2);
-            Assert.AreEqual(expected6, ConvolutionalOperator.Convolution(mtx6, filt6, 1).Item2);
-            Assert.AreEqual(expected7, ConvolutionalOperator.Convolution(mtx7, filt7, 3).Item2);
-            Assert.AreEqual(expected8, ConvolutionalOperator.Convolution(mtx8, filt8, 4).Item2);
-            Assert.AreEqual(expected9, ConvolutionalOperator.Convolution(mtx9, filt9, 2).Item2);
-            Assert.AreEqual(expected10, ConvolutionalOperator.Convolution(mtx10, filt10, 3).Item2);
+            Assert.AreEqual(MathUtils.Flatten(expected1), ConvolutionalOperator.Convolution(mtx1, filt1, 1, 
+                MathUtils.GetConvolutionOutputSize(mtx1.Count, filt1.RowCount, 1)));
+            
+            Assert.AreEqual(MathUtils.Flatten(expected2), ConvolutionalOperator.Convolution(mtx2, filt2, 1, 
+                MathUtils.GetConvolutionOutputSize(mtx2.Count, filt2.RowCount, 1)));
+            
+            Assert.AreEqual(MathUtils.Flatten(expected3), ConvolutionalOperator.Convolution(mtx3, filt3, 2, 
+                MathUtils.GetConvolutionOutputSize(mtx3.Count, filt3.RowCount, 2)));
+            
+            Assert.AreEqual(MathUtils.Flatten(expected5), ConvolutionalOperator.Convolution(mtx5, filt5, 2, 
+                MathUtils.GetConvolutionOutputSize(mtx5.Count, filt5.RowCount, 2)));
+            
+            Assert.AreEqual(MathUtils.Flatten(expected6), ConvolutionalOperator.Convolution(mtx6, filt6, 1, 
+                MathUtils.GetConvolutionOutputSize(mtx6.Count, filt6.RowCount, 1)));
+            
+            Assert.AreEqual(MathUtils.Flatten(expected7), ConvolutionalOperator.Convolution(mtx7, filt7, 3, 
+                MathUtils.GetConvolutionOutputSize(mtx7.Count, filt7.RowCount, 3)));
+            
+            Assert.AreEqual(MathUtils.Flatten(expected8), ConvolutionalOperator.Convolution(mtx8, filt8, 4, 
+                MathUtils.GetConvolutionOutputSize(mtx8.Count, filt8.RowCount, 4)));
+            
+            Assert.AreEqual(MathUtils.Flatten(expected9), ConvolutionalOperator.Convolution(mtx9, filt9, 2, 
+                MathUtils.GetConvolutionOutputSize(mtx9.Count, filt9.RowCount, 2)));
+            
+            Assert.AreEqual(MathUtils.Flatten(expected10), ConvolutionalOperator.Convolution(mtx10, filt10, 3, 
+                MathUtils.GetConvolutionOutputSize(mtx10.Count, filt10.RowCount, 3)));
         }
 
         [Test]

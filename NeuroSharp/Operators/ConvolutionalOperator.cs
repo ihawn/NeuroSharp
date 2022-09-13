@@ -21,6 +21,12 @@ namespace NeuroSharp
         private int _filters;
         [JsonProperty]
         private int _kernelSize;
+
+        private int _filterOutputSize;
+        private int _filterOutputDimension;
+        private int _weightGradConvDimension;
+        private int _inputGradConvDimension;
+        private int _sliceSize;
         
         //todo: profile memory and remove excess mem allocations
         //todo: make unflatten implicit in the operations
@@ -46,6 +52,8 @@ namespace NeuroSharp
             OutputSize = outputSize;
             _filters = filters;
             _adam = adam;
+            
+            StoreConvolutionDimensionParameters();
             SetGradientAccumulation(accumulateGradients);
         }
 
@@ -57,35 +65,31 @@ namespace NeuroSharp
 
             for (int i = 0; i < _filters; i++)
             {
-                Vector<double> singleFilterOutput = Convolution(Input, Weights[i], _stride).Item1;
-                for (int j = 0; j < singleFilterOutput.Count; j++)
-                    Output[i * singleFilterOutput.Count + j] = singleFilterOutput[j];
+                Output.SetSubVector(
+                    i * _filterOutputSize, _filterOutputSize, 
+                    Convolution(Input, Weights[i], _stride, _filterOutputDimension)
+                );
             }
             return Output;
         }
 
         public override Vector<double> BackPropagation(Vector<double> outputError)
         {
-            Vector<double>[] jacobianSlices = new Vector<double>[_filters];
             Matrix<double> inputGradientMatrix = Matrix<double>.Build.Dense((int)Math.Sqrt(_rawInputSize), (int)Math.Sqrt(_rawInputSize));
-            Matrix<double>[] inputGradientPieces = new Matrix<double>[_filters];
 
             for(int i = 0; i < _filters; i++)
             {
-                jacobianSlices[i] = Vector<double>.Build.Dense(outputError.Count / _filters); // ∂L/∂Y
-                for (int j = 0; j < jacobianSlices[i].Count; j++)
-                    jacobianSlices[i][j] = outputError[i * jacobianSlices[i].Count + j];
+                Vector<double> jacobianSlice = outputError.SubVector(i * _sliceSize, _sliceSize); // ∂L/∂Y
 
                 WeightGradients[i] = AccumulateGradients ? 
-                WeightGradients[i] + ComputeWeightGradient(Input, MathUtils.Unflatten(jacobianSlices[i]), _stride) :
-                ComputeWeightGradient(Input, MathUtils.Unflatten(jacobianSlices[i]), _stride);
+                WeightGradients[i] +
+                ComputeWeightGradient(Input, MathUtils.Unflatten(jacobianSlice), _stride, _weightGradConvDimension) :
+                ComputeWeightGradient(Input, MathUtils.Unflatten(jacobianSlice), _stride, _weightGradConvDimension);
 
-                Vector<double> singleGradient = ComputeInputGradient(Weights[i], MathUtils.Unflatten(jacobianSlices[i]), _stride);
-                inputGradientPieces[i] = MathUtils.Unflatten(singleGradient);
+                Vector<double> singleGradient = 
+                    ComputeInputGradient(Weights[i], MathUtils.Unflatten(jacobianSlice), _stride, _inputGradConvDimension);
+                inputGradientMatrix += MathUtils.Unflatten(singleGradient);
             }
-
-            for (int i = 0; i < _filters; i++)
-                inputGradientMatrix += inputGradientPieces[i];
 
             return MathUtils.Flatten(inputGradientMatrix.Transpose()); //todo perform transpose implicitly in the convolution
         }
@@ -94,7 +98,8 @@ namespace NeuroSharp
         {
             _rawInputSize = ParentLayer.ChannelInputSize;
             InputSize = _rawInputSize;
-            OutputSize = _filters * (int)Math.Pow((int)Math.Floor((Math.Sqrt(InputSize) - (double)_kernelSize) / _stride + 1), 2);
+            OutputSize = _filters * (int)Math.Pow((int)Math.Floor((Math.Sqrt(InputSize) - _kernelSize) / _stride + 1), 2);
+            StoreConvolutionDimensionParameters();
         }
 
         public override void InitializeParameters()
@@ -143,45 +148,66 @@ namespace NeuroSharp
                 DrainGradients();
         }
 
+        public void StoreConvolutionDimensionParameters()
+        {
+            _filterOutputDimension = MathUtils.GetConvolutionOutputSize(InputSize, _kernelSize, _stride);
+            _filterOutputSize = (int)Math.Pow(_filterOutputDimension, 2);
+            
+            int weightsDim = (int)Math.Sqrt(OutputSize / _filters);
+            int dilatedSize = weightsDim + (_stride - 1) * (weightsDim - 1);
+            _weightGradConvDimension = MathUtils.GetConvolutionOutputSize(InputSize, dilatedSize, 1);
+            
+            
+            int unpaddedSize = weightsDim + (_stride - 1) * (weightsDim - 1);
+            int paddedSize = 2 * (_kernelSize - 1) + unpaddedSize;
+            _inputGradConvDimension = MathUtils.GetConvolutionOutputSize(paddedSize * paddedSize, _kernelSize, 1);
+
+            _sliceSize = OutputSize / _filters;
+        }
 
         #region Operator Methods
-        public static (Vector<double>, Matrix<double>) Convolution(Vector<double> flattenedImage, Matrix<double> weights, int stride, bool transposeOutput = false)
+        public static Vector<double> Convolution(Vector<double> flattenedImage, Matrix<double> weights, 
+            int stride, int outDim, bool transposeOutput = false)
         {
-            int dim = (int)Math.Round(Math.Sqrt(flattenedImage.Count));
-            double imageQuotient = ((double)dim - weights.RowCount) / stride + 1;
-            int outDim = (int)Math.Floor(imageQuotient);
+            int imageDim = (int)Math.Sqrt(flattenedImage.Count);
+            Vector<double> output = Vector<double>.Build.Dense(outDim * outDim);
 
-            Matrix<double> image = MathUtils.Unflatten(flattenedImage);
-
-            Matrix<double> output = Matrix<double>.Build.Dense(outDim, outDim);
-
+            int x = 0;
+            int y = 0;
             for(int i = 0; i < outDim; i++)
+            for (int j = 0; j < outDim; j++)
+            for (int a = 0; a < weights.RowCount; a++)
+            for (int b = 0; b < weights.RowCount; b++)
             {
-                for (int j = 0; j < outDim; j++)
-                    for (int a = 0; a < weights.RowCount; a++)
-                        for (int b = 0; b < weights.RowCount; b++)
-                            output[i, j] += image[j * stride + b, i * stride + a] * weights[a, b];
+                if (transposeOutput)
+                {
+                    y = i;
+                    x = j;
+                }
+                else
+                {
+                    x = i;
+                    y = j;
+                }
+                output[x * outDim + y] += flattenedImage[y * stride + b + (x * stride + a) * imageDim] * weights[a, b];
             }
 
-            if(transposeOutput)
-                output = output.Transpose();
-
-            return (Utilities.MathUtils.Flatten(output), output);
+            return output;
         }
 
         // ∂L/∂W
-        public static Matrix<double> ComputeWeightGradient(Vector<double> input, Matrix<double> outputJacobian, int stride)
+        public static Matrix<double> ComputeWeightGradient(Vector<double> input, Matrix<double> outputJacobian, int stride, int outDim)
         {
             Matrix<double> dilatedGradient = Dilate(outputJacobian, stride).Transpose();
-            return Convolution(input, dilatedGradient, stride: 1, transposeOutput: true).Item2;
+            return MathUtils.Unflatten(Convolution(input, dilatedGradient, stride: 1, outDim, transposeOutput: true));
         }
 
         // ∂L/∂X
-        public static Vector<double> ComputeInputGradient(Matrix<double> weight, Matrix<double> outputJacobian, int stride)
+        public static Vector<double> ComputeInputGradient(Matrix<double> weight, Matrix<double> outputJacobian, int stride, int outDim)
         {
             Matrix<double> rotatedWeight = Rotate180(weight);
             Matrix<double> paddedDilatedGradient = PadAndDilate(outputJacobian, stride, rotatedWeight.RowCount);
-            return Convolution(MathUtils.Flatten(paddedDilatedGradient), rotatedWeight, stride: 1).Item1;
+            return Convolution(MathUtils.Flatten(paddedDilatedGradient), rotatedWeight, stride: 1, outDim);
         }
 
 

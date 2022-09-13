@@ -21,7 +21,7 @@ namespace NeuroSharp
 
             //XOR_Test();
             //Mnist_Digits_Test(600, 100, 5, "digits");
-            //Mnist_Digits_Test_Conv(6000, 100, 5, "digits");
+            Mnist_Digits_Test_Conv(6000, 100, 5, "digits");
             //Mnist_Digits_Test_Binary(60000, 10000, 5, "digits");
             //Conv_Base_Test(1000, 100, 10, "digits");
             //Conv_Vs_Non_Conv(5000, 1000, 15, 20, "digits");
@@ -31,7 +31,7 @@ namespace NeuroSharp
             //RNN_Sentence_Prediction(101, 20, 5, 20);
             //RNN_Name_Generator(epochs: 5, promptLength: 2, nameLengthAfterPrompt: 15, trainingSize: 20000);
             //RNN_Sequence_Prediction(20000, 10, 5, 3);
-            RNN_Sentiment_Analysis(5, 500, 100);
+            //RNN_Sentiment_Analysis(15, 2500, 100);
 
             #region testing
 
@@ -576,7 +576,7 @@ namespace NeuroSharp
             Random rand = new Random();
             
             ///
-            string dataPath = @"C:\Users\Isaac\Desktop\spotify reviews\reviews.csv";
+            string dataPath = @"C:\Users\Isaac\Desktop\reviews\train_shorter.csv";
             DataTable dataTable = DataTablePreprocessor.GetDataTableFromCSV(dataPath);
 
             string allowedChars = "abcdefghijklmnopqrstuvwxyz ";
@@ -586,13 +586,13 @@ namespace NeuroSharp
             {
                 reviews.Add(new string(dataTable.Rows[i].ItemArray[1].ToString().ToLower()
                     .Where(c => allowedChars.Contains(c)).ToArray()));
-                ratings.Add(Int32.Parse(dataTable.Rows[i].ItemArray[2].ToString()));
+                ratings.Add(Int32.Parse(dataTable.Rows[i].ItemArray[0].ToString()));
             }
             ///
 
             ///
-            int maxWordCount = 500;
-            int maxReviewLength = 10;
+            int maxWordCount = 256;
+            int maxReviewLength = 7;
             
             List<string> allWords = reviews.Select(r => r.Split(' ')
                 .ToList()).SelectMany(x => x).ToList();
@@ -622,7 +622,7 @@ namespace NeuroSharp
             for (int i = 0; i < trainingSize + testSize; i++) //todo: write preprocessing classes that will make this easier
             {
                 Vector<double> x = Vector<double>.Build.Dense(maxWordCount * maxReviewLength);
-                Vector<double> y = Vector<double>.Build.Dense(5);
+                Vector<double> y = Vector<double>.Build.Dense(2);
 
                 List<string> reviewWords = reviews[i].Split(' ')
                     .Where(s => uniqueWordsUsedFrequently.Contains(s)).ToList();
@@ -649,13 +649,13 @@ namespace NeuroSharp
             
             ///
             Network network = new Network(maxWordCount * maxReviewLength);
-            network.Add(new RecurrentLayer(maxReviewLength, maxWordCount, 128));
+            network.Add(new RecurrentLayer(maxReviewLength, maxWordCount, 180));
             network.Add(new ActivationLayer(ActivationType.Tanh));
-            network.Add(new FullyConnectedLayer(5));
+            network.Add(new FullyConnectedLayer(2));
             network.Add(new SoftmaxActivationLayer());
-            network.UseLoss(LossType.CategoricalCrossentropy);
+            network.UseLoss(LossType.BinaryCrossentropy);
             
-            network.Train(xTrain, yTrain, epochs, TrainingConfiguration.Minibatch, OptimizerType.Adam, 64, 0.0015);
+            network.Train(xTrain, yTrain, epochs, TrainingConfiguration.SGD, OptimizerType.Adam, learningRate: 0.003);
 
             int wrongCount = 0;
             for (int i = 0; i < xTest.Count; i++)

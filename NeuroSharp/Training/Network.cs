@@ -94,11 +94,11 @@ namespace NeuroSharp.Training
             return error;
         }
 
-        public int TrainingFeedback(double lastProgress, int current, int total)
+        public int TrainingFeedback(double lastProgress, int current, int total, double loss)
         {
             int progress = (int)Math.Round(100f * current / total);
             if (lastProgress != progress && progress % 5 == 0)
-                Console.Write("..." + progress + "%");
+                Console.Write("[..." + progress + "% | " + "Loss: " + loss + "]");
             return progress;
         }
 
@@ -142,7 +142,7 @@ namespace NeuroSharp.Training
                     err += Loss(yTrain[j], output);
                     BackPropagate(yTrain[j], output);
                     UpdateParameters(optimizerType, j, learningRate);
-                    lastProgress = TrainingFeedback(lastProgress, j, samples);
+                    lastProgress = TrainingFeedback(lastProgress, j, samples, err / j);
                 }
 
                 err /= samples;
@@ -169,6 +169,7 @@ namespace NeuroSharp.Training
                 Console.WriteLine("\nEpoch: " + (i + 1));
 
                 double err = 0;
+                int errCount = 0;
                 int lastProgress = 0;
                 
                 for (int b = 0; b <= batchCount; b++)
@@ -180,13 +181,14 @@ namespace NeuroSharp.Training
                         Vector<double> output = Predict(minibatch[j].Item1);
                         err += Loss(minibatch[j].Item2, output);
                         BackPropagate(minibatch[j].Item2, output);
+                        errCount++;
                     }
                     
                     UpdateParameters(optimizerType, b, learningRate);
-                    lastProgress = TrainingFeedback(lastProgress, b, batchCount);
+                    lastProgress = TrainingFeedback(lastProgress, b, batchCount, err / (b + b * minibatch.Count));
                 }
 
-                err /= batchSize * batchCount;
+                err /= errCount;
                 Console.WriteLine("Loss: " + err + "\n");
             }
         }

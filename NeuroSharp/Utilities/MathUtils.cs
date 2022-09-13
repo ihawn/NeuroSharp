@@ -35,7 +35,6 @@ namespace NeuroSharp.Utilities
             double sigma = Math.Sqrt(2f/layerInputSize);
             return new Normal(0, sigma).Sample();
         }
-
         public static double GetInitialWeightFromRange(double lowerBound, double upperBound)
         {
             Random rand = new Random();
@@ -69,6 +68,10 @@ namespace NeuroSharp.Utilities
                 mtx2.ColumnCount, 
                 mtx2.ToColumnMajorArray()
             ));
+        }
+        public static int GetConvolutionOutputSize(int inputSize, int kernel, int stride)
+        {
+            return (int)Math.Floor((Math.Round(Math.Sqrt(inputSize)) - kernel) / stride + 1);
         }
     }
 }
