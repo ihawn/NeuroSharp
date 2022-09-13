@@ -167,47 +167,62 @@ namespace NeuroSharp
 
         #region Operator Methods
         public static Vector<double> Convolution(Vector<double> flattenedImage, Matrix<double> weights, 
-            int stride, int outDim, bool transposeOutput = false)
+            int stride, int outDim)
         {
             int imageDim = (int)Math.Sqrt(flattenedImage.Count);
             Vector<double> output = Vector<double>.Build.Dense(outDim * outDim);
-
-            int x = 0;
-            int y = 0;
+            
             for(int i = 0; i < outDim; i++)
             for (int j = 0; j < outDim; j++)
             for (int a = 0; a < weights.RowCount; a++)
             for (int b = 0; b < weights.RowCount; b++)
-            {
-                if (transposeOutput)
-                {
-                    y = i;
-                    x = j;
-                }
-                else
-                {
-                    x = i;
-                    y = j;
-                }
-                output[x * outDim + y] += flattenedImage[y * stride + b + (x * stride + a) * imageDim] * weights[a, b];
-            }
+                output[i * outDim + j] += flattenedImage[j * stride + b + (i * stride + a) * imageDim] * weights[a, b];
 
             return output;
         }
+        public static Vector<double> Convolution(Matrix<double> image, Matrix<double> weights, 
+            int stride, int outDim)
+        {
+            Vector<double> output = Vector<double>.Build.Dense(outDim * outDim);
 
+            int x;
+            int y;
+            for(int i = 0; i < outDim; i++)
+            for (int j = 0; j < outDim; j++)
+            for (int a = 0; a < weights.RowCount; a++)
+            for (int b = 0; b < weights.RowCount; b++)
+                output[i * outDim + j] += image[i * stride + a, j * stride + b] * weights[a, b];
+
+            return output;
+        }
+        public static Matrix<double> MatrixTransposeConvolution(Vector<double> flattenedImage, Matrix<double> weights, 
+            int stride, int outDim)
+        {
+            int imageDim = (int)Math.Sqrt(flattenedImage.Count);
+            Matrix<double> output = Matrix<double>.Build.Dense(outDim, outDim);
+            
+            for(int i = 0; i < outDim; i++)
+            for (int j = 0; j < outDim; j++)
+            for (int a = 0; a < weights.RowCount; a++)
+            for (int b = 0; b < weights.RowCount; b++)
+                output[i, j] += flattenedImage[i * stride + b + (j * stride + a) * imageDim] * weights[a, b];
+
+            return output;
+        }
+        
         // ∂L/∂W
         public static Matrix<double> ComputeWeightGradient(Vector<double> input, Matrix<double> outputJacobian, int stride, int outDim)
         {
-            Matrix<double> dilatedGradient = Dilate(outputJacobian, stride).Transpose();
-            return MathUtils.Unflatten(Convolution(input, dilatedGradient, stride: 1, outDim, transposeOutput: true));
+            return MatrixTransposeConvolution(input, Dilate(outputJacobian, stride).Transpose(), stride: 1, outDim);
         }
 
         // ∂L/∂X
         public static Vector<double> ComputeInputGradient(Matrix<double> weight, Matrix<double> outputJacobian, int stride, int outDim)
         {
-            Matrix<double> rotatedWeight = Rotate180(weight);
-            Matrix<double> paddedDilatedGradient = PadAndDilate(outputJacobian, stride, rotatedWeight.RowCount);
-            return Convolution(MathUtils.Flatten(paddedDilatedGradient), rotatedWeight, stride: 1, outDim);
+            return Convolution(
+                    PadAndDilate(outputJacobian, stride, weight.RowCount), 
+                    Rotate180(weight), stride: 1, outDim
+                    );
         }
 
 
