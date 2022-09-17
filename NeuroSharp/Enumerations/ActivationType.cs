@@ -11,5 +11,6 @@ namespace NeuroSharp.Enumerations
         ReLu = 0,
         Tanh = 1,
         Softmax = 2,
+        Sigmoid = 3,
     }
 }

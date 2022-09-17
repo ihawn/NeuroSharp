@@ -27,9 +27,6 @@ namespace NeuroSharp
         private int _weightGradConvDimension;
         private int _inputGradConvDimension;
         private int _sliceSize;
-        
-        //todo: profile memory and remove excess mem allocations
-        //todo: make unflatten implicit in the operations
 
         public ConvolutionalOperator(ConvolutionalLayer parent, int kernel, int filters, int stride = 1)
         {

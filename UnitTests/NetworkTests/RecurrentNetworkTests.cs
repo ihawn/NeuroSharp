@@ -76,5 +76,74 @@ namespace UnitTests
                 Assert.AreEqual(actual, pred);
             }
         }
+        
+        [Test]
+        public void RNN_LearnsCorrectly_Sequences()
+        {
+            Random rand = new Random();
+            int maxDiff = 1;
+            int maxStart = 1;
+            int sequenceLength = 5;
+            int vocabSize = maxStart + maxDiff * (sequenceLength + 1);
+            int trainSize = 500;
+            int testSize = 50;
+
+            List<Vector<double>> xTrain = new List<Vector<double>>();
+            List<Vector<double>> yTrain = new List<Vector<double>>();
+            
+            List<Vector<double>> xTest = new List<Vector<double>>();
+            List<Vector<double>> yTest= new List<Vector<double>>();
+
+
+            for (int i = 0; i < trainSize + testSize; i++)
+            {
+                int commonDiff = rand.Next(1, maxDiff + 1);
+                int start = rand.Next(1, maxStart + 1);
+
+                Vector<double> x = Vector<double>.Build.Dense(sequenceLength);
+                Vector<double> y = Vector<double>.Build.Dense(sequenceLength);
+                for (int j = 0; j < sequenceLength; j++)
+                {
+                    x[j] = start + j * commonDiff;
+                    y[j] = start + (j + 1) * commonDiff;
+                }
+
+                x = DataUtils.OneHotEncodeVector(x, vocabSize);
+                y = DataUtils.OneHotEncodeVector(y, vocabSize);
+
+                if (i < trainSize)
+                {
+                    xTrain.Add(x);
+                    yTrain.Add(y);
+                }
+                else
+                {
+                    xTest.Add(x);
+                    yTest.Add(y);
+                }
+            }
+            
+
+            Network network = new Network(sequenceLength * vocabSize);
+            network.Add(new RecurrentLayer(sequenceLength, vocabSize, 80));
+            network.Add(new ActivationLayer(ActivationType.Tanh));
+            network.Add(new SoftmaxActivationLayer());
+            network.UseLoss(LossType.CategoricalCrossentropy);
+            
+            network.Train(xTrain, yTrain, 30, TrainingConfiguration.SGD, OptimizerType.Adam, learningRate: 0.1);
+
+            for (int i = 0; i < xTest.Count; i++)
+            {
+                Vector<double> predVector = network.Predict(xTest[i]);
+                Vector<double> encodedLastNumberPred = predVector.SubVector((sequenceLength - 1) * vocabSize, vocabSize);
+                Vector<double> encodedLastNumberActual = yTest[i].SubVector((sequenceLength - 1) * vocabSize, vocabSize);
+                int predNumber = encodedLastNumberPred.ToList().IndexOf(encodedLastNumberPred.Max()) + 1;
+                int actualNumber = encodedLastNumberActual.ToList().IndexOf(encodedLastNumberActual.Max()) + 1;
+                
+                Console.WriteLine("Prediction: " + predNumber);
+                Console.WriteLine("Actual: " + actualNumber);
+                Console.WriteLine();
+            }
+        }
     }
 }

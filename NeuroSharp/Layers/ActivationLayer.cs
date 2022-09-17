@@ -24,6 +24,11 @@ namespace NeuroSharp
                     _activation = ActivationFunctions.Tanh;
                     _activationPrime= ActivationFunctions.TanhPrime;
                     break;
+                case ActivationType.Sigmoid:
+                    _activation = ActivationFunctions.Sigmoid;
+                    _activationPrime = ActivationFunctions.SigmoidPrime;
+                    break;
+                //todo: integrate softmax into ActivationLayer instead of having it be its own layer
             }
 
             if (inputSize.HasValue)

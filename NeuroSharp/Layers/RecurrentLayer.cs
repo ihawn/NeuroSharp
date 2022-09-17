@@ -210,14 +210,5 @@ namespace NeuroSharp
             if(AccumulateGradients)
                 DrainGradients();
         }
-        
-        //todo: write test for this or even better make this calculation implicit elsewhere
-        public Vector<double>[] UnflattenInputVector(Vector<double> concatVec)
-        {
-            Vector<double>[] output = new Vector<double>[_sequenceLength];
-            for (int i = 0; i < output.Length; i++)
-                output[i] = concatVec.SubVector(i * _vocabSize, _vocabSize);
-            return output;
-        }
     }
 }

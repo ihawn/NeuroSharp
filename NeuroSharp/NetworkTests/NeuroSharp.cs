@@ -21,7 +21,7 @@ namespace NeuroSharp
 
             //XOR_Test();
             //Mnist_Digits_Test(600, 100, 5, "digits");
-            Mnist_Digits_Test_Conv(6000, 100, 5, "digits");
+            //Mnist_Digits_Test_Conv(6000, 100, 5, "digits");
             //Mnist_Digits_Test_Binary(60000, 10000, 5, "digits");
             //Conv_Base_Test(1000, 100, 10, "digits");
             //Conv_Vs_Non_Conv(5000, 1000, 15, 20, "digits");
@@ -31,7 +31,7 @@ namespace NeuroSharp
             //RNN_Sentence_Prediction(101, 20, 5, 20);
             //RNN_Name_Generator(epochs: 5, promptLength: 2, nameLengthAfterPrompt: 15, trainingSize: 20000);
             //RNN_Sequence_Prediction(20000, 10, 5, 3);
-            //RNN_Sentiment_Analysis(15, 2500, 100);
+            RNN_Sentiment_Analysis(15, 200, 100);
 
             #region testing
 
@@ -538,7 +538,6 @@ namespace NeuroSharp
             network.Add(new SoftmaxActivationLayer());
             network.UseLoss(LossType.CategoricalCrossentropy);
             
-            //todo: implement minibatch train for RNN
             network.Train(xTrain, yTrain, epochs, TrainingConfiguration.SGD, OptimizerType.Adam, learningRate: 0.001);
 
             List<string> prompts = new List<string>();
@@ -619,6 +618,8 @@ namespace NeuroSharp
             List<Vector<double>> xTest = new List<Vector<double>>();
             List<Vector<double>> yTest = new List<Vector<double>>();
 
+            List<List<string>> processedReviews = new List<List<string>>();
+
             for (int i = 0; i < trainingSize + testSize; i++) //todo: write preprocessing classes that will make this easier
             {
                 Vector<double> x = Vector<double>.Build.Dense(maxWordCount * maxReviewLength);
@@ -626,6 +627,8 @@ namespace NeuroSharp
 
                 List<string> reviewWords = reviews[i].Split(' ')
                     .Where(s => uniqueWordsUsedFrequently.Contains(s)).ToList();
+                processedReviews.Add(reviewWords);
+                
                 for (int j = 0; j < Math.Min(reviewWords.Count, maxReviewLength); j++)
                 {
                     int wordIndex = uniqueWordsUsedFrequently.IndexOf(reviewWords[j]);
