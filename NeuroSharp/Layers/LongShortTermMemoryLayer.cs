@@ -17,6 +17,7 @@ namespace NeuroSharp
         public Vector<double> RecurrentGradient { get; set; }
         public Vector<double>[] LSTMActivations { get; set; }
         public LSTMCellModel[] LstmStateCache { get; set; }
+        public Matrix<double> Embeddings { get; set; }
 
         private ActivationLayer _stateActivation;
         [JsonProperty] private ActivationType _stateActivationType;
@@ -38,6 +39,7 @@ namespace NeuroSharp
             _inputUnits = inputUnits;
             _hiddenUnits = hiddenUnits;
             _outputUnits = outputUnits;
+            _vocabSize = outputUnits;
             _sequenceLength = sequenceLength;
 
             SigmoidGate = new ActivationLayer(ActivationType.Sigmoid);
@@ -46,18 +48,19 @@ namespace NeuroSharp
         
         public override Vector<double> ForwardPropagation(Vector<double> input)
         {
+            Vector<double> inputVec = input.SubVector(0, _vocabSize);
             LstmStateCache[0] = new LSTMCellModel
             {
-                Input = input,
+                Output = inputVec,
+                EmbeddingTransformation = Embeddings * inputVec,
                 LSTMActivations = new Vector<double>[4],
-                FlattenedActivationMatrix = Vector<double>.Build.Dense(_inputUnits),
-                FlattenedCellMatrix = Vector<double>.Build.Dense(_inputUnits)
+                ActivationVector = Vector<double>.Build.Dense(_hiddenUnits),
+                CellVector = Vector<double>.Build.Dense(_hiddenUnits)
             };
             
             for (int i = 0; i < _sequenceLength; i++)
             {
                 LstmStateCache[i + 1] = LSTMForwardCell(LstmStateCache[i]);
-                
             }
 
             return LstmStateCache.Last().Output;
@@ -122,8 +125,9 @@ namespace NeuroSharp
 
             _adam = new Adam(InputSize, OutputSize, weightCount: 5, biasCount: 0);
             LstmStateCache = new LSTMCellModel[_sequenceLength + 1];
+            Embeddings = Matrix<double>.Build.Random(_inputUnits, _vocabSize);
 
-            for (int n = 0; n < 3; n++)
+            for (int n = 0; n < 5; n++)
             {
                 for (int i = 0; i < Weights[n].RowCount; i++)
                 {
@@ -185,39 +189,37 @@ namespace NeuroSharp
 
         public LSTMCellModel LSTMForwardCell(LSTMCellModel model)
         {
-            List<double> rawData = model.Input.ToList();
-            rawData.AddRange(model.FlattenedActivationMatrix);
+            List<double> rawData = model.EmbeddingTransformation.ToList();
+            rawData.AddRange(model.ActivationVector);
             Vector<double> concatData = Vector<double>.Build.DenseOfEnumerable(rawData);
 
-            LSTMActivations[(int)LSTMWeight.F] = SigmoidGate.ForwardPropagation(Weights[(int)LSTMWeight.F] * concatData);
-            LSTMActivations[(int)LSTMWeight.I] = SigmoidGate.ForwardPropagation(Weights[(int)LSTMWeight.I] * concatData);
-            LSTMActivations[(int)LSTMWeight.O] = SigmoidGate.ForwardPropagation(Weights[(int)LSTMWeight.O] * concatData);
-            LSTMActivations[(int)LSTMWeight.G] = TanhGate.ForwardPropagation(Weights[(int)LSTMWeight.G] * concatData);
+            LSTMActivations[(int)LSTMWeight.F] = SigmoidGate.ForwardPropagation(concatData * Weights[(int)LSTMWeight.F]);
+            LSTMActivations[(int)LSTMWeight.I] = SigmoidGate.ForwardPropagation(concatData * Weights[(int)LSTMWeight.I]);
+            LSTMActivations[(int)LSTMWeight.O] = SigmoidGate.ForwardPropagation(concatData * Weights[(int)LSTMWeight.O]);
+            LSTMActivations[(int)LSTMWeight.G] = TanhGate.ForwardPropagation(concatData * Weights[(int)LSTMWeight.G]);
 
             Vector<double> flattenedCellMemoryMatrix =
-                model.FlattenedCellMatrix.PointwiseMultiply(LSTMActivations[(int)LSTMWeight.F]) +
+                model.CellVector.PointwiseMultiply(LSTMActivations[(int)LSTMWeight.F]) +
                 LSTMActivations[(int)LSTMWeight.I].PointwiseMultiply(LSTMActivations[(int)LSTMWeight.G]);
 
             Vector<double> flattenedActivationMatrix =
                 LSTMActivations[(int)LSTMWeight.O].PointwiseMultiply(TanhGate.ForwardPropagation(flattenedCellMemoryMatrix));
 
+            Vector<double> output = OutputCell(flattenedActivationMatrix);
+            
             return new LSTMCellModel
             {
                 LSTMActivations = LSTMActivations,
-                FlattenedActivationMatrix = flattenedActivationMatrix,
-                FlattenedCellMatrix = flattenedCellMemoryMatrix,
-                Output = OutputCell(flattenedActivationMatrix)
+                ActivationVector = flattenedActivationMatrix,
+                CellVector = flattenedCellMemoryMatrix,
+                Output = output,
+                EmbeddingTransformation = Embeddings * output
             };
         }
 
-        public Vector<double> OutputCell(Vector<double> input)
+        public Vector<double> OutputCell(Vector<double> activation)
         {
-            return ActivationFunctions.Softmax(
-                    MathUtils.Flatten(
-                    Weights[(int)LSTMWeight.H]
-                        .PointwiseMultiply(MathUtils.Unflatten(input, _hiddenUnits, _outputUnits))
-                )
-            );
+            return ActivationFunctions.Softmax(activation * Weights[(int)LSTMWeight.H]);
         }
     }
 }

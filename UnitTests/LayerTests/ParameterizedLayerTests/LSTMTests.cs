@@ -21,7 +21,12 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
         [Test]
         public void LSTM_ForwardPropagation_ReturnsCorrectResult()
         {
-            LongShortTermMemoryLayer layer = new LongShortTermMemoryLayer(2, 3, 4, 2);
+            Vector<double> x = Vector<double>.Build.Random(27 * 12);
+
+            LongShortTermMemoryLayer layer = new LongShortTermMemoryLayer(100, 27, 256, 12);
+            layer.InitializeParameters();
+
+            Vector<double> output = layer.ForwardPropagation(x);
         }
     }
 }
