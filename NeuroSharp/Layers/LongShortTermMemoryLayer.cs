@@ -14,8 +14,10 @@ namespace NeuroSharp
         public Vector<double>[] StateInput { get; set; }
         public Vector<double>[] States { get; set; }
         public Vector<double> Outputs { get; set; }
-        public Vector<double> RecurrentGradient { get; set; }
+        public Vector<double> LSTMGradient { get; set; }
         public Vector<double>[] LSTMActivations { get; set; }
+        public Vector<double>[] OutputErrorCache { get; set; }
+        public Vector<double>[] ActivationErrorCache { get; set; }
         public LSTMCellModel[] LstmStateCache { get; set; }
         public Matrix<double> Embeddings { get; set; }
 
@@ -49,7 +51,7 @@ namespace NeuroSharp
         public override Vector<double> ForwardPropagation(Vector<double> input)
         {
             Vector<double> inputVec = input.SubVector(0, _vocabSize);
-            LstmStateCache[0] = new LSTMCellModel
+            LSTMCellModel initialState = new LSTMCellModel
             {
                 Output = inputVec,
                 EmbeddingTransformation = Embeddings * inputVec,
@@ -58,49 +60,28 @@ namespace NeuroSharp
                 CellVector = Vector<double>.Build.Dense(_hiddenUnits)
             };
             
-            for (int i = 0; i < _sequenceLength; i++)
+            for (int i = 0; i < _sequenceLength - 1; i++)
             {
-                LstmStateCache[i + 1] = LSTMForwardCell(LstmStateCache[i]);
+                LstmStateCache[i] = LSTMForwardCell(i == 0 ? initialState : LstmStateCache[i - 1]);
             }
 
-            return LstmStateCache.Last().Output;
+            return Vector<double>.Build.DenseOfEnumerable(
+                LstmStateCache.Select(y => y.Output).SelectMany(i => i));
         }
 
         public override Vector<double> BackPropagation(Vector<double> outputError)
         {
             if(!AccumulateGradients) DrainGradients();
-            
-            Matrix<double> unflattenedError = MathUtils.Unflatten(outputError, _vocabSize, _sequenceLength).Transpose();
-            Vector<double> nextStateGradient = Vector<double>.Build.Dense(_hiddenSize);
+            LSTMGradient = Vector<double>.Build.Dense(_sequenceLength * _vocabSize);
 
-            RecurrentGradient = Vector<double>.Build.Dense(_sequenceLength * _vocabSize);
-
-            for (int i = _sequenceLength - 1; i >= 0; i--)
+            //output cell error
+            for (int i = _sequenceLength - 2; i >= 0; i--)
             {
-                Vector<double> stateGradient = Weights[(int)RNNWeight.V].TransposeThisAndMultiply(unflattenedError.Row(i))
-                        .Add(nextStateGradient).PointwiseMultiply(_stateActivation.GradientPass(StateInput[i]));
-
-                RecurrentGradient.SetSubVector(_vocabSize * i, _vocabSize, Weights[(int)RNNWeight.U].TransposeThisAndMultiply(stateGradient));
-                
-                BiasGradients[(int)RNNBias.b] += stateGradient;
-                BiasGradients[(int)RNNBias.c] += unflattenedError.Row(i);
-
-                WeightGradients[(int)RNNWeight.U] =
-                    MathUtils.TransposianAdd(
-                        WeightGradients[(int)RNNWeight.U],
-                        stateGradient.OuterProduct(Input.SubVector(i * _vocabSize, _vocabSize)));
-                
-                WeightGradients[(int)RNNWeight.V] = 
-                    MathUtils.TransposianAdd(
-                        WeightGradients[(int)RNNWeight.V],
-                        unflattenedError.Row(i).OuterProduct(States[i]));
-                
-                if(i > 0) WeightGradients[(int)RNNWeight.W] += stateGradient.OuterProduct(States[i - 1]).Transpose();
-
-                nextStateGradient = Weights[(int)RNNWeight.W].TransposeThisAndMultiply(stateGradient);
+                ActivationErrorCache[i] = 
+                    Weights[(int)LSTMWeight.H] * outputError.SubVector(i * _vocabSize, _vocabSize);
             }
 
-            return RecurrentGradient;
+            return LSTMGradient;
         }
         
         public override void InitializeParameters()
@@ -124,7 +105,9 @@ namespace NeuroSharp
             LSTMActivations = new Vector<double>[4];
 
             _adam = new Adam(InputSize, OutputSize, weightCount: 5, biasCount: 0);
-            LstmStateCache = new LSTMCellModel[_sequenceLength + 1];
+            LstmStateCache = new LSTMCellModel[_sequenceLength - 1];
+            OutputErrorCache = new Vector<double>[_sequenceLength - 1];
+            ActivationErrorCache = new Vector<double>[_sequenceLength - 1];
             Embeddings = Matrix<double>.Build.Random(_inputUnits, _vocabSize);
 
             for (int n = 0; n < 5; n++)
