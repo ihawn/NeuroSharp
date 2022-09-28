@@ -56,6 +56,48 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
 
             Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
         }
+        
+        [Test]
+        public void LSTM_BackPropagation_ReturnsCorrectHGradient()
+        {
+            int inputUnits = 2;
+            int outputUnits = 2;
+            int hiddenUnits = 2;
+            int sequenceLength = 2;
+            
+            Vector<double> truthY = Vector<double>.Build.Random(outputUnits * (sequenceLength - 1));
+            Vector<double> testX = Vector<double>.Build.Random(outputUnits * sequenceLength);
+            Vector<double> testWeight = Vector<double>.Build.Random(hiddenUnits * outputUnits);
+
+            Network network = new Network(outputUnits * sequenceLength);
+            network.Add(new LongShortTermMemoryLayer(inputUnits, outputUnits, hiddenUnits, sequenceLength));
+            network.Add(new ActivationLayer(ActivationType.Tanh));
+            network.Add(new SoftmaxActivationLayer());
+            network.UseLoss(LossType.CategoricalCrossentropy);
+
+            double networkLossHWeightInput(Vector<double> x)
+            {
+                LongShortTermMemoryLayer lstm = (LongShortTermMemoryLayer)network.Layers[0];
+                lstm.Weights[(int)LSTMWeight.H] = MathUtils.Unflatten(x, hiddenUnits, outputUnits);
+                x = network.Predict(testX);
+                return network.Loss(truthY, x);
+            }
+
+            Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLossHWeightInput, testWeight);
+            Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
+            Vector<double> explicitWeightGradient = null;
+            for (int k = network.Layers.Count - 1; k >= 0; k--)
+            {
+                testGradient = network.Layers[k].BackPropagation(testGradient);
+                if (k == 0)
+                {
+                    LongShortTermMemoryLayer lstm = (LongShortTermMemoryLayer)network.Layers[0];
+                    explicitWeightGradient = MathUtils.Flatten(lstm.WeightGradients[(int)LSTMWeight.H]);
+                }
+            }
+
+            Assert.IsTrue((finiteDiffGradient - explicitWeightGradient).L2Norm() < 0.00001);
+        }
     }
 }
 
