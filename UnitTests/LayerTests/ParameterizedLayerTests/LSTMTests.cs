@@ -58,3 +58,5 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
         }
     }
 }
+
+//todo train batching by stacking vector batches into a matrix
