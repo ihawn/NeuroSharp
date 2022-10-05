@@ -57,7 +57,7 @@ namespace NeuroSharp
             Vector<double> inputVec = input.SubVector(0, _vocabSize);
             LSTMCellModel initialState = new LSTMCellModel
             {
-                Output = inputVec,
+                Input = inputVec,
                 EmbeddingTransformation = Embeddings * inputVec,
                 LSTMActivations = new Vector<double>[4],
                 ActivationVector = Vector<double>.Build.Dense(_hiddenUnits),
@@ -67,6 +67,16 @@ namespace NeuroSharp
             for (int i = 0; i < _sequenceLength - 1; i++)
             {
                 LstmStateCache[i] = LSTMForwardCell(i == 0 ? initialState : LstmStateCache[i - 1]);
+
+                if (i < _sequenceLength - 1)
+                {
+                    Vector<double> nextInput = input.SubVector((i + 1) * _vocabSize, _vocabSize);
+                    LstmStateCache[i].Input = nextInput;
+                    LstmStateCache[i].EmbeddingTransformation = Embeddings * nextInput;
+                    LstmStateCache[i].EmbeddingCache = i > 0 ? 
+                        LstmStateCache[i - 1].EmbeddingTransformation : 
+                        initialState.EmbeddingTransformation;
+                }
             }
 
             return Vector<double>.Build.DenseOfEnumerable(
@@ -284,25 +294,27 @@ namespace NeuroSharp
             rawData.AddRange(model.ActivationVector);
             Vector<double> concatData = Vector<double>.Build.DenseOfEnumerable(rawData);
 
-            LSTMActivations[(int)LSTMWeight.F] = SigmoidGate.ForwardPropagation(concatData * Weights[(int)LSTMWeight.F]);
-            LSTMActivations[(int)LSTMWeight.I] = SigmoidGate.ForwardPropagation(concatData * Weights[(int)LSTMWeight.I]);
-            LSTMActivations[(int)LSTMWeight.O] = SigmoidGate.ForwardPropagation(concatData * Weights[(int)LSTMWeight.O]);
-            LSTMActivations[(int)LSTMWeight.G] = TanhGate.ForwardPropagation(concatData * Weights[(int)LSTMWeight.G]);
+            Vector<double>[] lstmActivations = new Vector<double>[4];
 
-            Vector<double> flattenedCellMemoryMatrix =
-                model.CellVector.PointwiseMultiply(LSTMActivations[(int)LSTMWeight.F]) +
-                LSTMActivations[(int)LSTMWeight.I].PointwiseMultiply(LSTMActivations[(int)LSTMWeight.G]);
+            lstmActivations[(int)LSTMWeight.F] = SigmoidGate.ForwardPropagation(concatData * Weights[(int)LSTMWeight.F]);
+            lstmActivations[(int)LSTMWeight.I] = SigmoidGate.ForwardPropagation(concatData * Weights[(int)LSTMWeight.I]);
+            lstmActivations[(int)LSTMWeight.O] = SigmoidGate.ForwardPropagation(concatData * Weights[(int)LSTMWeight.O]);
+            lstmActivations[(int)LSTMWeight.G] = TanhGate.ForwardPropagation(concatData * Weights[(int)LSTMWeight.G]);
+
+            Vector<double> flattenedCellMatrix =
+                model.CellVector.PointwiseMultiply(lstmActivations[(int)LSTMWeight.F]) +
+                lstmActivations[(int)LSTMWeight.I].PointwiseMultiply(lstmActivations[(int)LSTMWeight.G]);
 
             Vector<double> flattenedActivationMatrix =
-                LSTMActivations[(int)LSTMWeight.O].PointwiseMultiply(TanhGate.ForwardPropagation(flattenedCellMemoryMatrix));
+                lstmActivations[(int)LSTMWeight.O].PointwiseMultiply(TanhGate.ForwardPropagation(flattenedCellMatrix));
 
             Vector<double> output = OutputCell(flattenedActivationMatrix);
             
             return new LSTMCellModel
             {
-                LSTMActivations = LSTMActivations,
+                LSTMActivations = lstmActivations,
                 ActivationVector = flattenedActivationMatrix,
-                CellVector = flattenedCellMemoryMatrix,
+                CellVector = flattenedCellMatrix,
                 Output = output,
                 EmbeddingTransformation = Embeddings * output
             };
