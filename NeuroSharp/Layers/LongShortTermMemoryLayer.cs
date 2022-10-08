@@ -89,42 +89,42 @@ namespace NeuroSharp
             LSTMGradient = Vector<double>.Build.Dense(_sequenceLength * _vocabSize);
 
             //output cell error
-            for (int i = _sequenceLength - 2; i >= 0; i--)
+            for (int i = 0; i < _sequenceLength - 1; i ++)
             {
                 OutputErrorCache[i] = outputError.SubVector(i * _vocabSize, _vocabSize);
-                ActivationErrorCache[i] = Weights[(int)LSTMWeight.H] * OutputErrorCache[i];
+                ActivationErrorCache[i] = OutputErrorCache[i] * Weights[(int)LSTMWeight.H].Transpose();
             }
 
             Vector<double> nextActivationError = Vector<double>.Build.Dense(ActivationErrorCache[0].Count);
             Vector<double> nextCellError = Vector<double>.Build.Dense(ActivationErrorCache[0].Count);
-
             
-            for (int i = _sequenceLength - 1; i > 0; i--)
+            
+            for (int i = _sequenceLength - 2; i >= 0; i--)
             {
                 //core cell error
-                Vector<double> activationError = ActivationErrorCache[i - 1] + nextActivationError;
+                Vector<double> activationError = ActivationErrorCache[i] + nextActivationError;
 
-                Vector<double> oa = LstmStateCache[i - 1].LSTMActivations[(int)LSTMWeight.O];
+                Vector<double> oa = LstmStateCache[i].LSTMActivations[(int)LSTMWeight.O];
                 Vector<double> eo =
-                    activationError.PointwiseMultiply(TanhGate.ForwardPropagation(LstmStateCache[i - 1].CellVector));
+                    activationError.PointwiseMultiply(TanhGate.ForwardPropagation(LstmStateCache[i].CellVector));
                 eo = eo.PointwiseMultiply(oa).PointwiseMultiply(1 - oa);
 
                 Vector<double> cellError = activationError.PointwiseMultiply(oa);
                 cellError = cellError.PointwiseMultiply(
-                    TanhGate.BackPropagation(TanhGate.ForwardPropagation(LstmStateCache[i - 1].CellVector))
+                    TanhGate.BackPropagation(TanhGate.ForwardPropagation(LstmStateCache[i].CellVector))
                 );
                 cellError += nextCellError;
 
-                Vector<double> ia = LstmStateCache[i - 1].LSTMActivations[(int)LSTMWeight.I];
-                Vector<double> ga = LstmStateCache[i - 1].LSTMActivations[(int)LSTMWeight.G];
+                Vector<double> ia = LstmStateCache[i].LSTMActivations[(int)LSTMWeight.I];
+                Vector<double> ga = LstmStateCache[i].LSTMActivations[(int)LSTMWeight.G];
                 Vector<double> ei = cellError.PointwiseMultiply(ga);
                 ei = ei.PointwiseMultiply(ia).PointwiseMultiply(1 - ia);
 
                 Vector<double> eg = cellError.PointwiseMultiply(ia);
                 eg = eg.PointwiseMultiply(TanhGate.BackPropagation(ga));
 
-                Vector<double> fa = LstmStateCache[i - 1].LSTMActivations[(int)LSTMWeight.F];
-                Vector<double> ef = cellError.PointwiseMultiply(LstmStateCache[i - 1].CellVector);
+                Vector<double> fa = LstmStateCache[i].LSTMActivations[(int)LSTMWeight.F];
+                Vector<double> ef = cellError.PointwiseMultiply(LstmStateCache[i].CellVector);
                 ef = ef.PointwiseMultiply(fa).PointwiseMultiply(1 - fa);
 
                 Vector<double> prevCellError = cellError.PointwiseMultiply(fa);
@@ -149,8 +149,8 @@ namespace NeuroSharp
                 Vector<double> embedError = embededActivationError.SubVector(0, inputUnits);
                 //end core cell error
 
-                LstmErrorCache[i - 1] = new Vector<double>[] { ef, ei, eo, eg };
-                EmbeddingErrorCache[i - 1] = embedError;
+                LstmErrorCache[i] = new Vector<double>[] { ef, ei, eo, eg };
+                EmbeddingErrorCache[i] = embedError;
 
                 nextActivationError = prevActivationError;
                 nextCellError = prevCellError;
@@ -164,7 +164,7 @@ namespace NeuroSharp
                 Vector<double> activation = LstmStateCache[i].ActivationVector;
                 WeightGradients[(int)LSTMWeight.H] += activation.OuterProduct(error) / batchSize;
             }
-            
+
             //gate weight gradients
             for (int i = 0; i < LstmErrorCache.Length; i++)
             {
@@ -308,7 +308,7 @@ namespace NeuroSharp
             Vector<double> flattenedActivationMatrix =
                 lstmActivations[(int)LSTMWeight.O].PointwiseMultiply(TanhGate.ForwardPropagation(flattenedCellMatrix));
 
-            Vector<double> output = OutputCell(flattenedActivationMatrix);
+            Vector<double> output = flattenedActivationMatrix; //OutputCell(flattenedActivationMatrix);
             
             return new LSTMCellModel
             {
