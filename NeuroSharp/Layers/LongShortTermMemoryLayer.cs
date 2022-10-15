@@ -14,14 +14,11 @@ namespace NeuroSharp
         public Vector<double>[] StateInput { get; set; }
         public Vector<double>[] States { get; set; }
         public Vector<double> Outputs { get; set; }
-        public Vector<double> LSTMGradient { get; set; }
-        public Vector<double>[] LSTMActivations { get; set; }
-        public Vector<double>[] OutputErrorCache { get; set; }
-        public Vector<double>[] ActivationErrorCache { get; set; }
+        public Vector<double>[][] ActivationCache { get; set; }
         public LSTMCellModel[] LstmStateCache { get; set; }
-        public Vector<double>[][] LstmErrorCache { get; set; }
-        public Vector<double>[] EmbeddingErrorCache { get; set; }
-        public Matrix<double>[][] WeightGradientCache { get; set; }
+        public Vector<double>[] HiddenStates { get; set; }
+        public Vector<double>[] CellStates { get; set; }
+        public FullyConnectedLayer[] LSTMGates { get; set; }
         public Matrix<double> Embeddings { get; set; }
 
         private ActivationLayer _stateActivation;
@@ -31,8 +28,8 @@ namespace NeuroSharp
         [JsonProperty] private int _vocabSize;
         [JsonProperty] private int _hiddenSize;
 
-        private ActivationLayer SigmoidGate;
-        private ActivationLayer TanhGate;
+
+        private ActivationLayer[][] ActivationGates;
 
         [JsonProperty] private int _inputUnits; // 100
         [JsonProperty] private int _hiddenUnits; // 256
@@ -47,156 +44,47 @@ namespace NeuroSharp
             _vocabSize = outputUnits;
             _sequenceLength = sequenceLength;
 
-            SigmoidGate = new ActivationLayer(ActivationType.Sigmoid);
-            TanhGate = new ActivationLayer(ActivationType.Tanh);
+            ActivationGates = new ActivationLayer[_sequenceLength][];
+            for (int i = 0; i < _sequenceLength; i++)
+                ActivationGates[i] = new ActivationLayer[]
+                {
+                    new ActivationLayer(ActivationType.Sigmoid),
+                    new ActivationLayer(ActivationType.Sigmoid),
+                    new ActivationLayer(ActivationType.Tanh),
+                    new ActivationLayer(ActivationType.Sigmoid),
+                    new ActivationLayer(ActivationType.Tanh),
+                };
         }
         
         public override Vector<double> ForwardPropagation(Vector<double> input)
         {
             Input = input;
-            Vector<double> inputVec = input.SubVector(0, _vocabSize);
-            LSTMCellModel initialState = new LSTMCellModel
-            {
-                Input = inputVec,
-                EmbeddingTransformation = Embeddings * inputVec,
-                LSTMActivations = new Vector<double>[4],
-                ActivationVector = Vector<double>.Build.Dense(_hiddenUnits),
-                CellVector = Vector<double>.Build.Dense(_hiddenUnits)
-            };
-            
-            for (int i = 0; i < _sequenceLength - 1; i++)
-            {
-                LstmStateCache[i] = LSTMForwardCell(i == 0 ? initialState : LstmStateCache[i - 1]);
 
-                if (i < _sequenceLength - 1)
-                {
-                    Vector<double> nextInput = input.SubVector((i + 1) * _vocabSize, _vocabSize);
-                    LstmStateCache[i].Input = nextInput;
-                    LstmStateCache[i].EmbeddingTransformation = Embeddings * nextInput;
-                    LstmStateCache[i].EmbeddingCache = i > 0 ? 
-                        LstmStateCache[i - 1].EmbeddingTransformation : 
-                        initialState.EmbeddingTransformation;
-                }
+            for (int i = 0; i < _sequenceLength; i++)
+            {
+                Vector<double> currentInput = input;//input.SubVector(i * _vocabSize, _vocabSize);
+                LSTMForwardCell(currentInput, i);
             }
 
-            return Vector<double>.Build.DenseOfEnumerable(
-                LstmStateCache.Select(y => y.Output).SelectMany(i => i));
+            Vector<double> outputCell = HiddenStates[_sequenceLength - 1]; /* Weights[(int)LSTMParameter.V] +
+                                       // Biases[(int)LSTMParameter.V];*/
+
+            return outputCell;
         }
 
         public override Vector<double> BackPropagation(Vector<double> outputError)
         {
             if(!AccumulateGradients) DrainGradients();
-            LSTMGradient = Vector<double>.Build.Dense(_sequenceLength * _vocabSize);
 
-            //output cell error
-            for (int i = 0; i < _sequenceLength - 1; i ++)
+           // outputError = Weights[(int)LSTMParameter.V] * outputError; // passing
+
+            Vector<double> previousCellGradient = outputError;
+            for (int i = _sequenceLength - 1; i >= 0; i--)
             {
-                OutputErrorCache[i] = outputError.SubVector(i * _vocabSize, _vocabSize);
-                ActivationErrorCache[i] = OutputErrorCache[i] * Weights[(int)LSTMWeight.H].Transpose();
+                previousCellGradient = LSTMBackwardCell(previousCellGradient, i);
             }
 
-            Vector<double> nextActivationError = Vector<double>.Build.Dense(ActivationErrorCache[0].Count);
-            Vector<double> nextCellError = Vector<double>.Build.Dense(ActivationErrorCache[0].Count);
-            
-            
-            for (int i = _sequenceLength - 2; i >= 0; i--)
-            {
-                //core cell error
-                Vector<double> activationError = ActivationErrorCache[i] + nextActivationError;
-
-                Vector<double> oa = LstmStateCache[i].LSTMActivations[(int)LSTMWeight.O];
-                Vector<double> eo =
-                    activationError.PointwiseMultiply(TanhGate.ForwardPropagation(LstmStateCache[i].CellVector));
-                eo = eo.PointwiseMultiply(oa).PointwiseMultiply(1 - oa);
-
-                Vector<double> cellError = activationError.PointwiseMultiply(oa);
-                cellError = cellError.PointwiseMultiply(
-                    TanhGate.BackPropagation(TanhGate.ForwardPropagation(LstmStateCache[i].CellVector))
-                );
-                cellError += nextCellError;
-
-                Vector<double> ia = LstmStateCache[i].LSTMActivations[(int)LSTMWeight.I];
-                Vector<double> ga = LstmStateCache[i].LSTMActivations[(int)LSTMWeight.G];
-                Vector<double> ei = cellError.PointwiseMultiply(ga);
-                ei = ei.PointwiseMultiply(ia).PointwiseMultiply(1 - ia);
-
-                Vector<double> eg = cellError.PointwiseMultiply(ia);
-                eg = eg.PointwiseMultiply(TanhGate.BackPropagation(ga));
-
-                Vector<double> fa = LstmStateCache[i].LSTMActivations[(int)LSTMWeight.F];
-                Vector<double> ef = cellError.PointwiseMultiply(LstmStateCache[i].CellVector);
-                ef = ef.PointwiseMultiply(fa).PointwiseMultiply(1 - fa);
-
-                Vector<double> prevCellError = cellError.PointwiseMultiply(fa);
-
-                Matrix<double> fgw = Weights[(int)LSTMWeight.F];
-                Matrix<double> igw = Weights[(int)LSTMWeight.I];
-                Matrix<double> ggw = Weights[(int)LSTMWeight.G];
-                Matrix<double> ogw = Weights[(int)LSTMWeight.O];
-
-                Vector<double> embededActivationError = fgw.Multiply(ef) +
-                                                        igw.Multiply(ei) +
-                                                        ogw.Multiply(eo) +
-                                                        ggw.Multiply(eg);
-
-                int hiddenInputUnits = fgw.RowCount;
-                int hiddenUnits = fgw.ColumnCount;
-                int inputUnits = hiddenInputUnits - hiddenUnits;
-
-                Vector<double> prevActivationError =
-                    embededActivationError.SubVector(inputUnits, embededActivationError.Count - inputUnits);
-                
-                Vector<double> embedError = embededActivationError.SubVector(0, inputUnits);
-                //end core cell error
-
-                LstmErrorCache[i] = new Vector<double>[] { ef, ei, eo, eg };
-                EmbeddingErrorCache[i] = embedError;
-
-                nextActivationError = prevActivationError;
-                nextCellError = prevCellError;
-            }
-            
-            //output cell weight gradient
-            int batchSize = 1;
-            for (int i = 0; i <= OutputErrorCache.Length - 1; i++)
-            {
-                Vector<double> error = OutputErrorCache[i];
-                Vector<double> activation = LstmStateCache[i].ActivationVector;
-                WeightGradients[(int)LSTMWeight.H] += activation.OuterProduct(error) / batchSize;
-            }
-
-            //gate weight gradients
-            for (int i = 0; i < LstmErrorCache.Length; i++)
-            {
-                Vector<double> ef = LstmErrorCache[i][(int)LSTMWeight.F];
-                Vector<double> ei = LstmErrorCache[i][(int)LSTMWeight.I];
-                Vector<double> eo = LstmErrorCache[i][(int)LSTMWeight.O];
-                Vector<double> eg = LstmErrorCache[i][(int)LSTMWeight.G];
-
-                List<double> rawData = LstmStateCache[i].EmbeddingTransformation.ToList();
-                rawData.AddRange(LstmStateCache[i].CellVector);
-                Vector<double> concatData = Vector<double>.Build.DenseOfEnumerable(rawData);
-
-                batchSize = 1;
-                WeightGradientCache[i] = new Matrix<double>[]
-                {
-                    concatData.OuterProduct(ef) / batchSize,
-                    concatData.OuterProduct(ei) / batchSize,
-                    concatData.OuterProduct(eo) / batchSize,
-                    concatData.OuterProduct(eg) / batchSize
-                };
-            }
-            
-            //gate weight sequence accumulation
-            for (int i = 0; i < LstmErrorCache.Length; i++)
-            {
-                WeightGradients[(int)LSTMWeight.F] += WeightGradientCache[i][(int)LSTMWeight.F];
-                WeightGradients[(int)LSTMWeight.I] += WeightGradientCache[i][(int)LSTMWeight.I];
-                WeightGradients[(int)LSTMWeight.O] += WeightGradientCache[i][(int)LSTMWeight.O];
-                WeightGradients[(int)LSTMWeight.G] += WeightGradientCache[i][(int)LSTMWeight.G];
-            }
-
-            return LSTMGradient;
+            return previousCellGradient;
         }
         
         public override void InitializeParameters()
@@ -217,16 +105,33 @@ namespace NeuroSharp
                 Matrix<double>.Build.Dense(_inputUnits + _hiddenUnits, _hiddenUnits), // Gate gate weight gradient
                 Matrix<double>.Build.Dense(_hiddenUnits, _outputUnits), // Gate gate weight gradient
             };
-            LSTMActivations = new Vector<double>[4];
+            
+            Biases = new Vector<double>[]
+            {
+                Vector<double>.Build.Dense(_hiddenUnits),
+                Vector<double>.Build.Dense(_hiddenUnits),
+                Vector<double>.Build.Dense(_hiddenUnits),
+                Vector<double>.Build.Dense(_hiddenUnits),
+                Vector<double>.Build.Dense(_vocabSize),
+            };
+            BiasGradients = new Vector<double>[]
+            {
+                Vector<double>.Build.Dense(_hiddenUnits),
+                Vector<double>.Build.Dense(_hiddenUnits),
+                Vector<double>.Build.Dense(_hiddenUnits),
+                Vector<double>.Build.Dense(_hiddenUnits),
+                Vector<double>.Build.Dense(_vocabSize),
+            };
+
+            HiddenStates = new Vector<double>[_sequenceLength];
+            CellStates = new Vector<double>[_sequenceLength];
+            ActivationCache = new Vector<double>[_sequenceLength][];
+            for (int i = 0; i < _sequenceLength; i++)
+                ActivationCache[i] = new Vector<double>[4];
 
             _adam = new Adam(InputSize, OutputSize, weightCount: 5, biasCount: 0);
             LstmStateCache = new LSTMCellModel[_sequenceLength - 1];
-            OutputErrorCache = new Vector<double>[_sequenceLength - 1];
-            ActivationErrorCache = new Vector<double>[_sequenceLength - 1];
             Embeddings = Matrix<double>.Build.Random(_inputUnits, _vocabSize);
-            LstmErrorCache = new Vector<double>[_sequenceLength - 1][];
-            EmbeddingErrorCache = new Vector<double>[_sequenceLength - 1];
-            WeightGradientCache = new Matrix<double>[_sequenceLength - 1][];
 
             for (int n = 0; n < 5; n++)
             {
@@ -243,6 +148,17 @@ namespace NeuroSharp
                     }
                 }
             }
+
+            LSTMGates = new FullyConnectedLayer[]
+            {
+                new FullyConnectedLayer(inputSize: _inputUnits + _hiddenUnits, outputSize: _hiddenUnits),
+                new FullyConnectedLayer(inputSize: _inputUnits + _hiddenUnits, outputSize: _hiddenUnits),
+                new FullyConnectedLayer(inputSize: _inputUnits + _hiddenUnits, outputSize: _hiddenUnits),
+                new FullyConnectedLayer(inputSize: _inputUnits + _hiddenUnits, outputSize: _hiddenUnits)
+            };
+            
+            foreach(var layer in LSTMGates)
+                layer.InitializeParameters();
         }
 
         public override void DrainGradients()
@@ -288,41 +204,106 @@ namespace NeuroSharp
                 DrainGradients();
         }
 
-        public LSTMCellModel LSTMForwardCell(LSTMCellModel model)
+        public void LSTMForwardCell(Vector<double> currentCellInput, int index)
         {
-            List<double> rawData = model.EmbeddingTransformation.ToList();
-            rawData.AddRange(model.ActivationVector);
-            Vector<double> concatData = Vector<double>.Build.DenseOfEnumerable(rawData);
-
-            Vector<double>[] lstmActivations = new Vector<double>[4];
-
-            lstmActivations[(int)LSTMWeight.F] = SigmoidGate.ForwardPropagation(concatData * Weights[(int)LSTMWeight.F]);
-            lstmActivations[(int)LSTMWeight.I] = SigmoidGate.ForwardPropagation(concatData * Weights[(int)LSTMWeight.I]);
-            lstmActivations[(int)LSTMWeight.O] = SigmoidGate.ForwardPropagation(concatData * Weights[(int)LSTMWeight.O]);
-            lstmActivations[(int)LSTMWeight.G] = TanhGate.ForwardPropagation(concatData * Weights[(int)LSTMWeight.G]);
-
-            Vector<double> flattenedCellMatrix =
-                model.CellVector.PointwiseMultiply(lstmActivations[(int)LSTMWeight.F]) +
-                lstmActivations[(int)LSTMWeight.I].PointwiseMultiply(lstmActivations[(int)LSTMWeight.G]);
-
-            Vector<double> flattenedActivationMatrix =
-                lstmActivations[(int)LSTMWeight.O].PointwiseMultiply(TanhGate.ForwardPropagation(flattenedCellMatrix));
-
-            Vector<double> output = flattenedActivationMatrix; //OutputCell(flattenedActivationMatrix);
+            Vector<double> previousCellOutput = 
+                index > 0 ? HiddenStates[index - 1] : Vector<double>.Build.Dense(_hiddenUnits);
+            Vector<double> previousCellState =
+                index > 0 ? CellStates[index - 1] : Vector<double>.Build.Dense(_hiddenUnits);
             
-            return new LSTMCellModel
-            {
-                LSTMActivations = lstmActivations,
-                ActivationVector = flattenedActivationMatrix,
-                CellVector = flattenedCellMatrix,
-                Output = output,
-                EmbeddingTransformation = Embeddings * output
-            };
+            List<double> rawData = currentCellInput.ToList();
+            rawData.AddRange(previousCellOutput);
+
+            // z_t
+            Vector<double> concatData = /*Vector<double>.Build.DenseOfEnumerable(rawData);
+
+            concatData =*/ currentCellInput; // temporary
+
+            // forget gate
+            ActivationCache[index][(int)LSTMParameter.F] = ActivationGates[index][(int)LSTMParameter.F].ForwardPropagation(
+                LSTMGates[(int)LSTMParameter.F].ForwardPropagation(concatData));/*SigmoidGate.ForwardPropagation(
+                    concatData * Weights[(int)LSTMParameter.F] + Biases[(int)LSTMParameter.F]);*/
+            
+            // input gate 1
+             ActivationCache[index][(int)LSTMParameter.I] = ActivationGates[index][(int)LSTMParameter.I] .ForwardPropagation(
+                LSTMGates[(int)LSTMParameter.I].ForwardPropagation(concatData));
+                //concatData * Weights[(int)LSTMParameter.I] + Biases[(int)LSTMParameter.I]);
+            
+            // input gate 2, c wave
+            ActivationCache[index][(int)LSTMParameter.C] = ActivationGates[index][(int)LSTMParameter.C].ForwardPropagation(
+                LSTMGates[(int)LSTMParameter.C].ForwardPropagation(concatData));
+                //concatData * Weights[(int)LSTMParameter.C] + Biases[(int)LSTMParameter.C]);
+            
+            // output gate
+            ActivationCache[index][(int)LSTMParameter.O] = ActivationGates[index][(int)LSTMParameter.O].ForwardPropagation(
+                LSTMGates[(int)LSTMParameter.O].ForwardPropagation(concatData));
+                    //concatData * Weights[(int)LSTMParameter.O] + Biases[(int)LSTMParameter.O]);
+
+            CellStates[index] =
+                    ActivationCache[index][(int)LSTMParameter.F].PointwiseMultiply(previousCellState) +
+                    ActivationCache[index][(int)LSTMParameter.I].PointwiseMultiply(ActivationCache[index][(int)LSTMParameter.C]);
+
+           HiddenStates[index] =
+               ActivationCache[index][(int)LSTMParameter.O]
+                   .PointwiseMultiply(
+                        ActivationGates[index][(int)LSTMParameter.V].ForwardPropagation(CellStates[index]));
         }
 
-        public Vector<double> OutputCell(Vector<double> activation)
+        public Vector<double> LSTMBackwardCell(Vector<double> previousError, int index)
         {
-            return ActivationFunctions.Softmax(activation * Weights[(int)LSTMWeight.H]);
+            Vector<double> previousCellOutput = 
+                index > 0 ? HiddenStates[index - 1] : Vector<double>.Build.Dense(_hiddenUnits);
+            Vector<double> previousCellState =
+                index > 0 ? CellStates[index - 1] : Vector<double>.Build.Dense(_hiddenUnits);
+            
+            Vector<double> hiddenStateGradient = previousError;
+            Vector<double> outputGateGradient = hiddenStateGradient.PointwiseMultiply(
+                ActivationGates[index][(int)LSTMParameter.V].ForwardPropagation(CellStates[index]));
+
+            Vector<double> cellStateGradient =
+                    ActivationCache[index][(int)LSTMParameter.O]
+                        .PointwiseMultiply(ActivationGates[index][(int)LSTMParameter.V].BackPropagation(hiddenStateGradient));//);
+            
+
+            Vector<double> cwaveGradient = cellStateGradient.PointwiseMultiply(ActivationCache[index][(int)LSTMParameter.I]); // fed into c activation gradient
+            Vector<double> iGradient = cellStateGradient.PointwiseMultiply(ActivationCache[index][(int)LSTMParameter.C]); // fed into i activation gradient
+            Vector<double> fGradient = cellStateGradient.PointwiseMultiply(previousCellState);
+
+            //
+            // !!ATTENTION!! THERE NEEDS TO BE SEPARATE TANH/SIGMOID GATES FOR EACH LSTM GATE YOU FUCKING MORON
+            // DONT YOU FUCKING KNOW THAT THEIR BACKPROP RELIES ON THE PREVIOUS INPUT?????
+
+            // df/da_f
+            Vector<double> F_ActivationGradient = LSTMGates[(int)LSTMParameter.F].BackPropagation(
+                ActivationGates[index][(int)LSTMParameter.F].BackPropagation(fGradient));/*cellStateGradient.PointwiseMultiply(
+                (index > 0 ? CellStates[index - 1] : Vector<double>.Build.Dense(_hiddenUnits)).PointwiseMultiply(
+                    ActivationCache[index][(int)LSTMParameter.F]).PointwiseMultiply(
+                            1 - ActivationCache[index][(int)LSTMParameter.F]));*/
+
+            // df/da_i
+            Vector<double> I_ActivationGradient = LSTMGates[(int)LSTMParameter.I].BackPropagation(
+                ActivationGates[index][(int)LSTMParameter.I].BackPropagation(iGradient));/*cellStateGradient.PointwiseMultiply(
+                /*ActivationCache[index][(int)LSTMParameter.C]).PointwiseMultiply(
+                  ActivationCache[index][(int)LSTMParameter.I].PointwiseMultiply(
+                            1 - ActivationCache[index][(int)LSTMParameter.I]));*/
+
+            // df/da_o
+            Vector<double> O_ActivationGradient = LSTMGates[(int)LSTMParameter.O].BackPropagation( //passing
+                ActivationGates[index][(int)LSTMParameter.O].BackPropagation(outputGateGradient));/*hiddenStateGradient.PointwiseMultiply(
+                //TanhGate.ForwardPropagation(CellStates[index])).PointwiseMultiply(
+                    //SigmoidGate.BackPropagation(ActivationCache[index][(int)LSTMParameter.O]));*/
+            
+            // df/da_c
+            Vector<double> C_ActivationGradient = LSTMGates[(int)LSTMParameter.C].BackPropagation(
+                ActivationGates[index][(int)LSTMParameter.C].BackPropagation(cwaveGradient));//cwaveGradient));/*cellStateGradient.PointwiseMultiply(
+               // ActivationCache[index][(int)LSTMParameter.I]).PointwiseMultiply(
+               //       1 - ActivationCache[index][(int)LSTMParameter.C]);
+
+
+            return F_ActivationGradient +
+                   I_ActivationGradient +
+                   O_ActivationGradient +
+                   C_ActivationGradient;
         }
     }
 }

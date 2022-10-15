@@ -13,10 +13,13 @@ namespace NeuroSharp
         [JsonProperty]
         private Adam _adam;
 
-        public FullyConnectedLayer(int outputSize)
+        public FullyConnectedLayer(int outputSize, int? inputSize = null)
         {
             LayerType = LayerType.FullyConnected;
             OutputSize = outputSize;
+
+            if (inputSize != null)
+                InputSize = inputSize.Value;
         }
         
         //json constructor

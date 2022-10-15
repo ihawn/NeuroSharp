@@ -17,8 +17,41 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
         public void Setup()
         {
         }
-
+        
+        
         [Test]
+        public void LSTM_BackPropagation_ReturnsCorrectInputGradient()
+        {
+            int vocabSize = 1;
+            int sequenceLength = 1; //don't change till we get all the gradients correct for just a single cell
+            int hiddenSize = 2;
+
+            Vector<double> truthY = Vector<double>.Build.Random(2);//vocabSize);
+            Vector<double> testX = Vector<double>.Build.Random(3);//sequenceLength * vocabSize);
+
+            Network network = new Network(27 * 12);
+            network.Add(new LongShortTermMemoryLayer(vocabSize, vocabSize, hiddenSize, sequenceLength));
+            network.Add(new ActivationLayer(ActivationType.Tanh));
+            network.Add(new SoftmaxActivationLayer());
+            network.UseLoss(LossType.CategoricalCrossentropy);
+
+            double networkLoss(Vector<double> x)
+            {
+                x = network.Predict(x);
+                return network.Loss(truthY, x);
+            }
+
+            Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, testX);
+            Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
+            for (int k = network.Layers.Count - 1; k >= 0; k--)
+            {
+                testGradient = network.Layers[k].BackPropagation(testGradient);
+            }
+
+            Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
+        } 
+
+       /* [Test]
         public void LSTM_ForwardPropagation_ReturnsCorrectResult_NoBias()
         {
             Vector<double> x = Vector<double>.Build.DenseOfArray(
@@ -122,11 +155,11 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
 
             LongShortTermMemoryLayer layer = new LongShortTermMemoryLayer(2, 27, 3, 12);
             layer.InitializeParameters();
-            layer.Weights[(int)LSTMWeight.F] = f;
-            layer.Weights[(int)LSTMWeight.I] = i;
-            layer.Weights[(int)LSTMWeight.O] = o;
-            layer.Weights[(int)LSTMWeight.G] = g;
-            layer.Weights[(int)LSTMWeight.H] = h;
+            layer.Weights[(int)LSTMParameter.F] = f;
+            layer.Weights[(int)LSTMParameter.I] = i;
+            layer.Weights[(int)LSTMParameter.O] = o;
+            layer.Weights[(int)LSTMParameter.G] = g;
+            layer.Weights[(int)LSTMParameter.H] = h;
             layer.Embeddings = embedding;
 
             Vector<double> output = layer.ForwardPropagation(x);
@@ -376,228 +409,200 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
                 Assert.IsTrue((expectedOutputCache[j] - output.SubVector(j * 27, 27)).L2Norm() < 0.000001);
             }
 
-        }
+        }*/
 
-        [Test]
-        public void LSTM_BackPropagation_ReturnsCorrectInputGradient()
-        {
-            Vector<double> truthY = Vector<double>.Build.Random(27 * 11);
-            Vector<double> testX = Vector<double>.Build.Random(27 * 12);
+       /*[Test]
+       public void LSTM_BackPropagation_ReturnsCorrectHGradient()
+       {
+           Vector<double> testX = Vector<double>.Build.DenseOfArray(
+               new double[]
+               {
+                   0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                   0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+               }
+           );
 
-            Network network = new Network(27 * 12);
-            network.Add(new LongShortTermMemoryLayer(100, 27, 256, 12));
-            network.Add(new ActivationLayer(ActivationType.Tanh));
-            network.Add(new SoftmaxActivationLayer());
-            network.UseLoss(LossType.CategoricalCrossentropy);
+           Matrix<double> f = Matrix<double>.Build.DenseOfArray(
+               new double[,]
+               {
+                   {  0.00369, -0.00459, -0.02139 },
+                   {  0.00821, -0.00624, -0.00969 },
+                   { -0.02060, -0.00321, -0.01258 },
+                   { -0.00320, -0.00944, -0.00838 },
+                   {  0.00184, -0.00986, -0.00441 }
+               }
+           );
+           Matrix<double> i = Matrix<double>.Build.DenseOfArray(
+               new double[,]
+               {
+                   {  0.00323,  0.00266,  0.00947 },
+                   {  0.00788,  0.00640,  0.00870 },
+                   { -0.00842,  0.00287,  0.01174 },
+                   { -0.00170, -0.01302,  0.01620 },
+                   {  0.00339, -0.00363, -0.00567 }
+               }
+           );
+           Matrix<double> o = Matrix<double>.Build.DenseOfArray(
+               new double[,]
+               {
+                   { -0.00512,  0.01668,  0.00025 },
+                   {  0.01304,  0.00636,  0.01062 },
+                   {  0.01955, -0.00476, -0.00635 },
+                   {  0.00303, -0.00738, -0.00394 },
+                   {  0.01261, -0.00082, -0.00015 }
+               }
+           );
+           Matrix<double> g = Matrix<double>.Build.DenseOfArray(
+               new double[,]
+               {
+                   { -0.00190, -0.01087, -0.00846 },
+                   { -0.02060,  0.01022, -0.00349 },
+                   { -0.01050,  0.00655, -0.01520},
+                   {  0.00093, -0.00268,  0.00476 },
+                   { -0.00396,  0.00781, -0.00913 }
+               }
+           );
+           Matrix<double> h = Matrix<double>.Build.DenseOfArray(
+               new double[,]
+               {
+                   { 0.00518, -0.00018, 0.0088, 0.00516, -0.00762, 0.01436, -0.00183, -0.00083, 0.00858, 0.00957, 0.01487, 0.00088, -0.01623, 0.00059, -0.00202, 0.00954, 0.00983, 0.01052, 0.00800, -0.01281, -0.01707, 0.01194, 0.01298, -0.00067, -0.01300, 0.01241, -0.01878 },
+                   { -0.01114, -0.00144, -0.00913, -0.00431, 0.00060, 0.01975, 0.00705, -0.00306, 0.00531, -0.00320, 0.00012, -0.00340, 0.00075, -0.01135, 0.00798, -0.00135, -0.00044, -0.01717, 0.00539, 0.00881, 0.00695, 0.00797, 0.01011, 0.01049, -0.00035, 0.00209, -0.0042 },
+                   { 0.00231, -0.00798, -0.00101, -0.00618, 0.00347, -0.00104, -0.00575, 0.01600, -0.00687, -0.01311, -0.00595, 0.0265, -0.01021, 0.00039, -0.00013, 0.00695, 0.00410, 0.01390, 0.00802, -0.00980, -0.00326, -0.00178, 0.00595, -0.00684, -0.02036, -0.02114, 0.00759 }
+               }
+           );
+           Matrix<double> embedding = Matrix<double>.Build.DenseOfArray(
+               new double[,]
+               {
+                   { 0.00765, 0.00381 },
+                   { 0.00438, -0.00469 },
+                   { -0.01251, -0.01121 },
+                   { 0.00122, 0.00164 },
+                   {-0.01682, 0.00109 },
+                   { 0.00041, -0.00474 },
+                   { -0.00721, -0.00118 },
+                   { 0.00631, -0.00018 },
+                   { 0.00080, 0.00365 },
+                   { -0.00865, -0.00426 },
+                   { -0.01204, 0.00921 },
+                   {-0.01185, -0.00608 },
+                   { -0.00817, -0.01479 },
+                   { -0.00804, 0.01047 },
+                   { 0.01736, 0.00797 },
+                   { 0.01287, -0.00545 },
+                   {-0.00489, 0.00967 },
+                   {-0.01099, 0.00245 },
+                   {-0.01064, 0.00368 },
+                   {-0.00782, -0.00211 },
+                   {-0.00709, 0.01965 },
+                   {-0.00265, -0.00560 },
+                   { 0.00970, -0.00706 },
+                   { 0.00174, -0.00793 },
+                   {-0.00826, 0.00088 },
+                   {-0.00581, -0.01148 },
+                   {-0.00061, -0.00164 }
+               }
+           ).Transpose();
+           
+           
+           
+           int inputUnits = 1;
+           int outputUnits = 2;
+           int hiddenUnits = 1;
+           int sequenceLength = 2;
+           
+           Vector<double> truthY = Vector<double>.Build.Random(outputUnits * (sequenceLength - 1));
+           Vector<double> testX = Vector<double>.Build.Random(outputUnits * sequenceLength);
+           Vector<double> testWeight = Vector<double>.Build.Random(hiddenUnits * outputUnits);
 
-            double networkLoss(Vector<double> x)
-            {
-                x = network.Predict(x);
-                return network.Loss(truthY, x);
-            }
+           Network network = new Network(outputUnits * sequenceLength);
+           network.Add(new LongShortTermMemoryLayer(inputUnits, outputUnits, hiddenUnits, sequenceLength));
+           network.Add(new ActivationLayer(ActivationType.Tanh));
+           network.Add(new SoftmaxActivationLayer());
+           network.UseLoss(LossType.CategoricalCrossentropy);
+           
+           LongShortTermMemoryLayer lstmLayer = (LongShortTermMemoryLayer)network.Layers[0];
+           lstmLayer.Weights[(int)LSTMWeight.F] = f;
+           lstmLayer.Weights[(int)LSTMWeight.I] = i;
+           lstmLayer.Weights[(int)LSTMWeight.O] = o;
+           lstmLayer.Weights[(int)LSTMWeight.G] = g;
+           lstmLayer.Weights[(int)LSTMWeight.H] = h;
+           lstmLayer.Embeddings = embedding;
 
-            Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLoss, testX);
-            Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
-            for (int k = network.Layers.Count - 1; k >= 0; k--)
-            {
-                testGradient = network.Layers[k].BackPropagation(testGradient);
-            }
+           double networkLossHWeightInput(Vector<double> x)
+           {
+               LongShortTermMemoryLayer lstm = (LongShortTermMemoryLayer)network.Layers[0];
+               lstm.Weights[(int)LSTMParameter.H] = MathUtils.Unflatten(x, hiddenUnits, outputUnits);
+               x = network.Predict(testX);
+               return network.Loss(truthY, x);
+           }
 
-            Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
-        }
-        
-        [Test]
-        public void LSTM_BackPropagation_ReturnsCorrectHGradient()
-        {
-           /* Vector<double> testX = Vector<double>.Build.DenseOfArray(
-                new double[]
-                {
-                    0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                    0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
-                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
-                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
-                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
-                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
-                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
-                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
-                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
-                }
-            );
+           Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLossHWeightInput, testWeight);
+           Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
+           Vector<double> explicitWeightGradient = null;
+           for (int k = network.Layers.Count - 1; k >= 0; k--)
+           {
+               testGradient = network.Layers[k].BackPropagation(testGradient);
+               if (k == 0)
+               {
+                   LongShortTermMemoryLayer lstm = (LongShortTermMemoryLayer)network.Layers[0];
+                   explicitWeightGradient = MathUtils.Flatten(lstm.WeightGradients[(int)LSTMParameter.H]);
+               }
+           }
 
-            Matrix<double> f = Matrix<double>.Build.DenseOfArray(
-                new double[,]
-                {
-                    {  0.00369, -0.00459, -0.02139 },
-                    {  0.00821, -0.00624, -0.00969 },
-                    { -0.02060, -0.00321, -0.01258 },
-                    { -0.00320, -0.00944, -0.00838 },
-                    {  0.00184, -0.00986, -0.00441 }
-                }
-            );
-            Matrix<double> i = Matrix<double>.Build.DenseOfArray(
-                new double[,]
-                {
-                    {  0.00323,  0.00266,  0.00947 },
-                    {  0.00788,  0.00640,  0.00870 },
-                    { -0.00842,  0.00287,  0.01174 },
-                    { -0.00170, -0.01302,  0.01620 },
-                    {  0.00339, -0.00363, -0.00567 }
-                }
-            );
-            Matrix<double> o = Matrix<double>.Build.DenseOfArray(
-                new double[,]
-                {
-                    { -0.00512,  0.01668,  0.00025 },
-                    {  0.01304,  0.00636,  0.01062 },
-                    {  0.01955, -0.00476, -0.00635 },
-                    {  0.00303, -0.00738, -0.00394 },
-                    {  0.01261, -0.00082, -0.00015 }
-                }
-            );
-            Matrix<double> g = Matrix<double>.Build.DenseOfArray(
-                new double[,]
-                {
-                    { -0.00190, -0.01087, -0.00846 },
-                    { -0.02060,  0.01022, -0.00349 },
-                    { -0.01050,  0.00655, -0.01520},
-                    {  0.00093, -0.00268,  0.00476 },
-                    { -0.00396,  0.00781, -0.00913 }
-                }
-            );
-            Matrix<double> h = Matrix<double>.Build.DenseOfArray(
-                new double[,]
-                {
-                    { 0.00518, -0.00018, 0.0088, 0.00516, -0.00762, 0.01436, -0.00183, -0.00083, 0.00858, 0.00957, 0.01487, 0.00088, -0.01623, 0.00059, -0.00202, 0.00954, 0.00983, 0.01052, 0.00800, -0.01281, -0.01707, 0.01194, 0.01298, -0.00067, -0.01300, 0.01241, -0.01878 },
-                    { -0.01114, -0.00144, -0.00913, -0.00431, 0.00060, 0.01975, 0.00705, -0.00306, 0.00531, -0.00320, 0.00012, -0.00340, 0.00075, -0.01135, 0.00798, -0.00135, -0.00044, -0.01717, 0.00539, 0.00881, 0.00695, 0.00797, 0.01011, 0.01049, -0.00035, 0.00209, -0.0042 },
-                    { 0.00231, -0.00798, -0.00101, -0.00618, 0.00347, -0.00104, -0.00575, 0.01600, -0.00687, -0.01311, -0.00595, 0.0265, -0.01021, 0.00039, -0.00013, 0.00695, 0.00410, 0.01390, 0.00802, -0.00980, -0.00326, -0.00178, 0.00595, -0.00684, -0.02036, -0.02114, 0.00759 }
-                }
-            );
-            Matrix<double> embedding = Matrix<double>.Build.DenseOfArray(
-                new double[,]
-                {
-                    { 0.00765, 0.00381 },
-                    { 0.00438, -0.00469 },
-                    { -0.01251, -0.01121 },
-                    { 0.00122, 0.00164 },
-                    {-0.01682, 0.00109 },
-                    { 0.00041, -0.00474 },
-                    { -0.00721, -0.00118 },
-                    { 0.00631, -0.00018 },
-                    { 0.00080, 0.00365 },
-                    { -0.00865, -0.00426 },
-                    { -0.01204, 0.00921 },
-                    {-0.01185, -0.00608 },
-                    { -0.00817, -0.01479 },
-                    { -0.00804, 0.01047 },
-                    { 0.01736, 0.00797 },
-                    { 0.01287, -0.00545 },
-                    {-0.00489, 0.00967 },
-                    {-0.01099, 0.00245 },
-                    {-0.01064, 0.00368 },
-                    {-0.00782, -0.00211 },
-                    {-0.00709, 0.01965 },
-                    {-0.00265, -0.00560 },
-                    { 0.00970, -0.00706 },
-                    { 0.00174, -0.00793 },
-                    {-0.00826, 0.00088 },
-                    {-0.00581, -0.01148 },
-                    {-0.00061, -0.00164 }
-                }
-            ).Transpose();*/
-            
-            
-            
-            int inputUnits = 1;
-            int outputUnits = 2;
-            int hiddenUnits = 1;
-            int sequenceLength = 2;
-            
-            Vector<double> truthY = Vector<double>.Build.Random(outputUnits * (sequenceLength - 1));
-            Vector<double> testX = Vector<double>.Build.Random(outputUnits * sequenceLength);
-            Vector<double> testWeight = Vector<double>.Build.Random(hiddenUnits * outputUnits);
+           Assert.IsTrue((finiteDiffGradient - explicitWeightGradient).L2Norm() < 0.00001);
+       }
+       
+       [Test]
+       public void LSTM_BackPropagation_ReturnsCorrectFGradient()
+       {
+           int inputUnits = 2;
+           int outputUnits = 2;
+           int hiddenUnits = 2;
+           int sequenceLength = 3;
+           
+           Vector<double> truthY = Vector<double>.Build.Random(outputUnits * (sequenceLength - 1));
+           Vector<double> testX = Vector<double>.Build.Random(outputUnits * sequenceLength);
+           Vector<double> testWeight = Vector<double>.Build.Random((inputUnits + hiddenUnits) * hiddenUnits);
 
-            Network network = new Network(outputUnits * sequenceLength);
-            network.Add(new LongShortTermMemoryLayer(inputUnits, outputUnits, hiddenUnits, sequenceLength));
-            network.Add(new ActivationLayer(ActivationType.Tanh));
-            network.Add(new SoftmaxActivationLayer());
-            network.UseLoss(LossType.CategoricalCrossentropy);
-            
-            LongShortTermMemoryLayer lstmLayer = (LongShortTermMemoryLayer)network.Layers[0];
-           /* lstmLayer.Weights[(int)LSTMWeight.F] = f;
-            lstmLayer.Weights[(int)LSTMWeight.I] = i;
-            lstmLayer.Weights[(int)LSTMWeight.O] = o;
-            lstmLayer.Weights[(int)LSTMWeight.G] = g;
-            lstmLayer.Weights[(int)LSTMWeight.H] = h;
-            lstmLayer.Embeddings = embedding;*/
+           Network network = new Network(outputUnits * sequenceLength);
+           network.Add(new LongShortTermMemoryLayer(inputUnits, outputUnits, hiddenUnits, sequenceLength));
+           network.Add(new ActivationLayer(ActivationType.Tanh));
+           network.Add(new SoftmaxActivationLayer());
+           network.UseLoss(LossType.CategoricalCrossentropy);
+           
+           double networkLossFWeightInput(Vector<double> x)
+           {
+               LongShortTermMemoryLayer lstm = (LongShortTermMemoryLayer)network.Layers[0];
+               lstm.Weights[(int)LSTMParameter.F] = MathUtils.Unflatten(x, inputUnits + hiddenUnits, hiddenUnits);
+               x = network.Predict(testX);
+               return network.Loss(truthY, x);
+           }
 
-            double networkLossHWeightInput(Vector<double> x)
-            {
-                LongShortTermMemoryLayer lstm = (LongShortTermMemoryLayer)network.Layers[0];
-                lstm.Weights[(int)LSTMWeight.H] = MathUtils.Unflatten(x, hiddenUnits, outputUnits);
-                x = network.Predict(testX);
-                return network.Loss(truthY, x);
-            }
+           Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLossFWeightInput, testWeight);
+           Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
+           Vector<double> explicitWeightGradient = null;
+           for (int k = network.Layers.Count - 1; k >= 0; k--)
+           {
+               testGradient = network.Layers[k].BackPropagation(testGradient);
+               if (k == 0)
+               {
+                   LongShortTermMemoryLayer lstm = (LongShortTermMemoryLayer)network.Layers[0];
+                   explicitWeightGradient = MathUtils.Flatten(lstm.WeightGradients[(int)LSTMParameter.F]);
+               }
+           }
 
-            Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLossHWeightInput, testWeight);
-            Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
-            Vector<double> explicitWeightGradient = null;
-            for (int k = network.Layers.Count - 1; k >= 0; k--)
-            {
-                testGradient = network.Layers[k].BackPropagation(testGradient);
-                if (k == 0)
-                {
-                    LongShortTermMemoryLayer lstm = (LongShortTermMemoryLayer)network.Layers[0];
-                    explicitWeightGradient = MathUtils.Flatten(lstm.WeightGradients[(int)LSTMWeight.H]);
-                }
-            }
-
-            Assert.IsTrue((finiteDiffGradient - explicitWeightGradient).L2Norm() < 0.00001);
-        }
-        
-        [Test]
-        public void LSTM_BackPropagation_ReturnsCorrectFGradient()
-        {
-            int inputUnits = 2;
-            int outputUnits = 2;
-            int hiddenUnits = 2;
-            int sequenceLength = 3;
-            
-            Vector<double> truthY = Vector<double>.Build.Random(outputUnits * (sequenceLength - 1));
-            Vector<double> testX = Vector<double>.Build.Random(outputUnits * sequenceLength);
-            Vector<double> testWeight = Vector<double>.Build.Random((inputUnits + hiddenUnits) * hiddenUnits);
-
-            Network network = new Network(outputUnits * sequenceLength);
-            network.Add(new LongShortTermMemoryLayer(inputUnits, outputUnits, hiddenUnits, sequenceLength));
-            network.Add(new ActivationLayer(ActivationType.Tanh));
-            network.Add(new SoftmaxActivationLayer());
-            network.UseLoss(LossType.CategoricalCrossentropy);
-            
-            double networkLossFWeightInput(Vector<double> x)
-            {
-                LongShortTermMemoryLayer lstm = (LongShortTermMemoryLayer)network.Layers[0];
-                lstm.Weights[(int)LSTMWeight.F] = MathUtils.Unflatten(x, inputUnits + hiddenUnits, hiddenUnits);
-                x = network.Predict(testX);
-                return network.Loss(truthY, x);
-            }
-
-            Vector<double> finiteDiffGradient = MathUtils.FiniteDifferencesGradient(networkLossFWeightInput, testWeight);
-            Vector<double> testGradient = LossFunctions.CategoricalCrossentropyPrime(truthY, network.Predict(testX));
-            Vector<double> explicitWeightGradient = null;
-            for (int k = network.Layers.Count - 1; k >= 0; k--)
-            {
-                testGradient = network.Layers[k].BackPropagation(testGradient);
-                if (k == 0)
-                {
-                    LongShortTermMemoryLayer lstm = (LongShortTermMemoryLayer)network.Layers[0];
-                    explicitWeightGradient = MathUtils.Flatten(lstm.WeightGradients[(int)LSTMWeight.F]);
-                }
-            }
-
-            Assert.IsTrue((finiteDiffGradient - explicitWeightGradient).L2Norm() < 0.00001);
-        }
+           Assert.IsTrue((finiteDiffGradient - explicitWeightGradient).L2Norm() < 0.00001);
+       }*/
     }
 }
 
