@@ -62,12 +62,12 @@ namespace NeuroSharp
 
             for (int i = 0; i < _sequenceLength; i++)
             {
-                Vector<double> currentInput = input;//input.SubVector(i * _vocabSize, _vocabSize);
+                Vector<double> currentInput = input.SubVector(i * _vocabSize, _vocabSize);
                 LSTMForwardCell(currentInput, i);
             }
 
-            Vector<double> outputCell = HiddenStates[_sequenceLength - 1]; /* Weights[(int)LSTMParameter.V] +
-                                       // Biases[(int)LSTMParameter.V];*/
+            Vector<double> outputCell = HiddenStates[_sequenceLength - 1] * Weights[(int)LSTMParameter.V] +
+                                        Biases[(int)LSTMParameter.V]; //todo: change this to just a dense layer
 
             return outputCell;
         }
@@ -76,12 +76,12 @@ namespace NeuroSharp
         {
             if(!AccumulateGradients) DrainGradients();
 
-           // outputError = Weights[(int)LSTMParameter.V] * outputError; // passing
+            outputError = Weights[(int)LSTMParameter.V] * outputError;
 
             Vector<double> previousCellGradient = outputError;
             for (int i = _sequenceLength - 1; i >= 0; i--)
             {
-                previousCellGradient = LSTMBackwardCell(previousCellGradient, i);
+                previousCellGradient = LSTMBackwardCell(previousCellGradient, i).SubVector(0, _vocabSize);
             }
 
             return previousCellGradient;
@@ -215,29 +215,24 @@ namespace NeuroSharp
             rawData.AddRange(previousCellOutput);
 
             // z_t
-            Vector<double> concatData = /*Vector<double>.Build.DenseOfEnumerable(rawData);
+            Vector<double> concatData = Vector<double>.Build.DenseOfEnumerable(rawData);
 
-            concatData =*/ currentCellInput; // temporary
 
             // forget gate
             ActivationCache[index][(int)LSTMParameter.F] = ActivationGates[index][(int)LSTMParameter.F].ForwardPropagation(
-                LSTMGates[(int)LSTMParameter.F].ForwardPropagation(concatData));/*SigmoidGate.ForwardPropagation(
-                    concatData * Weights[(int)LSTMParameter.F] + Biases[(int)LSTMParameter.F]);*/
+                LSTMGates[(int)LSTMParameter.F].ForwardPropagation(concatData));
             
             // input gate 1
              ActivationCache[index][(int)LSTMParameter.I] = ActivationGates[index][(int)LSTMParameter.I] .ForwardPropagation(
                 LSTMGates[(int)LSTMParameter.I].ForwardPropagation(concatData));
-                //concatData * Weights[(int)LSTMParameter.I] + Biases[(int)LSTMParameter.I]);
             
             // input gate 2, c wave
             ActivationCache[index][(int)LSTMParameter.C] = ActivationGates[index][(int)LSTMParameter.C].ForwardPropagation(
                 LSTMGates[(int)LSTMParameter.C].ForwardPropagation(concatData));
-                //concatData * Weights[(int)LSTMParameter.C] + Biases[(int)LSTMParameter.C]);
             
             // output gate
             ActivationCache[index][(int)LSTMParameter.O] = ActivationGates[index][(int)LSTMParameter.O].ForwardPropagation(
                 LSTMGates[(int)LSTMParameter.O].ForwardPropagation(concatData));
-                    //concatData * Weights[(int)LSTMParameter.O] + Biases[(int)LSTMParameter.O]);
 
             CellStates[index] =
                     ActivationCache[index][(int)LSTMParameter.F].PointwiseMultiply(previousCellState) +
@@ -251,8 +246,10 @@ namespace NeuroSharp
 
         public Vector<double> LSTMBackwardCell(Vector<double> previousError, int index)
         {
-            Vector<double> previousCellOutput = 
-                index > 0 ? HiddenStates[index - 1] : Vector<double>.Build.Dense(_hiddenUnits);
+            Vector<double> nextCellOutput = 
+                index < _sequenceLength - 1 ? HiddenStates[index + 1] : Vector<double>.Build.Dense(_hiddenUnits);
+            Vector<double> nextCellState =
+                index < _sequenceLength - 1 ? CellStates[index + 1] : Vector<double>.Build.Dense(_hiddenUnits);
             Vector<double> previousCellState =
                 index > 0 ? CellStates[index - 1] : Vector<double>.Build.Dense(_hiddenUnits);
             
@@ -262,44 +259,27 @@ namespace NeuroSharp
 
             Vector<double> cellStateGradient =
                     ActivationCache[index][(int)LSTMParameter.O]
-                        .PointwiseMultiply(ActivationGates[index][(int)LSTMParameter.V].BackPropagation(hiddenStateGradient));//);
+                        .PointwiseMultiply(ActivationGates[index][(int)LSTMParameter.V].BackPropagation(hiddenStateGradient)) + 
+                            nextCellOutput; // change to next c_t gradient
             
 
-            Vector<double> cwaveGradient = cellStateGradient.PointwiseMultiply(ActivationCache[index][(int)LSTMParameter.I]); // fed into c activation gradient
-            Vector<double> iGradient = cellStateGradient.PointwiseMultiply(ActivationCache[index][(int)LSTMParameter.C]); // fed into i activation gradient
+            Vector<double> cGradient = cellStateGradient.PointwiseMultiply(ActivationCache[index][(int)LSTMParameter.I]);
+            Vector<double> iGradient = cellStateGradient.PointwiseMultiply(ActivationCache[index][(int)LSTMParameter.C]);
             Vector<double> fGradient = cellStateGradient.PointwiseMultiply(previousCellState);
-
-            //
-            // !!ATTENTION!! THERE NEEDS TO BE SEPARATE TANH/SIGMOID GATES FOR EACH LSTM GATE YOU FUCKING MORON
-            // DONT YOU FUCKING KNOW THAT THEIR BACKPROP RELIES ON THE PREVIOUS INPUT?????
-
-            // df/da_f
-            Vector<double> F_ActivationGradient = LSTMGates[(int)LSTMParameter.F].BackPropagation(
-                ActivationGates[index][(int)LSTMParameter.F].BackPropagation(fGradient));/*cellStateGradient.PointwiseMultiply(
-                (index > 0 ? CellStates[index - 1] : Vector<double>.Build.Dense(_hiddenUnits)).PointwiseMultiply(
-                    ActivationCache[index][(int)LSTMParameter.F]).PointwiseMultiply(
-                            1 - ActivationCache[index][(int)LSTMParameter.F]));*/
-
-            // df/da_i
-            Vector<double> I_ActivationGradient = LSTMGates[(int)LSTMParameter.I].BackPropagation(
-                ActivationGates[index][(int)LSTMParameter.I].BackPropagation(iGradient));/*cellStateGradient.PointwiseMultiply(
-                /*ActivationCache[index][(int)LSTMParameter.C]).PointwiseMultiply(
-                  ActivationCache[index][(int)LSTMParameter.I].PointwiseMultiply(
-                            1 - ActivationCache[index][(int)LSTMParameter.I]));*/
-
-            // df/da_o
-            Vector<double> O_ActivationGradient = LSTMGates[(int)LSTMParameter.O].BackPropagation( //passing
-                ActivationGates[index][(int)LSTMParameter.O].BackPropagation(outputGateGradient));/*hiddenStateGradient.PointwiseMultiply(
-                //TanhGate.ForwardPropagation(CellStates[index])).PointwiseMultiply(
-                    //SigmoidGate.BackPropagation(ActivationCache[index][(int)LSTMParameter.O]));*/
             
-            // df/da_c
+
+            Vector<double> F_ActivationGradient = LSTMGates[(int)LSTMParameter.F].BackPropagation(
+                ActivationGates[index][(int)LSTMParameter.F].BackPropagation(fGradient));
+            
+            Vector<double> I_ActivationGradient = LSTMGates[(int)LSTMParameter.I].BackPropagation(
+                ActivationGates[index][(int)LSTMParameter.I].BackPropagation(iGradient));
+            
+            Vector<double> O_ActivationGradient = LSTMGates[(int)LSTMParameter.O].BackPropagation(
+                ActivationGates[index][(int)LSTMParameter.O].BackPropagation(outputGateGradient));
+            
             Vector<double> C_ActivationGradient = LSTMGates[(int)LSTMParameter.C].BackPropagation(
-                ActivationGates[index][(int)LSTMParameter.C].BackPropagation(cwaveGradient));//cwaveGradient));/*cellStateGradient.PointwiseMultiply(
-               // ActivationCache[index][(int)LSTMParameter.I]).PointwiseMultiply(
-               //       1 - ActivationCache[index][(int)LSTMParameter.C]);
-
-
+                ActivationGates[index][(int)LSTMParameter.C].BackPropagation(cGradient));
+            
             return F_ActivationGradient +
                    I_ActivationGradient +
                    O_ActivationGradient +

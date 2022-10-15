@@ -22,12 +22,12 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
         [Test]
         public void LSTM_BackPropagation_ReturnsCorrectInputGradient()
         {
-            int vocabSize = 1;
-            int sequenceLength = 1; //don't change till we get all the gradients correct for just a single cell
+            int vocabSize = 3;
+            int sequenceLength = 2;
             int hiddenSize = 2;
 
-            Vector<double> truthY = Vector<double>.Build.Random(2);//vocabSize);
-            Vector<double> testX = Vector<double>.Build.Random(3);//sequenceLength * vocabSize);
+            Vector<double> truthY = Vector<double>.Build.Random(vocabSize);
+            Vector<double> testX = Vector<double>.Build.Random(sequenceLength * vocabSize);
 
             Network network = new Network(27 * 12);
             network.Add(new LongShortTermMemoryLayer(vocabSize, vocabSize, hiddenSize, sequenceLength));
