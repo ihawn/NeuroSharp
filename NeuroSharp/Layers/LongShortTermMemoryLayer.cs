@@ -1,43 +1,28 @@
-﻿using System.Runtime.CompilerServices;
-using MathNet.Numerics.LinearAlgebra;
-using NeuroSharp.Datatypes;
+﻿using MathNet.Numerics.LinearAlgebra;
 using NeuroSharp.Optimizers;
 using NeuroSharp.Enumerations;
-using NeuroSharp.Training;
-using NeuroSharp.Utilities;
 using Newtonsoft.Json;
 
 namespace NeuroSharp
 {
     public class LongShortTermMemoryLayer : ParameterizedLayer
     {
-        public Vector<double>[] StateInput { get; set; }
-        public Vector<double>[] States { get; set; }
-        public Vector<double> Outputs { get; set; }
         public Vector<double>[][] ActivationCache { get; set; }
-        public LSTMCellModel[] LstmStateCache { get; set; }
         public Vector<double>[] HiddenStates { get; set; }
         public Vector<double>[] CellStates { get; set; }
         public Vector<double>[] CellInputs { get; set; }
         public FullyConnectedLayer[] LSTMGates { get; set; }
-        public Matrix<double> Embeddings { get; set; }
-
-        private ActivationLayer _stateActivation;
-        [JsonProperty] private ActivationType _stateActivationType;
-        [JsonProperty] private Adam _adam;
-        [JsonProperty] private int _sequenceLength;
-        [JsonProperty] private int _vocabSize;
-        [JsonProperty] private int _hiddenSize;
-
-
-        private ActivationLayer[][] ActivationGates;
+        public ActivationLayer[][] ActivationGates { get; set; }
 
         private Vector<double> _nextCellStateGradient;
         private Vector<double> _nextHiddenStateGradient;
 
-        [JsonProperty] private int _inputUnits; // 100
-        [JsonProperty] private int _hiddenUnits; // 256
-        [JsonProperty] private int _outputUnits;  // vocab size
+        [JsonProperty] private Adam _adam;
+        [JsonProperty] private int _inputUnits;
+        [JsonProperty] private int _hiddenUnits;
+        [JsonProperty] private int _outputUnits;
+        [JsonProperty] private int _vocabSize;
+        [JsonProperty] private int _sequenceLength;
 
         public LongShortTermMemoryLayer(int inputUnits, int outputUnits, int hiddenUnits, int sequenceLength)
         {
@@ -70,8 +55,7 @@ namespace NeuroSharp
                 LSTMForwardCell(currentInput, i);
             }
 
-            Vector<double> outputCell = HiddenStates[_sequenceLength - 1] * Weights[(int)LSTMParameter.V] +
-                                        Biases[(int)LSTMParameter.V]; //todo: change this to just a dense layer
+            Vector<double> outputCell = LSTMGates[(int)LSTMParameter.V].ForwardPropagation(HiddenStates[_sequenceLength - 1]);
 
             return outputCell;
         }
@@ -83,16 +67,14 @@ namespace NeuroSharp
             _nextHiddenStateGradient = Vector<double>.Build.Dense(_hiddenUnits);
             Vector<double> outputGradient = Vector<double>.Build.Dense(_sequenceLength * _vocabSize);
 
-            outputError = Weights[(int)LSTMParameter.V] * outputError;
+            outputError = LSTMGates[(int)LSTMParameter.V].BackPropagation(outputError);
 
             Vector<double> previousCellGradient = outputError;
-            Vector<double> previousCellGradient2 = outputError;
             for (int i = _sequenceLength - 1; i >= 0; i--)
             {
                 Vector<double> rawLSTMGradient = LSTMBackwardCell(previousCellGradient, i);
                 outputGradient.SetSubVector(i * _vocabSize, _vocabSize, rawLSTMGradient);
                 previousCellGradient = rawLSTMGradient.SubVector(0, _hiddenUnits);
-                previousCellGradient2 = Weights[(int)LSTMParameter.V] * rawLSTMGradient.SubVector(0, _vocabSize);
             }
 
             return outputGradient;
@@ -100,40 +82,6 @@ namespace NeuroSharp
         
         public override void InitializeParameters()
         {
-            Weights = new Matrix<double>[]
-            {
-                Matrix<double>.Build.Dense(_inputUnits + _hiddenUnits, _hiddenUnits), // Forget gate weight
-                Matrix<double>.Build.Dense(_inputUnits + _hiddenUnits, _hiddenUnits), // Input gate weight
-                Matrix<double>.Build.Dense(_inputUnits + _hiddenUnits, _hiddenUnits), // Output gate weight
-                Matrix<double>.Build.Dense(_inputUnits + _hiddenUnits, _hiddenUnits), // Gate gate weight
-                Matrix<double>.Build.Dense(_hiddenUnits, _outputUnits), // Gate gate weight
-            };
-            WeightGradients = new Matrix<double>[]
-            {
-                Matrix<double>.Build.Dense(_inputUnits + _hiddenUnits, _hiddenUnits), // Forget gate weight gradient
-                Matrix<double>.Build.Dense(_inputUnits + _hiddenUnits, _hiddenUnits), // Input gate weight gradient
-                Matrix<double>.Build.Dense(_inputUnits + _hiddenUnits, _hiddenUnits), // Output gate weight gradient
-                Matrix<double>.Build.Dense(_inputUnits + _hiddenUnits, _hiddenUnits), // Gate gate weight gradient
-                Matrix<double>.Build.Dense(_hiddenUnits, _outputUnits), // Gate gate weight gradient
-            };
-            
-            Biases = new Vector<double>[]
-            {
-                Vector<double>.Build.Dense(_hiddenUnits),
-                Vector<double>.Build.Dense(_hiddenUnits),
-                Vector<double>.Build.Dense(_hiddenUnits),
-                Vector<double>.Build.Dense(_hiddenUnits),
-                Vector<double>.Build.Dense(_vocabSize),
-            };
-            BiasGradients = new Vector<double>[]
-            {
-                Vector<double>.Build.Dense(_hiddenUnits),
-                Vector<double>.Build.Dense(_hiddenUnits),
-                Vector<double>.Build.Dense(_hiddenUnits),
-                Vector<double>.Build.Dense(_hiddenUnits),
-                Vector<double>.Build.Dense(_vocabSize),
-            };
-
             HiddenStates = new Vector<double>[_sequenceLength];
             CellStates = new Vector<double>[_sequenceLength];
             ActivationCache = new Vector<double>[_sequenceLength][];
@@ -141,31 +89,14 @@ namespace NeuroSharp
                 ActivationCache[i] = new Vector<double>[4];
 
             _adam = new Adam(InputSize, OutputSize, weightCount: 5, biasCount: 0);
-            LstmStateCache = new LSTMCellModel[_sequenceLength - 1];
-            Embeddings = Matrix<double>.Build.Random(_inputUnits, _vocabSize);
-
-            for (int n = 0; n < 5; n++)
-            {
-                for (int i = 0; i < Weights[n].RowCount; i++)
-                {
-                    for (int j = 0; j < Weights[n].ColumnCount; j++)
-                    {
-                        if(n < 4)
-                            Weights[n][i, j] = MathUtils.GetInitialWeightFromRange(-Math.Sqrt(1d / _hiddenUnits),
-                                Math.Sqrt(1d / _hiddenUnits));
-                        else
-                            Weights[n][i, j] = MathUtils.GetInitialWeightFromRange(-Math.Sqrt(1d / _outputUnits),
-                                Math.Sqrt(1d / _outputUnits));
-                    }
-                }
-            }
 
             LSTMGates = new FullyConnectedLayer[]
             {
                 new FullyConnectedLayer(inputSize: _inputUnits + _hiddenUnits, outputSize: _hiddenUnits),
                 new FullyConnectedLayer(inputSize: _inputUnits + _hiddenUnits, outputSize: _hiddenUnits),
                 new FullyConnectedLayer(inputSize: _inputUnits + _hiddenUnits, outputSize: _hiddenUnits),
-                new FullyConnectedLayer(inputSize: _inputUnits + _hiddenUnits, outputSize: _hiddenUnits)
+                new FullyConnectedLayer(inputSize: _inputUnits + _hiddenUnits, outputSize: _hiddenUnits),
+                new FullyConnectedLayer(inputSize: _hiddenUnits, outputSize: _outputUnits)
             };
             
             foreach(var layer in LSTMGates)
@@ -176,20 +107,13 @@ namespace NeuroSharp
 
         public override void DrainGradients()
         {
-            WeightGradients = new Matrix<double>[]
-            {
-                Matrix<double>.Build.Dense(_inputUnits + _hiddenUnits, _hiddenUnits), // Forget gate weight gradient
-                Matrix<double>.Build.Dense(_inputUnits + _hiddenUnits, _hiddenUnits), // Input gate weight gradient
-                Matrix<double>.Build.Dense(_inputUnits + _hiddenUnits, _hiddenUnits), // Output gate weight gradient
-                Matrix<double>.Build.Dense(_inputUnits + _hiddenUnits, _hiddenUnits), // Gate gate weight gradient
-                Matrix<double>.Build.Dense(_hiddenUnits, _outputUnits), // Gate gate weight gradient
-            };
+            foreach(var denseLayer in LSTMGates)
+                denseLayer.DrainGradients();
         }
 
         public override void SetSizeIO()
         {
-            InputSize = _vocabSize * _sequenceLength;
-            OutputSize = InputSize;
+            
         }
 
         public override void SetGradientAccumulation(bool acc)
@@ -199,19 +123,8 @@ namespace NeuroSharp
 
         public override void UpdateParameters(OptimizerType optimizerType, int sampleIndex, double learningRate)
         {
-            switch (optimizerType)
-            {
-                case OptimizerType.GradientDescent:
-                    for(int i = 0; i < Weights.Length; i++)
-                        Weights[i] -= learningRate * WeightGradients[i];
-                    for(int i = 0; i < Biases.Length; i++)
-                        Biases[i] -= learningRate * base.BiasGradients[i];
-                    break;
-
-                case OptimizerType.Adam:
-                    _adam.Step(this, sampleIndex + 1, eta: learningRate);
-                    break;
-            }
+            foreach(var denseLayer in LSTMGates)
+                denseLayer.UpdateParameters(optimizerType, sampleIndex, learningRate);
 
             if(AccumulateGradients)
                 DrainGradients();
@@ -261,18 +174,17 @@ namespace NeuroSharp
             Vector<double> previousCellState = index > 0 ? CellStates[index - 1] : Vector<double>.Build.Dense(_hiddenUnits);
 
             Vector<double> hiddenStateGradient = previousError + _nextHiddenStateGradient;
-            Vector<double> outputGateGradient = hiddenStateGradient.PointwiseMultiply(
-                ActivationGates[index][(int)LSTMParameter.V].ForwardPropagation(CellStates[index]));
 
             Vector<double> cellStateGradient =
                     ActivationCache[index][(int)LSTMParameter.O]
                         .PointwiseMultiply(ActivationGates[index][(int)LSTMParameter.V].BackPropagation(hiddenStateGradient)) + 
                             _nextCellStateGradient;
             
-
             Vector<double> cGradient = cellStateGradient.PointwiseMultiply(ActivationCache[index][(int)LSTMParameter.I]);
             Vector<double> iGradient = cellStateGradient.PointwiseMultiply(ActivationCache[index][(int)LSTMParameter.C]);
             Vector<double> fGradient = cellStateGradient.PointwiseMultiply(previousCellState);
+            Vector<double> oGradient = hiddenStateGradient.PointwiseMultiply(
+                ActivationGates[index][(int)LSTMParameter.V].ForwardPropagation(CellStates[index]));
 
             for (int i = 0; i < 4; i++)
                 LSTMGates[i].Input = CellInputs[index];
@@ -284,7 +196,7 @@ namespace NeuroSharp
                 ActivationGates[index][(int)LSTMParameter.I].BackPropagation(iGradient));
             
             Vector<double> O_ActivationGradient = LSTMGates[(int)LSTMParameter.O].BackPropagation(
-                ActivationGates[index][(int)LSTMParameter.O].BackPropagation(outputGateGradient));
+                ActivationGates[index][(int)LSTMParameter.O].BackPropagation(oGradient));
             
             Vector<double> C_ActivationGradient = LSTMGates[(int)LSTMParameter.C].BackPropagation(
                 ActivationGates[index][(int)LSTMParameter.C].BackPropagation(cGradient));
