@@ -15,25 +15,20 @@ namespace NeuroSharp
         public FullyConnectedLayer[] LSTMGates { get; set; }
         public ActivationLayer[][] ActivationGates { get; set; }
         
-        public Vector<double> temp { get; set; }
 
         private Vector<double> _nextCellStateGradient;
         private Vector<double> _nextHiddenStateGradient;
 
         [JsonProperty] private Adam _adam;
-        [JsonProperty] private int _inputUnits;
         [JsonProperty] private int _hiddenUnits;
-        [JsonProperty] private int _outputUnits;
         [JsonProperty] private int _vocabSize;
         [JsonProperty] private int _sequenceLength;
 
-        public LongShortTermMemoryLayer(int inputUnits, int outputUnits, int hiddenUnits, int sequenceLength)
+        public LongShortTermMemoryLayer(int vocabSize, int hiddenUnits, int sequenceLength)
         {
             LayerType = LayerType.LSTM;
-            _inputUnits = inputUnits;
             _hiddenUnits = hiddenUnits;
-            _outputUnits = outputUnits;
-            _vocabSize = outputUnits;
+            _vocabSize = vocabSize;
             _sequenceLength = sequenceLength;
 
             ActivationGates = new ActivationLayer[_sequenceLength][];
@@ -78,7 +73,6 @@ namespace NeuroSharp
                 Vector<double> rawLSTMGradient = LSTMBackwardCell(previousCellGradient, i);
                 outputGradient.SetSubVector(i * _vocabSize, _vocabSize, rawLSTMGradient);
                 previousCellGradient = rawLSTMGradient.SubVector(rawLSTMGradient.Count - _hiddenUnits, _hiddenUnits);
-                temp = rawLSTMGradient;
             }
 
             return outputGradient;
@@ -97,15 +91,18 @@ namespace NeuroSharp
 
             LSTMGates = new FullyConnectedLayer[]
             {
-                new FullyConnectedLayer(inputSize: _inputUnits + _hiddenUnits, outputSize: _hiddenUnits),
-                new FullyConnectedLayer(inputSize: _inputUnits + _hiddenUnits, outputSize: _hiddenUnits),
-                new FullyConnectedLayer(inputSize: _inputUnits + _hiddenUnits, outputSize: _hiddenUnits),
-                new FullyConnectedLayer(inputSize: _inputUnits + _hiddenUnits, outputSize: _hiddenUnits),
-                new FullyConnectedLayer(inputSize: _hiddenUnits, outputSize: _outputUnits)
+                new FullyConnectedLayer(inputSize: _vocabSize + _hiddenUnits, outputSize: _hiddenUnits),
+                new FullyConnectedLayer(inputSize: _vocabSize + _hiddenUnits, outputSize: _hiddenUnits),
+                new FullyConnectedLayer(inputSize: _vocabSize + _hiddenUnits, outputSize: _hiddenUnits),
+                new FullyConnectedLayer(inputSize: _vocabSize + _hiddenUnits, outputSize: _hiddenUnits),
+                new FullyConnectedLayer(inputSize: _hiddenUnits, outputSize: _vocabSize)
             };
-            
-            foreach(var layer in LSTMGates)
+
+            foreach (var layer in LSTMGates)
+            {
                 layer.InitializeParameters();
+                layer.SetGradientAccumulation(true);
+            }
 
             CellInputs = new Vector<double>[_sequenceLength];
         }
@@ -163,9 +160,6 @@ namespace NeuroSharp
             ActivationCache[index][(int)LSTMParameter.O] = ActivationGates[index][(int)LSTMParameter.O].ForwardPropagation(
                 LSTMGates[(int)LSTMParameter.O].ForwardPropagation(concatData));
 
-          /* var t = index == 0 ? Vector<double>.Build.Dense(1) :
-                Vector<double>.Build.DenseOfArray(new double[] { -2.23 });*/
-
            PreviousCellStates[index] = index > 0 ? CellStates[index - 1] : Vector<double>.Build.Dense(_hiddenUnits) + 1;
 
            CellStates[index] =
@@ -180,7 +174,7 @@ namespace NeuroSharp
 
         public Vector<double> LSTMBackwardCell(Vector<double> previousError, int index)
         {
-            Vector<double> hiddenStateGradient = previousError;// + _nextHiddenStateGradient;
+            Vector<double> hiddenStateGradient = previousError;
 
             Vector<double> cellStateGradient =
                     ActivationCache[index][(int)LSTMParameter.O]

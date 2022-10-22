@@ -28,6 +28,7 @@ namespace NeuroSharp.Utilities
         }
         public static Matrix<double> Unflatten(Vector<double> vec, int rowCount, int colCount)
         {
+            //todo: make sure row/column relationship here is correct
             return Matrix<double>.Build.DenseOfColumnMajor(rowCount, colCount, vec);
         }
         public static double GetInitialWeightFromInputSize(int layerInputSize)
@@ -40,7 +41,7 @@ namespace NeuroSharp.Utilities
             Random rand = new Random();
             return rand.NextDouble() * (upperBound - lowerBound) + lowerBound;
         }
-        public static Vector<double> FiniteDifferencesGradient(Func<Vector<double>, double> f, Vector<double> x, double h = 0.000001f)
+        public static Vector<double> FiniteDifferencesGradient(Func<Vector<double>, double> f, Vector<double> x, double h = 0.000001)
         {
             Vector<double> grad = Vector<double>.Build.Dense(x.Count);
             Vector<double> hvec = Vector<double>.Build.Dense(x.Count);

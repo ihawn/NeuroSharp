@@ -85,3 +85,5 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
         }
     }
 }
+
+//todo: verify weights for all trainable layers are not transposed
