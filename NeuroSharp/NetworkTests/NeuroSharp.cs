@@ -590,8 +590,8 @@ namespace NeuroSharp
             ///
 
             ///
-            int maxWordCount = 256;
-            int maxReviewLength = 7;
+            int maxWordCount = 512;
+            int maxReviewLength = 25;
             
             List<string> allWords = reviews.Select(r => r.Split(' ')
                 .ToList()).SelectMany(x => x).ToList();

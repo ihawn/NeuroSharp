@@ -115,7 +115,8 @@ namespace NeuroSharp
 
         public override void SetSizeIO()
         {
-            
+            InputSize = _vocabSize * _sequenceLength;
+            OutputSize = _vocabSize; //todo: add option for sequence to sequence lstm
         }
 
         public override void SetGradientAccumulation(bool acc)
