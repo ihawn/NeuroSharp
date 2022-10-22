@@ -22,9 +22,9 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
         [Test]
         public void LSTM_BackPropagation_ReturnsCorrectInputGradient()
         {
-            int vocabSize = 3;
+            int vocabSize = 2;
             int sequenceLength = 2;
-            int hiddenSize = 2;
+            int hiddenSize = 1;
 
             Vector<double> truthY = Vector<double>.Build.Random(vocabSize);
             Vector<double> testX = Vector<double>.Build.Random(sequenceLength * vocabSize);
@@ -47,6 +47,8 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
             {
                 testGradient = network.Layers[k].BackPropagation(testGradient);
             }
+
+            var temp = (network.Layers[0] as LongShortTermMemoryLayer).temp;
 
             Assert.IsTrue((finiteDiffGradient - testGradient).L2Norm() < 0.00001);
         } 
