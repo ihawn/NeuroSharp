@@ -31,7 +31,7 @@ namespace NeuroSharp
             //RNN_Sentence_Prediction(101, 20, 5, 20);
             //RNN_Name_Generator(epochs: 5, promptLength: 2, nameLengthAfterPrompt: 15, trainingSize: 20000);
             //RNN_Sequence_Prediction(20000, 10, 5, 3);
-            RNN_Sentiment_Analysis(15, 200, 100);
+            RNN_Sentiment_Analysis(20, 3000, 300); //todo: dimension transform layer
 
             #region testing
 
@@ -590,7 +590,7 @@ namespace NeuroSharp
             ///
 
             ///
-            int maxWordCount = 512;
+            int maxWordCount = 32;
             int maxReviewLength = 25;
             
             List<string> allWords = reviews.Select(r => r.Split(' ')
@@ -652,7 +652,7 @@ namespace NeuroSharp
             
             ///
             Network network = new Network(maxWordCount * maxReviewLength);
-            network.Add(new LongShortTermMemoryLayer(maxWordCount, 64, maxReviewLength));
+            network.Add(new LongShortTermMemoryLayer(maxWordCount, 96, maxReviewLength));
             network.Add(new ActivationLayer(ActivationType.Tanh));
             network.Add(new FullyConnectedLayer(2));
             network.Add(new SoftmaxActivationLayer());

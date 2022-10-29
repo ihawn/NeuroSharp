@@ -212,3 +212,4 @@ namespace NeuroSharp
         }
     }
 }
+//todo: add bidirectional aspect

@@ -11,6 +11,9 @@
     <Compile Remove="Data Structures\**" />
     <EmbeddedResource Remove="Data Structures\**" />
     <None Remove="Data Structures\**" />
+    <Compile Remove="NeurosharpDemo\**" />
+    <EmbeddedResource Remove="NeurosharpDemo\**" />
+    <None Remove="NeurosharpDemo\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,11 +26,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Blazor.Extensions.Canvas" Version="1.1.1" />
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
     <PackageReference Include="MathNet.Numerics.MKL.Win-x64" Version="3.0.0" />
     <PackageReference Include="MathNet.Numerics.Providers.CUDA" Version="5.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.JSInterop">
+      <HintPath>..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\6.0.2\Microsoft.JSInterop.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

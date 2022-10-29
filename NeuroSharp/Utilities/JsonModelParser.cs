@@ -95,6 +95,7 @@ namespace NeuroSharp.Utilities
                     ) : null
             ).ToList();
 
+            //todo: add support for lstm layer
             //todo: support model saving without the intention to train further (will reduce model size)
             
             foreach (Layer layer in layers)

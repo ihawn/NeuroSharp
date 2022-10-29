@@ -1,0 +1,181 @@
+﻿@page "/counter"
+@using Blazor.Extensions
+@using Blazor.Extensions.Canvas
+@using Blazor.Extensions.Canvas.Canvas2D
+@using global::NeuroSharp.Training
+@using global::NeuroSharp.Utilities;
+@using global::NeuroSharp.Data;
+@using global::NeuroSharp.Enumerations;
+@using global::NeuroSharp.Datatypes;
+@using global::MathNet.Numerics;
+@using global::NeuroSharp.Training;
+@using MathNet.Numerics.LinearAlgebra;
+@using NeuroSharp
+
+@inject IJSRuntime JsRuntime;
+
+
+<div id="canvasHolder">
+    <BECanvas Width="2000" Height="2000" @ref="CanvasRef"></BECanvas>
+</div>
+
+@code{
+    
+    private Field BallField = new Field(400, 400);
+    private Canvas2DContext ctx;
+    protected BECanvasComponent CanvasRef;
+    private DateTime LastRender;
+
+    Network network;
+    List<Vector<double>> xTrain;
+    List<Vector<double>> yTrain;
+    int epochs = 500;
+    int currentEpoch = 1;
+    int nextSample = 0;
+    Vector<double> currentClassification;
+
+    int sampleTileSize = 20;
+    
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        this.ctx = await CanvasRef.CreateCanvas2DAsync();
+        await JsRuntime.InvokeAsync<object>("initRenderJS", DotNetObjectReference.Create(this));
+        await base.OnInitializedAsync();
+    }
+
+    [JSInvokable]
+    public void ResizeInBlazor(double width, double height) => BallField.Resize(width, height);
+
+    [JSInvokable]
+    public async ValueTask RenderInBlazor(float timeStamp)
+    {
+        if (BallField.Balls.Count == 0)
+        {
+            BallField.AddRandomDataPoints(75, 100, 100, 3, "purple", "orange");
+            BallField.AddDataSamplers(sampleTileSize);
+
+            Task initTask = Task.Run(() => InitializeNetwork());
+            initTask.Wait();
+        }
+        
+    #region Drawing
+        BallField.StepForward();
+        
+        double fps = 1.0 / (DateTime.Now - LastRender).TotalSeconds;
+        LastRender = DateTime.Now;
+
+        await this.ctx.BeginBatchAsync();
+        await this.ctx.ClearRectAsync(0, 0, BallField.Width, BallField.Height);
+        await this.ctx.SetFillStyleAsync("lightgray");
+        await this.ctx.FillRectAsync(0, 0, BallField.Width, BallField.Height);
+        await this.ctx.SetFontAsync("26px Segoe UI");
+        await this.ctx.SetFillStyleAsync("#FFFFFF");
+        await this.ctx.SetStrokeStyleAsync("#FFFFFF");
+        
+        
+        foreach (var ball in BallField.SampleBalls)
+        {
+            Task<Vector<double>> classificationTask = Task.Run(() => network.Predict(
+                Vector<double>.Build.DenseOfArray(new double[] { ball.X / BallField.Width, ball.Y / BallField.Height })
+            ));
+            classificationTask.Wait();
+            currentClassification = classificationTask.Result;
+            
+            string color = currentClassification.ToList().IndexOf(currentClassification.Max()) == 0 ? "#F5CAFF" : "#FFEFCA";
+            await this.ctx.BeginPathAsync();
+            await this.ctx.RectAsync(ball.X, ball.Y, sampleTileSize, sampleTileSize);
+            await this.ctx.SetFillStyleAsync(color);
+            await this.ctx.FillAsync();
+            await this.ctx.StrokeAsync();
+        }
+        
+        foreach (var ball in BallField.Balls)
+        {
+            await this.ctx.BeginPathAsync();
+            await this.ctx.ArcAsync(ball.X, ball.Y, ball.Radius, 0, 2 * Math.PI, false);
+            await this.ctx.SetFillStyleAsync(ball.Color);
+            await this.ctx.FillAsync();
+            await this.ctx.StrokeAsync();
+        }
+
+        await this.ctx.EndBatchAsync();
+
+    #endregion
+
+    #region Training
+
+        if (currentEpoch < epochs && xTrain != null)
+        {
+            Task task = Task.Run(() => SGDTrainStep(xTrain, yTrain, epochs, OptimizerType.GradientDescent, currentEpoch));
+            task.Wait();
+            StateHasChanged();
+        }
+
+
+    #endregion
+
+    }
+    
+    void SGDTrainStep(List<Vector<double>> xTrain, List<Vector<double>> yTrain, int epochs, OptimizerType optimizerType, int epoch, double learningRate = 0.005f)
+    {
+        int samples = xTrain.Count;
+        Console.WriteLine("\nEpoch: " + epoch);
+
+        double err = 0;
+        int lastProgress = 0;
+        for (int j = nextSample; j < samples; j++)
+        {
+            Vector<double> output = network.Predict(xTrain[j]);
+            err += network.Loss(yTrain[j], output);
+            
+            Task task1 = Task.Run(() => network.BackPropagate(yTrain[j], output));
+            task1.Wait();
+            
+            Task task2 = Task.Run(() => network.UpdateParameters(optimizerType, j, learningRate));
+            task2.Wait();
+
+            if (j % 100 == 0)
+            {
+                nextSample = j + 1;
+                return;
+            }
+        }
+        
+        currentEpoch++;
+
+        err /= samples;
+        Console.WriteLine("\nLoss: " + err + "\n");
+    }
+
+    void InitializeNetwork()
+    {
+        network = new Network(2);
+        network.Add(new FullyConnectedLayer(32));
+        network.Add(new ActivationLayer(ActivationType.Tanh));
+        network.Add(new FullyConnectedLayer(32));
+        network.Add(new ActivationLayer(ActivationType.Tanh));
+        network.Add(new FullyConnectedLayer(16));
+        network.Add(new ActivationLayer(ActivationType.Tanh));
+        network.Add(new FullyConnectedLayer(8));
+        network.Add(new ActivationLayer(ActivationType.Tanh));
+        network.Add(new FullyConnectedLayer(4));
+        network.Add(new ActivationLayer(ActivationType.Tanh));
+        network.Add(new FullyConnectedLayer(2));
+        network.Add(new SoftmaxActivationLayer());
+        network.UseLoss(LossType.BinaryCrossentropy);
+            
+        network.ParameterizedLayers = network.Layers.Where(l => l is ParameterizedLayer).Select(l => (ParameterizedLayer)l).ToList();
+
+        xTrain = new List<Vector<double>>();
+        yTrain = new List<Vector<double>>();
+        foreach (DataPoint datapoint in BallField.Balls)
+        {
+            Vector<double> normalizedDatapoint = Vector<double>.Build.DenseOfArray(new double[] { datapoint.X / BallField.Width, datapoint.Y / BallField.Height });
+            xTrain.Add(normalizedDatapoint);
+            yTrain.Add(Vector<double>.Build.DenseOfArray(
+                datapoint.Color == "purple" ? new double[] { 1, 0 } : new double[] { 0, 1 }
+                ));
+        }
+    }
+}
