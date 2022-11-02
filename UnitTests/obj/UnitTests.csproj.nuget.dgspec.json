@@ -47,6 +47,10 @@
               "target": "Package",
               "version": "[1.1.1, )"
             },
+            "CsvHelper": {
+              "target": "Package",
+              "version": "[30.0.0, )"
+            },
             "MathNet.Numerics": {
               "target": "Package",
               "version": "[5.0.0, )"

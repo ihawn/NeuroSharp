@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "p4RYj9Bv8RoNKuUozITns7/iLQl+9R4pMegrn0hWogKyix4eZfbsB9mmvhqlpW98wpSiElkjy0UKdEXaFYk4vA==",
+  "dgSpecHash": "uvyO/S34HJrURJtShE5+VYNcNix727hm0JxZXivP5Qnx5aR11epheJvlZh9BNlt7BArnctaVEBIzuQP2Y0UuLw==",
   "success": true,
   "projectFilePath": "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\NeurosharpBlazorWASM\\NeurosharpBlazorWASM.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Isaac\\.nuget\\packages\\blazor.extensions.canvas\\1.1.1\\blazor.extensions.canvas.1.1.1.nupkg.sha512",
+    "C:\\Users\\Isaac\\.nuget\\packages\\csvhelper\\30.0.0\\csvhelper.30.0.0.nupkg.sha512",
     "C:\\Users\\Isaac\\.nuget\\packages\\mathnet.numerics\\5.0.0\\mathnet.numerics.5.0.0.nupkg.sha512",
     "C:\\Users\\Isaac\\.nuget\\packages\\mathnet.numerics.mkl.win-x64\\3.0.0\\mathnet.numerics.mkl.win-x64.3.0.0.nupkg.sha512",
     "C:\\Users\\Isaac\\.nuget\\packages\\mathnet.numerics.providers.cuda\\5.0.0\\mathnet.numerics.providers.cuda.5.0.0.nupkg.sha512",

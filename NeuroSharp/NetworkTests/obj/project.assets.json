@@ -22,6 +22,15 @@
           "buildMultiTargeting/Blazor.Extensions.Canvas.props": {}
         }
       },
+      "CsvHelper/30.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/CsvHelper.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/CsvHelper.dll": {}
+        }
+      },
       "MathNet.Numerics/5.0.0": {
         "type": "package",
         "compile": {
@@ -262,6 +271,7 @@
         "framework": ".NETCoreApp,Version=v6.0",
         "dependencies": {
           "Blazor.Extensions.Canvas": "1.1.1",
+          "CsvHelper": "30.0.0",
           "MathNet.Numerics": "5.0.0",
           "MathNet.Numerics.MKL.Win-x64": "3.0.0",
           "MathNet.Numerics.Providers.CUDA": "5.0.0",
@@ -295,6 +305,30 @@
         "lib/netstandard2.1/Blazor.Extensions.Canvas.dll",
         "lib/netstandard2.1/Blazor.Extensions.Canvas.pdb",
         "staticwebassets/blazor.extensions.canvas.js"
+      ]
+    },
+    "CsvHelper/30.0.0": {
+      "sha512": "0VXyouC1g43bXtEJRReJfB5C3RwxZOUSk9FnNv8/47PptzrVYKrEi/H3PP14+MvP+mLCnDiAtOXbIwvnEMSPxw==",
+      "type": "package",
+      "path": "csvhelper/30.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "csvhelper.30.0.0.nupkg.sha512",
+        "csvhelper.nuspec",
+        "lib/net45/CsvHelper.dll",
+        "lib/net45/CsvHelper.xml",
+        "lib/net47/CsvHelper.dll",
+        "lib/net47/CsvHelper.xml",
+        "lib/net5.0/CsvHelper.dll",
+        "lib/net5.0/CsvHelper.xml",
+        "lib/net6.0/CsvHelper.dll",
+        "lib/net6.0/CsvHelper.xml",
+        "lib/netstandard2.0/CsvHelper.dll",
+        "lib/netstandard2.0/CsvHelper.xml",
+        "lib/netstandard2.1/CsvHelper.dll",
+        "lib/netstandard2.1/CsvHelper.xml"
       ]
     },
     "MathNet.Numerics/5.0.0": {

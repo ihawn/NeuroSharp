@@ -1,68 +1,99 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using System.IO;
 using System.Drawing;
+using System.Globalization;
+using CsvHelper;
 using NeuroSharp.Enumerations;
 using NeuroSharp.Datatypes;
+using NeuroSharp.Models;
 
 namespace NeuroSharp.Data
 {
-    public static class ImagePreprocessor
+    public static class ImagePreprocessor //todo: refactor
     {
-        public static List<NetworkFormattedImage> ReadImages(string path, ImagePreprocessingType imagePreprocessingType, int? expectedWidth = null, int? expectedHeight = null)
+        public static ImageDataAggregate GetImageData(string path, bool isColor = true, int? expectedWidth = null, 
+            int? expectedHeight = null, int ? take = null)
         {
-            switch(imagePreprocessingType)
+            string[] subDirectories = Directory.GetDirectories(path);
+
+            List<NetworkFormattedImage[]> matrixOfImages = new List<NetworkFormattedImage[]>();
+
+            for (int i = 0; i < subDirectories.Length; i++)
             {
-                case ImagePreprocessingType.ParentFolderContainsLabel:
+                Console.WriteLine("Processing Image Data: " + (i+1) + "/" + subDirectories.Length);
 
-                    string[] subDirectories = Directory.GetDirectories(path);
+                Vector<double> label = Vector<double>.Build.Dense(subDirectories.Length);
+                label[i] = 1;
 
-                    List<NetworkFormattedImage[]> matrixOfImages = new List<NetworkFormattedImage[]>();
+                string[] imagePaths = Directory.GetFiles(subDirectories[i], "*.*", SearchOption.AllDirectories);
+                NetworkFormattedImage[] categoryArray = new NetworkFormattedImage[imagePaths.Length];
 
-                    for (int i = 0; i < subDirectories.Length; i++)
-                    {
-                        Console.WriteLine("Processing Image Data: " + (i+1) + "/" + subDirectories.Length);
+                Parallel.For(0, imagePaths.Length, j =>
+                {
+                    Bitmap btmp = new Bitmap(imagePaths[j], true);
 
-                        Vector<double> label = Vector<double>.Build.Dense(subDirectories.Length);
-                        label[i] = 1;
+                    bool heightCheck = true;
+                    bool widthCheck = true;
+                    if(expectedHeight != null && expectedHeight.Value != btmp.Height)
+                        heightCheck = false;
+                    if(expectedWidth != null && expectedWidth.Value != btmp.Width)
+                        widthCheck = false;
 
-                        string[] imagePaths = Directory.GetFiles(subDirectories[i], "*.*", SearchOption.AllDirectories);
-                        NetworkFormattedImage[] categoryArray = new NetworkFormattedImage[imagePaths.Length];
+                    if(heightCheck && widthCheck)
+                        categoryArray[j] = new NetworkFormattedImage(btmp, label);
+                });
 
-                        Parallel.For(0, imagePaths.Length, j =>
-                        {
-                            Bitmap btmp = new Bitmap(imagePaths[j], true);
-
-                            bool heightCheck = true;
-                            bool widthCheck = true;
-                            if(expectedHeight != null && expectedHeight.Value != btmp.Height)
-                                heightCheck = false;
-                            if(expectedWidth != null && expectedWidth.Value != btmp.Width)
-                                widthCheck = false;
-
-                            if(heightCheck && widthCheck)
-                                categoryArray[j] = new NetworkFormattedImage(btmp, label);
-                        });
-
-                        matrixOfImages.Add(categoryArray.Where(x => x.Image != null).ToArray());
-                    }
-
-                    List<NetworkFormattedImage> images = new List<NetworkFormattedImage>();
-                    for(int i = 0; i < matrixOfImages.Count; i++)
-                        images = images.Concat(matrixOfImages[i]).ToList();
-
-                    return images;
+                matrixOfImages.Add(categoryArray.Where(x => x.Image != null).ToArray());
             }
 
-            return new List<NetworkFormattedImage>();
+            List<NetworkFormattedImage> images = new List<NetworkFormattedImage>();
+            for(int i = 0; i < matrixOfImages.Count; i++)
+                images = images.Concat(matrixOfImages[i]).ToList();
+
+            Random rand = new Random();
+            images = images.OrderBy(x => rand.Next()).Take(take != null ? take.Value : images.Count).ToList();
+            return new ImageDataAggregate(images);
         }
 
-        public static ImageDataAggregate GetImageData(string path, ImagePreprocessingType imagePreprocessingType, bool isColor = true, int? expectedWidth = null, int? expectedHeight = null, int ? take = null)
+        public static ImageDataAggregate GetImageData(string csvPath, string imagesRootPath, bool isColor = true, 
+            int? expectedWidth = null, int? expectedHeight = null, int? take = null)
         {
-            Random rand = new Random();
-            List<NetworkFormattedImage> data = ReadImages(path, imagePreprocessingType, expectedWidth, expectedHeight);
+            List<PathLabelModel> pathsAndLabels = new List<PathLabelModel>();
+                    
+            using (var reader = new StreamReader(csvPath))
+            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            {
+                pathsAndLabels = csv.GetRecords<PathLabelModel>().ToList();
+            }
 
-            data = data.OrderBy(x => rand.Next()).Take(take != null ? take.Value : data.Count).ToList();
-            return new ImageDataAggregate(data);
+            List<string> uniqeLabels = pathsAndLabels.Select(p => p.Label).Distinct().ToList();
+                    
+            List<NetworkFormattedImage> images = new List<NetworkFormattedImage>();
+
+            int dataCount = pathsAndLabels.Count;
+            if (take != null) dataCount = Math.Min(dataCount, take.Value);
+            //Parallel.For(0, pathsAndLabels.Count, i =>
+            for(int i = 0; i < dataCount; i++)
+            {
+                Bitmap btmp = new Bitmap(imagesRootPath + "/" + pathsAndLabels[i].Path, true);
+                bool heightCheck = true;
+                bool widthCheck = true;
+                if(expectedHeight != null && expectedHeight.Value != btmp.Height)
+                    heightCheck = false;
+                if(expectedWidth != null && expectedWidth.Value != btmp.Width)
+                    widthCheck = false;
+
+                if (heightCheck && widthCheck)
+                {
+                    Vector<double> label = Vector<double>.Build.Dense(uniqeLabels.Count);
+                    label[uniqeLabels.IndexOf(pathsAndLabels[i].Label)] = 1;
+                    images.Add(new NetworkFormattedImage(btmp, label));
+                }
+            }//);
+
+            Random rand = new Random();
+            images = images.OrderBy(x => rand.Next()).Take(take != null ? take.Value : images.Count).ToList();
+            return new ImageDataAggregate(images);
         }
     }
 }

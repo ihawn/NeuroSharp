@@ -695,8 +695,8 @@ namespace NeuroSharp
         }
         static void IntelImageClassification_Conv(int epochs)
         {
-            ImageDataAggregate trainData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\IntelImageClassification\seg_train\seg_train", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 150, expectedWidth: 150);
-            ImageDataAggregate testData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\IntelImageClassification\seg_test\seg_test", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 150, expectedWidth: 150);
+            ImageDataAggregate trainData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\IntelImageClassification\seg_train\seg_train",  expectedHeight: 150, expectedWidth: 150);
+            ImageDataAggregate testData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\IntelImageClassification\seg_test\seg_test",  expectedHeight: 150, expectedWidth: 150);
 
             Network network = new Network(150 * 150 * 3);
             network.Add(new ConvolutionalLayer(kernel: 3, filters: 8, stride: 3, channels: 3));
@@ -742,8 +742,8 @@ namespace NeuroSharp
         }
         static void IntelImageClassification_Dense(int epochs)
         {
-            ImageDataAggregate trainData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\IntelImageClassification\seg_train\seg_train", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 150, expectedWidth: 150);
-            ImageDataAggregate testData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\IntelImageClassification\seg_test\seg_test", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 150, expectedWidth: 150);
+            ImageDataAggregate trainData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\IntelImageClassification\seg_train\seg_train", expectedHeight: 150, expectedWidth: 150);
+            ImageDataAggregate testData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\IntelImageClassification\seg_test\seg_test", expectedHeight: 150, expectedWidth: 150);
 
             Network network = new Network(150 * 150 * 3);
             network.Add(new FullyConnectedLayer(256));
@@ -788,8 +788,8 @@ namespace NeuroSharp
         }
         static void BirdSpecies_Test(int epochs)
         {
-            ImageDataAggregate trainData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\Birds\train", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 224, expectedWidth: 224);
-            ImageDataAggregate testData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\Birds\test", ImagePreprocessingType.ParentFolderContainsLabel, expectedHeight: 224, expectedWidth: 224);
+            ImageDataAggregate trainData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\Birds\train", expectedHeight: 224, expectedWidth: 224);
+            ImageDataAggregate testData = ImagePreprocessor.GetImageData(@"C:\Users\Isaac\Desktop\Birds\test", expectedHeight: 224, expectedWidth: 224);
 
             Network network = new Network(224 * 224 * 3);
             network.Add(new ConvolutionalLayer(kernel: 2, filters: 4, stride: 3, channels: 3));

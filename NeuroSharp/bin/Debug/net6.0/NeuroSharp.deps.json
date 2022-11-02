@@ -9,6 +9,7 @@
       "NeuroSharp/1.0.0": {
         "dependencies": {
           "Blazor.Extensions.Canvas": "1.1.1",
+          "CsvHelper": "30.0.0",
           "MathNet.Numerics": "5.0.0",
           "MathNet.Numerics.MKL.Win-x64": "3.0.0",
           "MathNet.Numerics.Providers.CUDA": "5.0.0",
@@ -31,6 +32,14 @@
           "lib/netstandard2.1/Blazor.Extensions.Canvas.dll": {
             "assemblyVersion": "0.1.0.0",
             "fileVersion": "0.1.0.0"
+          }
+        }
+      },
+      "CsvHelper/30.0.0": {
+        "runtime": {
+          "lib/net6.0/CsvHelper.dll": {
+            "assemblyVersion": "30.0.0.0",
+            "fileVersion": "30.0.0.0"
           }
         }
       },
@@ -259,6 +268,13 @@
       "sha512": "sha512-G+ElSm24MPj3iU2adehrRbVEFQtIR8NPH5M9oBq+RhJ1/Bvit8z6CTaUTVkfiuhgmFVZKJ56D1OdnbZ0u1/lQQ==",
       "path": "blazor.extensions.canvas/1.1.1",
       "hashPath": "blazor.extensions.canvas.1.1.1.nupkg.sha512"
+    },
+    "CsvHelper/30.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-0VXyouC1g43bXtEJRReJfB5C3RwxZOUSk9FnNv8/47PptzrVYKrEi/H3PP14+MvP+mLCnDiAtOXbIwvnEMSPxw==",
+      "path": "csvhelper/30.0.0",
+      "hashPath": "csvhelper.30.0.0.nupkg.sha512"
     },
     "MathNet.Numerics/5.0.0": {
       "type": "package",

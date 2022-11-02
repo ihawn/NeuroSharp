@@ -16,7 +16,7 @@
 
 <div id="canvasHolder" style="width: 1080px; height: 1080px">
     <BECanvas Width="1080" Height="1080" @ref="CanvasRef"></BECanvas>
-</div>
+</div>';
 
 
 @code{
@@ -29,15 +29,15 @@
     Network network;
     List<Vector<double>> xTrain;
     List<Vector<double>> yTrain;
-    int epochs = 250;
+    int epochs = 150;
     int currentEpoch = 1;
     int nextSample = 0;
-    int sampleFrequency = 2;
+    int sampleFrequency = 3;
     int frame = 0;
     Vector<double> currentClassification;
     List<(Vector<double>, Vector<double>)> data;
 
-    int sampleTileSize = 90;
+    int sampleTileSize = 60;
     
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -55,7 +55,7 @@
     {
         if (DataField.DataPoints.Count == 0)
         {
-            DataField.AddRandomDataPoints(75, 1080, 1080, 20, "purple", "orange");
+            DataField.AddRandomDataPoints(100, 1080, 1080, 20, "#471EFC", "#fc9c1e");
             DataField.AddDataSamplers(sampleTileSize);
 
             Task initTask = Task.Run(() => InitializeNetwork());
@@ -83,7 +83,7 @@
                         ));
                     classificationTask.Wait();
                     currentClassification = classificationTask.Result;
-                    DataField.SampleDataPoints[i].Color = currentClassification.ToList().IndexOf(currentClassification.Max()) == 0 ? "#F5CAFF" : "#FFEFCA";
+                    DataField.SampleDataPoints[i].Color = currentClassification.ToList().IndexOf(currentClassification.Max()) == 0 ? "#c2b5fc" : "#f4d7b0";
                 }
                 frame++;
                 
@@ -160,7 +160,7 @@
             Vector<double> normalizedDatapoint = Vector<double>.Build.DenseOfArray(new double[] { datapoint.X / DataField.Width, datapoint.Y / DataField.Height });
             xTrain.Add(normalizedDatapoint);
             yTrain.Add(Vector<double>.Build.DenseOfArray(
-                datapoint.Color == "purple" ? new double[] { 1, 0 } : new double[] { 0, 1 }
+                datapoint.Color == "#471EFC" ? new double[] { 1, 0 } : new double[] { 0, 1 }
             ));
         }
     }

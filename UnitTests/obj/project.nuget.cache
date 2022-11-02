@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "sOyMZ7Udd3YVIAa7Cm031OcelQo+oMkXMKgCntEmYCmUza2bE9PBpFgr3ouxlzegsNm8Id5jIAStV+1awyJJog==",
+  "dgSpecHash": "aFXhIytxvN/0wuqHbXxYNIdfgQMbku6O1rtN12bIgyFZzGNFV4EcNMCn8myF0TkJTbUNiuEfczr9/rs7ydO1Gg==",
   "success": true,
   "projectFilePath": "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\UnitTests\\UnitTests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Isaac\\.nuget\\packages\\blazor.extensions.canvas\\1.1.1\\blazor.extensions.canvas.1.1.1.nupkg.sha512",
     "C:\\Users\\Isaac\\.nuget\\packages\\coverlet.collector\\3.1.0\\coverlet.collector.3.1.0.nupkg.sha512",
+    "C:\\Users\\Isaac\\.nuget\\packages\\csvhelper\\30.0.0\\csvhelper.30.0.0.nupkg.sha512",
     "C:\\Users\\Isaac\\.nuget\\packages\\mathnet.numerics\\5.0.0\\mathnet.numerics.5.0.0.nupkg.sha512",
     "C:\\Users\\Isaac\\.nuget\\packages\\mathnet.numerics.mkl.win-x64\\3.0.0\\mathnet.numerics.mkl.win-x64.3.0.0.nupkg.sha512",
     "C:\\Users\\Isaac\\.nuget\\packages\\mathnet.numerics.providers.cuda\\5.0.0\\mathnet.numerics.providers.cuda.5.0.0.nupkg.sha512",
