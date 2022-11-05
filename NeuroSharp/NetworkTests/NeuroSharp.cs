@@ -31,7 +31,7 @@ namespace NeuroSharp
             //RNN_Sentence_Prediction(101, 20, 5, 20);
             //RNN_Name_Generator(epochs: 5, promptLength: 2, nameLengthAfterPrompt: 15, trainingSize: 20000);
             //RNN_Sequence_Prediction(20000, 10, 5, 3);
-            RNN_Sentiment_Analysis(20, 3000, 300); //todo: dimension transform layer
+            //RNN_Sentiment_Analysis(20, 3000, 300); //todo: dimension transform layer
 
             #region testing
 

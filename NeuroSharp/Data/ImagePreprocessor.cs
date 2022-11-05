@@ -40,7 +40,7 @@ namespace NeuroSharp.Data
                         widthCheck = false;
 
                     if(heightCheck && widthCheck)
-                        categoryArray[j] = new NetworkFormattedImage(btmp, label);
+                        categoryArray[j] = new NetworkFormattedImage(btmp, label, isColor);
                 });
 
                 matrixOfImages.Add(categoryArray.Where(x => x.Image != null).ToArray());
@@ -68,12 +68,11 @@ namespace NeuroSharp.Data
 
             List<string> uniqeLabels = pathsAndLabels.Select(p => p.Label).Distinct().ToList();
                     
-            List<NetworkFormattedImage> images = new List<NetworkFormattedImage>();
+            NetworkFormattedImage[] images = new NetworkFormattedImage[pathsAndLabels.Count];
 
             int dataCount = pathsAndLabels.Count;
             if (take != null) dataCount = Math.Min(dataCount, take.Value);
-            //Parallel.For(0, pathsAndLabels.Count, i =>
-            for(int i = 0; i < dataCount; i++)
+            Parallel.For(0, pathsAndLabels.Count, i =>
             {
                 Bitmap btmp = new Bitmap(imagesRootPath + "/" + pathsAndLabels[i].Path, true);
                 bool heightCheck = true;
@@ -87,13 +86,14 @@ namespace NeuroSharp.Data
                 {
                     Vector<double> label = Vector<double>.Build.Dense(uniqeLabels.Count);
                     label[uniqeLabels.IndexOf(pathsAndLabels[i].Label)] = 1;
-                    images.Add(new NetworkFormattedImage(btmp, label));
+                    images[i] = new NetworkFormattedImage(btmp, label, isColor);
                 }
-            }//);
+            });
 
             Random rand = new Random();
-            images = images.OrderBy(x => rand.Next()).Take(take != null ? take.Value : images.Count).ToList();
-            return new ImageDataAggregate(images);
+            var formatted = images.OrderBy(x => rand.Next())
+                .Take(take != null ? take.Value : images.Length).ToList();
+            return new ImageDataAggregate(formatted);
         }
     }
 }
