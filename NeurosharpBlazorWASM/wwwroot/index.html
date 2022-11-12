@@ -9,6 +9,10 @@
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
     <link href="NeurosharpBlazorWASM.styles.css" rel="stylesheet" />
+    <link href="_content/MatBlazor/dist/matBlazor.css" rel="stylesheet" />
+    <script src="_content/MatBlazor/dist/matBlazor.js"></script>
+    <link href="_content/Mobsites.Blazor.SignaturePad/bundle.css" rel="stylesheet" />
+    <link href="_content/Syncfusion.Blazor/styles/material.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -24,8 +28,13 @@
 
 </html>
 
+<script src="_content/Mobsites.Blazor.SignaturePad/bundle.js"></script>
+<script src="_content/MatBlazor/dist/matBlazor.js"></script>
 
 <script src='_content/Blazor.Extensions.Canvas/blazor.extensions.canvas.js'></script>
+
+<script src="js/image_processor.js"></script>
+
 <script>
     function renderJS(timeStamp) {
         theInstance.invokeMethodAsync('RenderInBlazor', timeStamp);

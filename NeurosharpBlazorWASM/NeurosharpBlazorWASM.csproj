@@ -7,13 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BootstrapBlazor.SignaturePad" Version="6.2.1" />
+    <PackageReference Include="MatBlazor" Version="2.9.0-develop-042" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.2" PrivateAssets="all" />
+    <PackageReference Include="Mobsites.Blazor.BaseComponents" Version="1.0.4" />
+    <PackageReference Include="Mobsites.Blazor.SignaturePad" Version="2.0.0-preview1" />
     <PackageReference Include="SimplexNoise" Version="2.0.0" />
+    <PackageReference Include="Syncfusion.Blazor" Version="20.3.0.52" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\NeuroSharp\NeuroSharp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Helpers" />
+    <Folder Include="wwwroot\js" />
   </ItemGroup>
 
 </Project>

@@ -47,6 +47,14 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "BootstrapBlazor.SignaturePad": {
+              "target": "Package",
+              "version": "[6.2.1, )"
+            },
+            "MatBlazor": {
+              "target": "Package",
+              "version": "[2.9.0-develop-042, )"
+            },
             "Microsoft.AspNetCore.Components.WebAssembly": {
               "target": "Package",
               "version": "[6.0.2, )"
@@ -56,9 +64,21 @@
               "target": "Package",
               "version": "[6.0.2, )"
             },
+            "Mobsites.Blazor.BaseComponents": {
+              "target": "Package",
+              "version": "[1.0.4, )"
+            },
+            "Mobsites.Blazor.SignaturePad": {
+              "target": "Package",
+              "version": "[2.0.0-preview1, )"
+            },
             "SimplexNoise": {
               "target": "Package",
               "version": "[2.0.0, )"
+            },
+            "Syncfusion.Blazor": {
+              "target": "Package",
+              "version": "[20.3.0.52, )"
             }
           },
           "imports": [

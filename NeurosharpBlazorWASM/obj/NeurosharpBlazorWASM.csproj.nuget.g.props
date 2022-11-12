@@ -13,9 +13,31 @@
     <SourceRoot Include="C:\Users\Isaac\.nuget\packages\" />
     <SourceRoot Include="C:\Program Files\dotnet\sdk\NuGetFallbackFolder\" />
   </ItemGroup>
+  <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Content Include="$(NuGetPackageRoot)mobsites.blazor.signaturepad\2.0.0-preview1\contentFiles\any\netstandard2.0\package-lock.json" Condition="Exists('$(NuGetPackageRoot)mobsites.blazor.signaturepad\2.0.0-preview1\contentFiles\any\netstandard2.0\package-lock.json')">
+      <NuGetPackageId>Mobsites.Blazor.SignaturePad</NuGetPackageId>
+      <NuGetPackageVersion>2.0.0-preview1</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <Pack>false</Pack>
+      <Private>False</Private>
+      <Link>package-lock.json</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)mobsites.blazor.signaturepad\2.0.0-preview1\contentFiles\any\netstandard2.0\package.json" Condition="Exists('$(NuGetPackageRoot)mobsites.blazor.signaturepad\2.0.0-preview1\contentFiles\any\netstandard2.0\package.json')">
+      <NuGetPackageId>Mobsites.Blazor.SignaturePad</NuGetPackageId>
+      <NuGetPackageVersion>2.0.0-preview1</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <Pack>false</Pack>
+      <Private>False</Private>
+      <Link>package.json</Link>
+    </Content>
+  </ItemGroup>
   <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)syncfusion.blazor\20.3.0.52\buildTransitive\Syncfusion.Blazor.props" Condition="Exists('$(NuGetPackageRoot)syncfusion.blazor\20.3.0.52\buildTransitive\Syncfusion.Blazor.props')" />
     <Import Project="$(NuGetPackageRoot)blazor.extensions.canvas\1.1.1\buildTransitive\Blazor.Extensions.Canvas.props" Condition="Exists('$(NuGetPackageRoot)blazor.extensions.canvas\1.1.1\buildTransitive\Blazor.Extensions.Canvas.props')" />
+    <Import Project="$(NuGetPackageRoot)mobsites.blazor.signaturepad\2.0.0-preview1\buildTransitive\Mobsites.Blazor.SignaturePad.props" Condition="Exists('$(NuGetPackageRoot)mobsites.blazor.signaturepad\2.0.0-preview1\buildTransitive\Mobsites.Blazor.SignaturePad.props')" />
     <Import Project="$(NuGetPackageRoot)microsoft.aspnetcore.components.webassembly\6.0.2\build\net6.0\Microsoft.AspNetCore.Components.WebAssembly.props" Condition="Exists('$(NuGetPackageRoot)microsoft.aspnetcore.components.webassembly\6.0.2\build\net6.0\Microsoft.AspNetCore.Components.WebAssembly.props')" />
+    <Import Project="$(NuGetPackageRoot)matblazor\2.9.0-develop-042\buildTransitive\MatBlazor.props" Condition="Exists('$(NuGetPackageRoot)matblazor\2.9.0-develop-042\buildTransitive\MatBlazor.props')" />
+    <Import Project="$(NuGetPackageRoot)bootstrapblazor.signaturepad\6.2.1\buildTransitive\BootstrapBlazor.SignaturePad.props" Condition="Exists('$(NuGetPackageRoot)bootstrapblazor.signaturepad\6.2.1\buildTransitive\BootstrapBlazor.SignaturePad.props')" />
   </ImportGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <PkgMicrosoft_AspNetCore_Components_WebAssembly_DevServer Condition=" '$(PkgMicrosoft_AspNetCore_Components_WebAssembly_DevServer)' == '' ">C:\Users\Isaac\.nuget\packages\microsoft.aspnetcore.components.webassembly.devserver\6.0.2</PkgMicrosoft_AspNetCore_Components_WebAssembly_DevServer>

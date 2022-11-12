@@ -1,0 +1,46 @@
+﻿@page "/characterrecognition"
+@using NeurosharpBlazorWASM.Models
+@inject IJSRuntime JsRuntime;
+
+<MatDialogContent>
+    <SignaturePad @ref="signature" MinWidth="300" MinHeight="300" MaxWidth="300" MaxHeight="300" OnSignatureChange="@(() => SignatureChangeEvent())">
+        <SignaturePadFooter FooterDirective="@("Sign Please")" />
+    </SignaturePad>  
+</MatDialogContent>
+<MatDialogActions>
+    <MatButton OnClick="@(() => signature.Clear())">Clear</MatButton>
+    <MatButton OnClick="@(() => signature.Save(SignaturePad.SupportedSaveAsTypes.png))">Save</MatButton>
+    <MatIconButton OnClick="@(e => { dialogIsOpen = false; })"/>
+</MatDialogActions>
+
+<div>
+    <img alt="" id="charImg" src=""/>
+</div>
+
+@code{
+    bool dialogIsOpen = false;
+    SignaturePad signature;
+    NetworkStorage _networkStorage;
+    ELE
+
+    public async void SignatureChangeEvent()
+    {
+        string imageURL = await signature.ToDataURL();
+
+        var s = await JsRuntime.InvokeAsync<object>("image_processor.GetPixelDataFromBase64", imageURL);
+        if(s == null)
+            Console.WriteLine("I am null");
+        else
+        {
+            Console.WriteLine(s);
+        }
+       /* foreach(double d in s)
+            Console.WriteLine(d);*/
+
+    //  SKBitmap image = SKBitmap.FromImage()
+
+    /*  for(int y = 0; y < image.Height; y++)
+            for(int x = 0; x < image.Width; x++)
+                Console.WriteLine(image.PeekPixels().GetPixels(x, y));*/
+    }
+}

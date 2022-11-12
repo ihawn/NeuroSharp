@@ -5,3 +5,5 @@ NeuroSharp/.vs/NeuroSharp/v17/TestStore/0/029.testlog
 *.testlog
 *.dll
 *.dll
+characters_model.json
+characters_model2.json

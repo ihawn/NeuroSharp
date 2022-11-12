@@ -15,7 +15,7 @@ namespace NeuroSharp.Datatypes
         public Matrix<double> Gray { get; set; }
         public bool IsColor { get; set; }
 
-        public NetworkFormattedImage(Bitmap image, Vector<double> label, bool isColor)
+        public NetworkFormattedImage(Bitmap image, Vector<double> label = null, bool isColor = true)
         {
             Image = image;
             Label = label;
