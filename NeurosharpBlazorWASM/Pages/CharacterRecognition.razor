@@ -3,7 +3,7 @@
 @inject IJSRuntime JsRuntime;
 
 <MatDialogContent>
-    <SignaturePad @ref="signature" MinWidth="300" MinHeight="300" MaxWidth="300" MaxHeight="300" OnSignatureChange="@(() => SignatureChangeEvent())">
+    <SignaturePad @ref="signature" MinWidth="200" MinHeight="200" MaxWidth="200" MaxHeight="200" OnSignatureChange="@(() => SignatureChangeEvent())">
         <SignaturePadFooter FooterDirective="@("Sign Please")" />
     </SignaturePad>  
 </MatDialogContent>
@@ -13,34 +13,30 @@
     <MatIconButton OnClick="@(e => { dialogIsOpen = false; })"/>
 </MatDialogActions>
 
-<div>
-    <img alt="" id="charImg" src=""/>
-</div>
+
+<canvas @ref="_canvasReference" style="display: none" width="200" height="200"></canvas>
 
 @code{
     bool dialogIsOpen = false;
     SignaturePad signature;
     NetworkStorage _networkStorage;
-    ELE
+    ElementReference _canvasReference;
+    ElementReference _imageReference;
 
     public async void SignatureChangeEvent()
     {
         string imageURL = await signature.ToDataURL();
+        await JsRuntime.InvokeAsync<object>("image_processor.ParseCanvas", imageURL, _canvasReference, _imageReference);
+    }
 
-        var s = await JsRuntime.InvokeAsync<object>("image_processor.GetPixelDataFromBase64", imageURL);
-        if(s == null)
+    [JSInvokable]
+    public static void ReceiveImageData(object data)
+    {
+        if(data == null)
             Console.WriteLine("I am null");
         else
         {
-            Console.WriteLine(s);
+            Console.WriteLine(data);
         }
-       /* foreach(double d in s)
-            Console.WriteLine(d);*/
-
-    //  SKBitmap image = SKBitmap.FromImage()
-
-    /*  for(int y = 0; y < image.Height; y++)
-            for(int x = 0; x < image.Width; x++)
-                Console.WriteLine(image.PeekPixels().GetPixels(x, y));*/
     }
 }

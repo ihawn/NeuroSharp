@@ -1,6 +1,5 @@
-﻿import getPixelDataFromBytes from './pngdata.js'
-import getPixelDataFromBase64 from "./pngdata.js";
+﻿import parseCanvas from "./CanvasPixelReader.js";
 
-export function GetPixelDataFromBase64(url) {
-    return getPixelDataFromBase64(url);
+export function ParseCanvas(url, canvRef){
+    parseCanvas(url, canvRef);
 }
