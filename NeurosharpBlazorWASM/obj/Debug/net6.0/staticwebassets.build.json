@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "d6xQrW768UalAvZUkaLhQpeGZpq+0zngqELEO5aJHvY=",
+  "Hash": "E3paHBbJCe2REND7lLD2WOVJvA1Sdo5bJjdGUInmfBY=",
   "Source": "NeurosharpBlazorWASM",
   "BasePath": "/",
   "Mode": "Root",
@@ -9569,23 +9569,6 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\image_processor.js"
-    },
-    {
-      "Identity": "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\NeurosharpBlazorWASM\\wwwroot\\js\\image_processor.js.LICENSE.txt",
-      "SourceId": "NeurosharpBlazorWASM",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\NeurosharpBlazorWASM\\wwwroot\\",
-      "BasePath": "/",
-      "RelativePath": "js/image_processor.js.LICENSE.txt",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\js\\image_processor.js.LICENSE.txt"
     },
     {
       "Identity": "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\NeurosharpBlazorWASM\\wwwroot\\js\\sharp.js",

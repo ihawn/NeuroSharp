@@ -1,5 +1,7 @@
 ﻿@page "/characterrecognition"
 @using NeurosharpBlazorWASM.Models
+@using Newtonsoft.Json
+@using System.Text.Json
 @inject IJSRuntime JsRuntime;
 
 <MatDialogContent>
@@ -23,6 +25,12 @@
     ElementReference _canvasReference;
     ElementReference _imageReference;
 
+    protected override async Task OnInitializedAsync()
+    {
+        _networkStorage = new NetworkStorage();
+        
+    }
+
     public async void SignatureChangeEvent()
     {
         string imageURL = await signature.ToDataURL();
@@ -32,11 +40,10 @@
     [JSInvokable]
     public static void ReceiveImageData(object data)
     {
-        if(data == null)
-            Console.WriteLine("I am null");
-        else
-        {
-            Console.WriteLine(data);
-        }
+        Vector<double> imageVector = Vector<double>.Build.DenseOfEnumerable(
+            ((JsonElement)data).EnumerateArray().Select(x => double.Parse(x.ToString()))
+        );
+        
+        
     }
 }

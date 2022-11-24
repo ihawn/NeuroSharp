@@ -17,7 +17,7 @@ public class NetworkStorage
     public async void LoadCharacterModel()
     {
         CharacterClassificationModel = Network.DeserializeNetworkJSON(
-            File.ReadAllText($"{System.IO.Directory.GetCurrentDirectory()}{@"\NetworkModels\characters_model.json"}")
+            File.ReadAllText($"{System.IO.Directory.GetCurrentDirectory()}{@"NetworkModels/characters_model.json"}")
         );
         
     }
