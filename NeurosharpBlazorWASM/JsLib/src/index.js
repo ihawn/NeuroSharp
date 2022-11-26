@@ -1,5 +1,5 @@
 ﻿import parseCanvas from "./CanvasPixelReader.js";
 
-export function ParseCanvas(url, canvRef){
-    parseCanvas(url, canvRef);
+export function ParseCanvas(url, canvRef, scale){
+    parseCanvas(url, canvRef, scale);
 }

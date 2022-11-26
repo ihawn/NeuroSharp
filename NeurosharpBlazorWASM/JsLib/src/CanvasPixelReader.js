@@ -1,4 +1,4 @@
-﻿export default function parseCanvas(url, canvasRef) {
+﻿export default function parseCanvas(url, canvasRef, scale) {
     function initContext(canvasReference, contextType) {
         var context = canvasReference.getContext(contextType);
         return context;
@@ -8,8 +8,11 @@
         var imageObj = new Image();
         var data;
         imageObj.onload = function() {
+            context.scale(scale, scale);
             context.drawImage(imageObj, 0, 0);
-            var imageData = context.getImageData(0,0,200,200);
+            var width = context.canvas.getAttribute("width");
+            var height = context.canvas.getAttribute("height");
+            var imageData = context.getImageData(0,0, width * scale, height * scale);
             readImage(imageData);
         };
         imageObj.src = imageSource;
@@ -23,7 +26,6 @@
             grayscaleData[n] = imageData.data[i] / 255.0;
             n++;
         }
-        
         DotNet.invokeMethodAsync('NeurosharpBlazorWASM', 'ReceiveImageData', grayscaleData);
     }
     

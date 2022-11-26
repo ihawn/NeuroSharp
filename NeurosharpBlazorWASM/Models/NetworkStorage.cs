@@ -7,18 +7,25 @@ namespace NeurosharpBlazorWASM.Models;
 
 public class NetworkStorage
 {
-    public Network CharacterClassificationModel { get; set; }
+    private static NetworkStorage _instance = null;
+    private Dictionary<string, Network> _settings { get; set; }
 
-    public NetworkStorage()
+    public static NetworkStorage Networks
     {
-        LoadCharacterModel();
+        get
+        {
+            if (_instance == null)
+                _instance = new NetworkStorage();
+            return _instance;
+        }
     }
 
-    public async void LoadCharacterModel()
+    public Network this[string index] => _settings[index];
+
+    public void LoadAllNetworkModels()
     {
-        CharacterClassificationModel = Network.DeserializeNetworkJSON(
+        _settings["CharacterRecognition"] = Network.DeserializeNetworkJSON(
             File.ReadAllText($"{System.IO.Directory.GetCurrentDirectory()}{@"NetworkModels/characters_model.json"}")
         );
-        
     }
 }

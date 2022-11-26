@@ -5,7 +5,7 @@
 @inject IJSRuntime JsRuntime;
 
 <MatDialogContent>
-    <SignaturePad @ref="signature" MinWidth="200" MinHeight="200" MaxWidth="200" MaxHeight="200" OnSignatureChange="@(() => SignatureChangeEvent())">
+    <SignaturePad @ref="signature" MinWidth="@size" MinHeight="@size" MaxWidth="@size" MaxHeight="@size" OnSignatureChange="@(() => SignatureChangeEvent())">
         <SignaturePadFooter FooterDirective="@("Sign Please")" />
     </SignaturePad>  
 </MatDialogContent>
@@ -16,34 +16,45 @@
 </MatDialogActions>
 
 
-<canvas @ref="_canvasReference" style="display: none" width="200" height="200"></canvas>
+<canvas @ref="_canvasReference" style="display: none" width="@size" height="@size"></canvas>
 
 @code{
+    int size = 512;
+    double scale = 0.25;
     bool dialogIsOpen = false;
+    bool trainingMode = true;
     SignaturePad signature;
-    NetworkStorage _networkStorage;
+    Network _network;
     ElementReference _canvasReference;
     ElementReference _imageReference;
 
     protected override async Task OnInitializedAsync()
     {
-        _networkStorage = new NetworkStorage();
-        
+    //_network = NetworkStorage.Networks["CharacterRecognition"];
     }
 
     public async void SignatureChangeEvent()
     {
         string imageURL = await signature.ToDataURL();
-        await JsRuntime.InvokeAsync<object>("image_processor.ParseCanvas", imageURL, _canvasReference, _imageReference);
+        await JsRuntime.InvokeAsync<object>("image_processor.ParseCanvas", imageURL, _canvasReference, scale);
     }
 
     [JSInvokable]
     public static void ReceiveImageData(object data)
     {
-        Vector<double> imageVector = Vector<double>.Build.DenseOfEnumerable(
+        Vector<double> rawImageVector = Vector<double>.Build.DenseOfEnumerable(
             ((JsonElement)data).EnumerateArray().Select(x => double.Parse(x.ToString()))
         );
         
-        
+        // still too big. Scale down to 32x32 with max pooling
+        int rawImageSize = (int)Math.Sqrt(rawImageVector.Count);
+        Network scalingNetwork = new Network(rawImageSize);
+        MaxPoolingLayer layer = new MaxPoolingLayer(poolSize: 4, stride: 4);
+        layer.SetFilterCount(1);
+        scalingNetwork.Layers.Add(layer);
+        Vector<double> scaledImage = scalingNetwork.Predict(rawImageVector);
+
+        string pixelVals = string.Join(",", scaledImage);
+        Console.WriteLine(pixelVals);
     }
 }
