@@ -1,60 +1,93 @@
 ﻿@page "/characterrecognition"
-@using NeurosharpBlazorWASM.Models
-@using Newtonsoft.Json
 @using System.Text.Json
+@using NeurosharpBlazorWASM.Helpers
 @inject IJSRuntime JsRuntime;
 
 <MatDialogContent>
     <SignaturePad @ref="signature" MinWidth="@size" MinHeight="@size" MaxWidth="@size" MaxHeight="@size" OnSignatureChange="@(() => SignatureChangeEvent())">
-        <SignaturePadFooter FooterDirective="@("Sign Please")" />
+        <SignaturePadFooter FooterDirective="@("Draw a letter or number")" />
     </SignaturePad>  
 </MatDialogContent>
 <MatDialogActions>
-    <MatButton OnClick="@(() => signature.Clear())">Clear</MatButton>
-    <MatButton OnClick="@(() => signature.Save(SignaturePad.SupportedSaveAsTypes.png))">Save</MatButton>
-    <MatIconButton OnClick="@(e => { dialogIsOpen = false; })"/>
 </MatDialogActions>
 
+<div>
+    <input type="checkbox" id="training-mode" onchange="@(() => ToggleTrainingMode())"/>
+    <label for="training-mode" style="color:white;">Data Collection Mode</label>
+</div>
+<div>
+    <input type="button" value="Download" id="submit-btn" onclick="@(() => DownloadDataPoint())"/>
+</div>
 
 <canvas @ref="_canvasReference" style="display: none" width="@size" height="@size"></canvas>
 
-@code{
-    int size = 512;
-    double scale = 0.25;
+@code
+{
+    int size = 256;
     bool dialogIsOpen = false;
-    bool trainingMode = true;
+    bool trainingMode = false;
+
     SignaturePad signature;
     Network _network;
     ElementReference _canvasReference;
     ElementReference _imageReference;
 
+    Vector<double> currentImageValue;
+
+    private static Func<object, Task> DoImageParsing;
+
     protected override async Task OnInitializedAsync()
     {
     //_network = NetworkStorage.Networks["CharacterRecognition"];
+        await base.OnInitializedAsync();
+        DoImageParsing = ParseImageData;
+    }
+
+    public async void ToggleTrainingMode()
+    {
+        trainingMode = !trainingMode;
+        Console.WriteLine(trainingMode);
+    }
+
+    public async void DownloadDataPoint()
+    {
+        await DownloadFile();
+        signature.Clear();
     }
 
     public async void SignatureChangeEvent()
     {
         string imageURL = await signature.ToDataURL();
-        await JsRuntime.InvokeAsync<object>("image_processor.ParseCanvas", imageURL, _canvasReference, scale);
+        await JsRuntime.InvokeAsync<object>("image_processor.ParseCanvas", imageURL, _canvasReference);
     }
 
-    [JSInvokable]
-    public static void ReceiveImageData(object data)
+    public async Task ParseImageData(object data)
     {
         Vector<double> rawImageVector = Vector<double>.Build.DenseOfEnumerable(
-            ((JsonElement)data).EnumerateArray().Select(x => double.Parse(x.ToString()))
+            ((JsonElement)data).EnumerateArray().Select(x => double.Parse(x.ToString()) / 255.0)
         );
         
-        // still too big. Scale down to 32x32 with max pooling
         int rawImageSize = (int)Math.Sqrt(rawImageVector.Count);
         Network scalingNetwork = new Network(rawImageSize);
         MaxPoolingLayer layer = new MaxPoolingLayer(poolSize: 4, stride: 4);
         layer.SetFilterCount(1);
         scalingNetwork.Layers.Add(layer);
-        Vector<double> scaledImage = scalingNetwork.Predict(rawImageVector);
+        currentImageValue = scalingNetwork.Predict(rawImageVector);
 
-        string pixelVals = string.Join(",", scaledImage);
+        string pixelVals = string.Join(",", currentImageValue);
         Console.WriteLine(pixelVals);
+    }
+
+    [JSInvokable]
+    public static async void ReceiveImageData(object data)
+    {
+        await DoImageParsing.Invoke(data);
+    }
+    
+    public async Task DownloadFile()
+    {
+        string text = string.Join(",", currentImageValue);;
+        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(text);
+        await FileUtil.SaveAs(JsRuntime, "HelloWorld.txt", bytes);
     }
 }
