@@ -12,8 +12,12 @@
 </MatDialogActions>
 
 <div>
-    <input type="checkbox" id="training-mode" onchange="@(() => ToggleTrainingMode())"/>
-    <label for="training-mode" style="color:white;">Data Collection Mode</label>
+    <select @bind="currentChar">
+        @foreach (string s in possibleChars)
+        {
+            <option value="@s">@s</option>
+        }
+    </select>
 </div>
 <div>
     <input type="button" value="Download" id="submit-btn" onclick="@(() => DownloadDataPoint())"/>
@@ -23,12 +27,14 @@
 
 @code
 {
-    int size = 256;
+    int size = 192;
     bool dialogIsOpen = false;
-    bool trainingMode = false;
+    List<string> possibleChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".Select(x => x.ToString()).ToList();
+    string currentChar;
 
     SignaturePad signature;
     Network _network;
+    Network _scalingNetwork;
     ElementReference _canvasReference;
     ElementReference _imageReference;
 
@@ -41,12 +47,11 @@
     //_network = NetworkStorage.Networks["CharacterRecognition"];
         await base.OnInitializedAsync();
         DoImageParsing = ParseImageData;
-    }
-
-    public async void ToggleTrainingMode()
-    {
-        trainingMode = !trainingMode;
-        Console.WriteLine(trainingMode);
+        
+        _scalingNetwork = new Network(size/4);
+        MaxPoolingLayer layer = new MaxPoolingLayer(poolSize: 4, stride: 4);
+        layer.SetFilterCount(1);
+        _scalingNetwork.Layers.Add(layer);
     }
 
     public async void DownloadDataPoint()
@@ -67,15 +72,9 @@
             ((JsonElement)data).EnumerateArray().Select(x => double.Parse(x.ToString()) / 255.0)
         );
         
-        int rawImageSize = (int)Math.Sqrt(rawImageVector.Count);
-        Network scalingNetwork = new Network(rawImageSize);
-        MaxPoolingLayer layer = new MaxPoolingLayer(poolSize: 4, stride: 4);
-        layer.SetFilterCount(1);
-        scalingNetwork.Layers.Add(layer);
-        currentImageValue = scalingNetwork.Predict(rawImageVector);
-
-        string pixelVals = string.Join(",", currentImageValue);
-        Console.WriteLine(pixelVals);
+        currentImageValue = _scalingNetwork.Predict(rawImageVector);
+        //string pixelVals = string.Join(",", currentImageValue);
+        //Console.WriteLine(pixelVals);
     }
 
     [JSInvokable]
@@ -88,6 +87,6 @@
     {
         string text = string.Join(",", currentImageValue);;
         byte[] bytes = System.Text.Encoding.UTF8.GetBytes(text);
-        await FileUtil.SaveAs(JsRuntime, "HelloWorld.txt", bytes);
+        await FileUtil.SaveAs(JsRuntime, currentChar + "_.txt", bytes);
     }
 }

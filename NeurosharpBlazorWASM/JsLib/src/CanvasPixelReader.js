@@ -7,12 +7,12 @@
     function loadImage(imageSource, context) {
         var imageObj = new Image();
         var data;
-        imageObj.onload = function() {
+        imageObj.onload = function () {
             var width = context.canvas.getAttribute("width");
             var height = context.canvas.getAttribute("height");
             context.clearRect(0, 0, width, height);
             context.drawImage(imageObj, 0, 0);
-            var imageData = context.getImageData(0,0, width, height);
+            var imageData = context.getImageData(0, 0, width, height);
             readImage(imageData);
         };
         imageObj.src = imageSource;
