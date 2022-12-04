@@ -9,10 +9,11 @@ namespace NeuroSharp
 {
     public class ConvolutionalOperator : ParameterizedLayer
     {
+        [JsonIgnore]
         public ConvolutionalLayer ParentLayer { get; set; }
         
-        [JsonProperty]
         private Adam _adam;
+        
         [JsonProperty]
         private int _stride;
         [JsonProperty]

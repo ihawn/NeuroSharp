@@ -17,7 +17,7 @@ namespace NeuroSharp
 
         private ActivationLayer _stateActivation;
         [JsonProperty] private ActivationType _stateActivationType;
-        [JsonProperty] private Adam _adam;
+        private Adam _adam;
         [JsonProperty] private int _sequenceLength;
         [JsonProperty] private int _vocabSize;
         [JsonProperty] private int _hiddenSize;

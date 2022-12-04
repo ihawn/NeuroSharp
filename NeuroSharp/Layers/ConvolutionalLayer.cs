@@ -10,12 +10,9 @@ namespace NeuroSharp
         public int FilterCount { get; set; }
         public int ChannelInputSize { get; set; }
         public int ChannelCount { get; set; }
-
-        [JsonProperty]
+        
         private Vector<double>[] _channelOutputs;
-        [JsonProperty]
         private Vector<double>[] _channelInputs;
-        [JsonProperty]
         private Vector<double>[] _channelBackpropagationOutputs;
 
         public ConvolutionalLayer(int kernel, int filters, int stride = 1, int channels = 1)
@@ -39,7 +36,7 @@ namespace NeuroSharp
         {
             ChannelOperators = operators;
             Id = id;
-            _channelOutputs = channelOutputs;
+            _channelOutputs = new Vector<double>[channelCount]; // channelOutputs;
             _channelInputs = channelInputs;
             _channelBackpropagationOutputs = channelBackpropagationOutputs;
             ChannelCount = channelCount;

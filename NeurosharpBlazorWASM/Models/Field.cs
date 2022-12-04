@@ -13,7 +13,7 @@ public class Field
         Width = width;
         Height = height;
         Noise.Seed = new Random().Next();
-        SimplexNoise = Noise.Calc2D((int)Math.Round(Width), (int)Math.Round(Height), 0.001f);
+        SimplexNoise = Noise.Calc2D((int)Math.Round(Width), (int)Math.Round(Height), 0.002f);
     }
 
     public void Resize(double width, double height) =>

@@ -9,6 +9,8 @@
     "assembly": {
       "Blazor.Extensions.Canvas.JS.dll": "sha256-TrW1uaSNUS+J8xVJErxIf1NQuNC7kn50KzMYYF\/4JtM=",
       "Blazor.Extensions.Canvas.dll": "sha256-W20pWMXQg2yTv0w4VJhrjCJKNRYe3PiUU9S76XipNe8=",
+      "BlazorComponentUtilities.dll": "sha256-9VqqASjMRw8LX9vNXRKXBE+XlDpUfTeuo4+CPgg1fQE=",
+      "BlazorPro.Spinkit.dll": "sha256-ldy4keIJ0nBW2BNTobib50TbEBWstZkhOQMJ5PN+CXU=",
       "BootstrapBlazor.SignaturePad.dll": "sha256-it4YFW67PVXAx4RuUcPJnhWj0ka5YPs3rTeQPNz4cng=",
       "CsvHelper.dll": "sha256-4eWmbrP2aIp647AvY6LXh2\/0rp84k7qhBFPVgZ15+NU=",
       "MatBlazor.dll": "sha256-QIBDJrzKSuTvSYWxXIoOqPVi5lsAjWelPgiRyb0IOSU=",
@@ -215,15 +217,15 @@
       "mscorlib.dll": "sha256-c1dVVfosFaf5aiS3brr2amBi1Ue0kg6mqECzmCbGyfA=",
       "netstandard.dll": "sha256-+9Yr\/gSP3tCZAMbOdAcGhHGuMcyg\/AaxVKtt3tGsvao=",
       "System.Private.CoreLib.dll": "sha256-SnxOe5QK250duVAQOw0iWr1sODhUuVEUykExQyQ\/WSk=",
-      "NeuroSharp.dll": "sha256-OaStIT\/c208hO9OhHKGS8Ojq++w8iHs\/bor1N08fJus=",
-      "NeurosharpBlazorWASM.dll": "sha256-zSDazef4vm2ZLCQTXRjPBT9SKHzUVd82Ixx5YcavQG8="
+      "NeuroSharp.dll": "sha256-Sp1KdCGyBaVek4xG7d0Po27q2LHOZbdmR5MI0CipERE=",
+      "NeurosharpBlazorWASM.dll": "sha256-2RqZENA2d0OXSZpHc1P9RMDEXbi089vt3ZdhbVZn\/08="
     },
     "extensions": null,
     "lazyAssembly": null,
     "libraryInitializers": null,
     "pdb": {
-      "NeuroSharp.pdb": "sha256-ClQTndmVQrNVT28PoIeBZ52mowDfXkAEL5Y8o86Lza8=",
-      "NeurosharpBlazorWASM.pdb": "sha256-du7y92Fg7wCirWehf9FIDNogmmOJBvq69CtTCgPZt3k="
+      "NeuroSharp.pdb": "sha256-t5KeDp6Fcr\/UWJNYKaJiz1SVhS2Aes09sGdx7NU1zZ4=",
+      "NeurosharpBlazorWASM.pdb": "sha256-dfeKhlh+MWFvAeAj15FHfGGC2p4gqjaHK+Mdy5AZgJQ="
     },
     "runtime": {
       "dotnet.6.0.2.ypn1awvm6h.js": "sha256-wbTVn69TU0+WI83iB+kky8tf\/BjZdYJeM0rUP96ur\/c=",

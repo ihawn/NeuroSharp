@@ -25,7 +25,7 @@ public class NetworkStorage
     public void LoadAllNetworkModels()
     {
         _settings["CharacterRecognition"] = Network.DeserializeNetworkJSON(
-            File.ReadAllText($"{System.IO.Directory.GetCurrentDirectory()}{@"NetworkModels/characters_model.json"}")
+            File.ReadAllText($"{System.IO.Directory.GetCurrentDirectory()}{@"NetworkModels/characters_model_ab.json"}")
         );
     }
 }

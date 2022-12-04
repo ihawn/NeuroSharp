@@ -899,3 +899,11 @@ C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASM\obj\Debug\net6.0\bui
 C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASM\obj\Debug\net6.0\build-gz\9Dz+B+g1.gz
 C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASM\obj\Debug\net6.0\build-gz\8MV5XNZi.gz
 C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASM\obj\Debug\net6.0\build-gz\HZMiEQbC.gz
+C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASM\bin\Debug\net6.0\wwwroot\_framework\BlazorComponentUtilities.dll
+C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASM\bin\Debug\net6.0\wwwroot\_framework\BlazorPro.Spinkit.dll
+C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASM\bin\Debug\net6.0\wwwroot\_framework\BlazorPro.Spinkit.dll.gz
+C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASM\bin\Debug\net6.0\wwwroot\_framework\BlazorComponentUtilities.dll.gz
+C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASM\bin\Debug\net6.0\BlazorComponentUtilities.dll
+C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASM\bin\Debug\net6.0\BlazorPro.Spinkit.dll
+C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASM\obj\Debug\net6.0\build-gz\Ih3NcQXv.gz
+C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASM\obj\Debug\net6.0\build-gz\5aMBs8uZ.gz

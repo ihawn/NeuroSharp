@@ -10,7 +10,6 @@ namespace NeuroSharp
 {
     public class FullyConnectedLayer : ParameterizedLayer
     {
-        [JsonProperty]
         private Adam _adam;
 
         public FullyConnectedLayer(int outputSize, int? inputSize = null)

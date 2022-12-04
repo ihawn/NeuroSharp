@@ -25,11 +25,11 @@ namespace NeuroSharp.Utilities
                     new FullyConnectedLayer(
                         weight: JsonArrayToMatrix(layer["Weights"][0]),
                         bias: JsonArrayToVector(layer["Biases"][0]),
-                        weightGradient: JsonArrayToMatrix(layer["WeightGradients"][0]),
-                        biasGradient: JsonArrayToVector(layer["BiasGradients"][0]),
+                        weightGradient: null,//JsonArrayToMatrix(layer["WeightGradients"][0]),
+                        biasGradient: null,//JsonArrayToVector(layer["BiasGradients"][0]),
                         inputSize: Int32.Parse((string)layer["InputSize"]),
                         outputSize: Int32.Parse((string)layer["OutputSize"]),
-                        adam: AdamFromJson(layer["_adam"]),
+                        adam: null,//AdamFromJson(layer["_adam"]),
                         accumulateGradients: bool.Parse((string)layer["AccumulateGradients"]),
                         id: Int32.Parse((string)layer["Id"])
                     ) : 
@@ -37,12 +37,12 @@ namespace NeuroSharp.Utilities
                     new ConvolutionalLayer(
                         operators: layer["ChannelOperators"]
                             .Select(conv => ConvolutionalOperatorFromJson(conv)).ToArray(),
-                        channelOutputs: JsonToArrayOfVectors(layer["_channelOutputs"]),
-                        channelInputs: JsonToArrayOfVectors(layer["_channelInputs"]),
-                        channelBackpropagationOutputs: JsonToArrayOfVectors(layer["_channelBackpropagationOutputs"]),
+                        channelOutputs: null,//JsonToArrayOfVectors(layer["_channelOutputs"]),
+                        channelInputs: null,//JsonToArrayOfVectors(layer["_channelInputs"]),
+                        channelBackpropagationOutputs: null,//JsonToArrayOfVectors(layer["_channelBackpropagationOutputs"]),
                         channelCount: Int32.Parse((string)layer["ChannelCount"]),
                         channelInputSize: Int32.Parse((string)layer["ChannelInputSize"]),
-                        accumulateGradients: bool.Parse((string)layer["AccumulateGradients"]),
+                        accumulateGradients: false,//bool.Parse((string)layer["AccumulateGradients"]),
                         inputSize: Int32.Parse((string)layer["InputSize"]),
                         outputSize: Int32.Parse((string)layer["OutputSize"]),
                         id: Int32.Parse((string)layer["Id"])
@@ -59,7 +59,7 @@ namespace NeuroSharp.Utilities
                         recurrentGradient: JsonArrayToVector(layer["RecurrentGradient"]),
                         weights: JsonToArrayOfMatrices(layer["Weights"]),
                         biases: JsonToArrayOfVectors(layer["Biases"]),
-                        adam: AdamFromJson(layer["_adam"]),
+                        adam: null,//AdamFromJson(layer["_adam"]),
                         inputSize: Int32.Parse((string)layer["InputSize"]),
                         outputSize: Int32.Parse((string)layer["OutputSize"]),
                         accumulateGradients: bool.Parse((string)layer["AccumulateGradients"]),
@@ -83,7 +83,7 @@ namespace NeuroSharp.Utilities
                         maxPoolPositions: layer["MaxPoolPositions"]
                             .Select(x =>
                                 x.Select(y =>
-                                    (Int32.Parse((string)y["Item1"]), Int32.Parse((string)y["Item2"]))
+                                    new XYPair(Int32.Parse((string)y["x"]), Int32.Parse((string)y["y"]))
                                 ).ToList()
                             ).ToList(),
                         inputSize: Int32.Parse((string)layer["InputSize"]),
@@ -174,7 +174,7 @@ namespace NeuroSharp.Utilities
                 inputSize: Int32.Parse((string)layer["InputSize"]),
                 outputSize: Int32.Parse((string)layer["OutputSize"]),
                 filters: Int32.Parse((string)layer["_filters"]),
-                adam: AdamFromJson(layer["_adam"]),
+                adam: null,//AdamFromJson(layer["_adam"]),
                 accumulateGradients: bool.Parse((string)layer["AccumulateGradients"])
             );
         }

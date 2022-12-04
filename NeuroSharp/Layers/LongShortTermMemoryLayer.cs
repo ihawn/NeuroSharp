@@ -19,7 +19,8 @@ namespace NeuroSharp
         private Vector<double> _nextCellStateGradient;
         private Vector<double> _nextHiddenStateGradient;
 
-        [JsonProperty] private Adam _adam;
+        private Adam _adam;
+        
         [JsonProperty] private int _hiddenUnits;
         [JsonProperty] private int _vocabSize;
         [JsonProperty] private int _sequenceLength;

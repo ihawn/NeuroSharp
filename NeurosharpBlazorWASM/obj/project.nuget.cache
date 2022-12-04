@@ -1,10 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "niR0YTtmPpp4KisYbNVwr0wGoFoBLGYphQX9Ntptd1RBJZsGkKwvd+jOPHPCatDuCIEmXS7oLkUv2AXkuxHGgg==",
+  "dgSpecHash": "TT8TLvz9Jd/t0pf5tDICSqKd+n1N7GdNYd4fGplSARsrwJtJZi+/RfxQFFR4FbVKNVSJnpB6U3pS84blAVCthw==",
   "success": true,
   "projectFilePath": "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\NeurosharpBlazorWASM\\NeurosharpBlazorWASM.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Isaac\\.nuget\\packages\\blazor.extensions.canvas\\1.1.1\\blazor.extensions.canvas.1.1.1.nupkg.sha512",
+    "C:\\Users\\Isaac\\.nuget\\packages\\blazorcomponentutilities\\1.6.0\\blazorcomponentutilities.1.6.0.nupkg.sha512",
+    "C:\\Users\\Isaac\\.nuget\\packages\\blazorpro.spinkit\\1.2.0\\blazorpro.spinkit.1.2.0.nupkg.sha512",
+    "C:\\Users\\Isaac\\.nuget\\packages\\bootstrap\\5.2.2\\bootstrap.5.2.2.nupkg.sha512",
     "C:\\Users\\Isaac\\.nuget\\packages\\bootstrapblazor.signaturepad\\6.2.1\\bootstrapblazor.signaturepad.6.2.1.nupkg.sha512",
     "C:\\Users\\Isaac\\.nuget\\packages\\csvhelper\\30.0.0\\csvhelper.30.0.0.nupkg.sha512",
     "C:\\Users\\Isaac\\.nuget\\packages\\matblazor\\2.9.0-develop-042\\matblazor.2.9.0-develop-042.nupkg.sha512",

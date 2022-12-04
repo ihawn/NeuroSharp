@@ -8,7 +8,9 @@ namespace NeuroSharp
 {
     public class MaxPoolingLayer : Layer
     {
-        public List<List<(int, int)>> MaxPoolPositions { get; set; }
+        public List<List<XYPair>> MaxPoolPositions { get; set; }
+        
+        [JsonIgnore]
         public ConvolutionalLayer PrecedingConvolutionalLayer { get; set; }
 
         [JsonProperty]
@@ -21,13 +23,13 @@ namespace NeuroSharp
         public MaxPoolingLayer(int poolSize, int stride = 1)
         {
             LayerType = LayerType.MaxPooling;
-            MaxPoolPositions = new List<List<(int, int)>>();
+            MaxPoolPositions = new List<List<XYPair>>();
             _poolSize = poolSize;
             _stride = stride;
         }
         
         //json constructor
-        public MaxPoolingLayer(List<List<(int, int)>> maxPoolPositions, int poolSize, int inputSize, int outputSize,
+        public MaxPoolingLayer(List<List<XYPair>> maxPoolPositions, int poolSize, int inputSize, int outputSize,
             int stride, int filters, int id)
         {
             LayerType = LayerType.MaxPooling;
@@ -72,7 +74,7 @@ namespace NeuroSharp
                 Matrix<double> backwardsGradient = Matrix<double>.Build.Dense(dim, dim);
                 for (int i = 0; i < MaxPoolPositions[k].Count; i++)
                 {
-                    var coord = new { x = MaxPoolPositions[k][i].Item1, y = MaxPoolPositions[k][i].Item2 };
+                    var coord = new { x = MaxPoolPositions[k][i].x, y = MaxPoolPositions[k][i].y };
                     backwardsGradient[coord.x, coord.y] += outputError[i + k * errorOffset];
                 }
                 foreach (double d in Utilities.MathUtils.Flatten(backwardsGradient))
@@ -104,11 +106,11 @@ namespace NeuroSharp
             _filters = count;
         }
 
-        public static (Matrix<double>, List<(int, int)>) MaxPool(Matrix<double> mtx, int poolSize, int stride)
+        public static (Matrix<double>, List<XYPair>) MaxPool(Matrix<double> mtx, int poolSize, int stride)
         {
             int outDim = (int)Math.Floor(((double)mtx.RowCount - poolSize) / stride + 1);
             Matrix<double> output = Matrix<double>.Build.Dense(outDim, outDim);
-            List<(int, int)> maxPositions = new List<(int, int)>();
+            List<XYPair> maxPositions = new List<XYPair>();
 
             int outX = 0;
             for (int i = 0; i <= mtx.RowCount - poolSize; i += stride)
@@ -117,7 +119,7 @@ namespace NeuroSharp
                 for (int j = 0; j <= mtx.ColumnCount - poolSize; j += stride)
                 {
                     double max = double.MinValue;
-                    (int, int) argMax = (0, 0);
+                    XYPair argMax = new XYPair { x = 0, y = 0 };
                     for (int y = j; y < j + poolSize; y++)
                     {
                         for (int x = i; x < i + poolSize; x++)
@@ -125,7 +127,7 @@ namespace NeuroSharp
                             if (mtx[x, y] > max)
                             {
                                 max = mtx[x, y];
-                                argMax = (x, y);
+                                argMax = new XYPair { x = x, y = y };
                             }
                         }
                     }
@@ -160,5 +162,16 @@ namespace NeuroSharp
             }//);
             return featureMaps;
         }
+    }
+
+    public struct XYPair
+    {
+        public XYPair(int X, int Y)
+        {
+            x = X;
+            y = Y;
+        }
+        public int x { get; set; }
+        public int y { get; set; }
     }
 }

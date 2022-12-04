@@ -1,6 +1,7 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using NeuroSharp.Enumerations;
 using NeuroSharp.Training;
+using Newtonsoft.Json;
 
 namespace NeuroSharp
 {
@@ -8,10 +9,15 @@ namespace NeuroSharp
     public abstract class Layer //todo: dropout layer
     {
         public int Id { get; set; }
+        
+        [JsonIgnore]
         public Vector<double> Input { get; set; }
+        [JsonIgnore]
         public Vector<double> Output { get; set; }
         public int InputSize { get; set; }
         public int OutputSize { get; set; }
+        
+        [JsonIgnore]
         public Network ParentNetwork { get; set; }
         public LayerType LayerType { get; set; }
 

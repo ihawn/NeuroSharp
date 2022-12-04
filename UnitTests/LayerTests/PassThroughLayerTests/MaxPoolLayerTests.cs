@@ -240,7 +240,7 @@ namespace UnitTests
 
             Matrix<double> matrix1 = Matrix<double>.Build.DenseOfArray(mtx);
             Matrix<double> expected1 = Matrix<double>.Build.DenseOfArray(exp);
-            List<(int, int)> expectedPositions1 = new List<(int, int)>() { (1, 1), (1, 2), (2, 0), (1, 2) };
+            List<XYPair> expectedPositions1 = new List<XYPair>() { new (1, 1), new (1, 2), new (2, 0), new (1, 2) };
             #endregion
             #region Max Pool Setup 2
             mtx = new double[,]
@@ -258,7 +258,7 @@ namespace UnitTests
 
             Matrix<double> matrix2 = Matrix<double>.Build.DenseOfArray(mtx);
             Matrix<double> expected2 = Matrix<double>.Build.DenseOfArray(exp);
-            List<(int, int)> expectedPositions2 = new List<(int, int)>() { (0, 0), (1, 2), (2, 0), (2, 2) };
+            List<XYPair> expectedPositions2 = new List<XYPair>() { new (0, 0), new (1, 2), new (2, 0), new (2, 2) };
             #endregion
 
             Assert.AreEqual(expected1, MaxPoolingLayer.MaxPool(matrix1, 2, 1).Item1);
@@ -288,7 +288,7 @@ namespace UnitTests
 
             Matrix<double> matrix1 = Matrix<double>.Build.DenseOfArray(mtx);
             Matrix<double> expected1 = Matrix<double>.Build.DenseOfArray(exp);
-            List<(int, int)> expectedPositions1 = new List<(int, int)>() { (1, 1), (1, 3), (3, 1), (3, 3) };
+            List<XYPair> expectedPositions1 = new List<XYPair>() { new (1, 1), new (1, 3), new (3, 1), new (3, 3) };
             #endregion
             #region Max Pool Setup 2
             mtx = new double[,]
@@ -309,7 +309,7 @@ namespace UnitTests
 
             Matrix<double> matrix2 = Matrix<double>.Build.DenseOfArray(mtx);
             Matrix<double> expected2 = Matrix<double>.Build.DenseOfArray(exp);
-            List<(int, int)> expectedPositions2 = new List<(int, int)>() { (2, 2), (2, 5), (5, 2), (4, 4) };
+            List<XYPair> expectedPositions2 = new List<XYPair>() { new (2, 2), new (2, 5), new (5, 2), new (4, 4) };
             #endregion
             
             #region Max Pool Setup 3
@@ -331,7 +331,7 @@ namespace UnitTests
 
             Matrix<double> matrix3 = Matrix<double>.Build.DenseOfArray(mtx);
             Matrix<double> expected3 = Matrix<double>.Build.DenseOfArray(exp);
-            List<(int, int)> expectedPositions3 = new List<(int, int)>() { (3, 3), (3, 5), (5, 3), (4, 4) };
+            List<XYPair> expectedPositions3 = new List<XYPair>() { new (3, 3), new (3, 5), new (5, 3), new (4, 4) };
             #endregion
 
             Assert.AreEqual(expected1, MaxPoolingLayer.MaxPool(matrix1, 2, 2).Item1);

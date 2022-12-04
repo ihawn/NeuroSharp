@@ -2,5 +2,40 @@
 
 <PageTitle>Index</PageTitle>
 
-<h1 style="color: white">Neurosharp</h1>
+<div class="card dark-card">
+    <div class="card-body dark-card">
+        <h1 class="big-text" style="margin-left: 50px;">Neurosharp</h1>
+    </div>
+</div>
 
+<BrowserTraining @ref="_browserTraining" _homePage="this"/>
+<CharacterRecognition @ref="_characterRecognition" _homePage="this"/>
+
+@code {
+
+    private BrowserTraining _browserTraining;
+    private CharacterRecognition _characterRecognition;
+    
+    private List<bool> loaded = new List<bool> { false, false };
+    bool hidden = true;
+    
+    public void OnModelInitialization(int pageId)
+    {
+        loaded[pageId] = true;
+        hidden = loaded.Count(x => x) != loaded.Count;
+        if (!hidden)
+        {
+            Console.WriteLine("Everything loaded");
+            _browserTraining.loaded = true;
+            _characterRecognition.loaded = true;
+        }
+    }
+}
+
+<!-- 
+Color Scheme:
+#1a2238
+#9daaf2
+#ff6a3d
+#f4db7d
+-->

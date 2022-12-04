@@ -1,35 +1,70 @@
-﻿@page "/characterrecognition"
-@using System.Text.Json
+﻿@using System.Text.Json
 @using NeurosharpBlazorWASM.Helpers
 @inject IJSRuntime JsRuntime;
+@inject HttpClient Http
 
-<MatDialogContent>
-    <SignaturePad @ref="signature" MinWidth="@size" MinHeight="@size" MaxWidth="@size" MaxHeight="@size" OnSignatureChange="@(() => SignatureChangeEvent())">
-        <SignaturePadFooter FooterDirective="@("Draw a letter or number")" />
-    </SignaturePad>  
-</MatDialogContent>
-<MatDialogActions>
-</MatDialogActions>
-
-<div>
-    <select @bind="currentChar">
-        @foreach (string s in possibleChars)
+<div class="card dark-card">
+    <div class="card-body dark-card" style="height: 315px">
+        @if (!loaded)
         {
-            <option value="@s">@s</option>
+            <div style="display: flex; justify-content: center; margin-top: 35px">
+                <Grid Color="#f4db7d" Size="200px"/>
+            </div>
         }
-    </select>
-</div>
-<div>
-    <input type="button" value="Download" id="submit-btn" onclick="@(() => DownloadDataPoint())"/>
-</div>
+        else
+        {
+            <div class="content">
+                <div class="left-content">
+                    <div class="main-content">
+                        <MatDialogContent>
+                            <SignaturePad @ref="signature" MinWidth="@size" MinHeight="@size" MaxWidth="@size" MaxHeight="@size" OnSignatureChange="@(() => SignatureChangeEvent())">
+                                <SignaturePadFooter FooterDirective="@("Draw a letter or number")"/>
+                            </SignaturePad>
+                        </MatDialogContent>
+                        <MatDialogActions>
+                        </MatDialogActions>
+                    </div>
 
-<canvas @ref="_canvasReference" style="display: none" width="@size" height="@size"></canvas>
+                    <div>
+                        <input type="button" class="button-main" value="Clear" id="submit-btn" onclick="@(() => signature.Clear())"/>
+                    </div>
+                    <div>
+                        <select @bind="currentChar" class="button-main" style="margin-top: 9px;">
+                            @foreach (string s in possibleChars)
+                            {
+                                <option value="@s">@s</option>
+                            }
+                        </select>
+                    </div>
+                    <div>
+                        <input type="button" class="button-main" style="margin-top: 9px;" value="Download" id="submit-btn" onclick="@(() => DownloadDataPoint())"/>
+                    </div>
+                </div>
+
+                <div style="float: right; margin-top: 60px; margin-right: 50px; display: inline">
+                    @for (int i = 0; i < resultsMessages.Count; i++)
+                    {
+                        <span class="big-text">@resultsMessages[i]</span>
+                    }
+                </div>
+
+                <canvas @ref="_canvasReference" style="display: none" width="@size" height="@size"></canvas>
+            </div>
+        }
+    </div>
+</div>
 
 @code
 {
+    [Parameter]
+    public Index _homePage { get; set; }
+
+    public bool loaded { get; set; }
+    
     int size = 192;
     bool dialogIsOpen = false;
     List<string> possibleChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".Select(x => x.ToString()).ToList();
+    List<string> availableChars = "abcdef".Select(x => x.ToString()).ToList();
     string currentChar;
 
     SignaturePad signature;
@@ -39,12 +74,23 @@
     ElementReference _imageReference;
 
     Vector<double> currentImageValue;
+    Dictionary<string, string> predictionValues = new Dictionary<string, string>();
+    List<string> resultsMessages = new List<string>
+    {
+        "a: 0% | ",
+        "b: 0% | ",
+        "c: 0%"
+    };
 
     private static Func<object, Task> DoImageParsing;
 
     protected override async Task OnInitializedAsync()
     {
-    //_network = NetworkStorage.Networks["CharacterRecognition"];
+        string rawModel = await Http.GetStringAsync("NetworkModels/characters_model.json");
+        Console.WriteLine("Model string loaded");
+        _network = Network.DeserializeNetworkJSON(rawModel);
+        Console.WriteLine("Model deserialized");
+        
         await base.OnInitializedAsync();
         DoImageParsing = ParseImageData;
         
@@ -52,6 +98,8 @@
         MaxPoolingLayer layer = new MaxPoolingLayer(poolSize: 4, stride: 4);
         layer.SetFilterCount(1);
         _scalingNetwork.Layers.Add(layer);
+        
+        _homePage.OnModelInitialization(1);
     }
 
     public async void DownloadDataPoint()
@@ -73,8 +121,19 @@
         );
         
         currentImageValue = _scalingNetwork.Predict(rawImageVector);
-        //string pixelVals = string.Join(",", currentImageValue);
-        //Console.WriteLine(pixelVals);
+        Vector<double> prediction = _network.Predict(currentImageValue);
+
+        Dictionary<string, decimal> sortOrderStorage = new Dictionary<string, decimal>();
+        resultsMessages = "abcdef".Select(x => x.ToString()).ToList();
+        for (int i = 0; i < availableChars.Count; i++)
+        {
+            decimal percent = System.Math.Round((decimal)prediction[i] * 100, 2);
+            resultsMessages[i] = availableChars[i] + ": " + percent + "% | ";
+            sortOrderStorage[resultsMessages[i]] = percent;
+        }
+        resultsMessages = resultsMessages.OrderByDescending(x => sortOrderStorage[x]).Take(3).ToList();
+        resultsMessages[2] = resultsMessages[2].Replace(" | ", "");
+        StateHasChanged();
     }
 
     [JSInvokable]

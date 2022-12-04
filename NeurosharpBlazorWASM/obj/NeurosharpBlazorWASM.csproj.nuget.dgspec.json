@@ -47,6 +47,10 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "BlazorPro.Spinkit": {
+              "target": "Package",
+              "version": "[1.2.0, )"
+            },
             "BootstrapBlazor.SignaturePad": {
               "target": "Package",
               "version": "[6.2.1, )"
@@ -83,6 +87,10 @@
             "System.Runtime": {
               "target": "Package",
               "version": "[4.3.1, )"
+            },
+            "bootstrap": {
+              "target": "Package",
+              "version": "[5.2.2, )"
             }
           },
           "imports": [

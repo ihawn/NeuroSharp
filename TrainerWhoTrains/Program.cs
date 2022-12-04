@@ -11,41 +11,45 @@ namespace Trainer
     {
         static void Main(string[] args)
         {
-            LetterIdentificationTraining(35);
+            LetterIdentificationTraining(20);
         }
 
         static void LetterIdentificationTraining(int epochs)
         {
-            ImageDataAggregate data = ImagePreprocessor.GetImageData(
-                @"C:\Users\Isaac\Documents\C#\NeuroSharp\Data\english handwritten characters\english.csv",
-                @"C:\Users\Isaac\Documents\C#\NeuroSharp\Data\english handwritten characters",
-                expectedHeight: 32, expectedWidth: 32, isColor: false
-            );
-
-            double trainSplit = 0.9;
-
-            List<Vector<double>> xTrain = data.XValues.Take((int)Math.Floor(trainSplit * data.XValues.Count)).ToList();
-            List<Vector<double>> yTrain = data.YValues.Take((int)Math.Floor(trainSplit * data.XValues.Count)).ToList();
+            string path = @"C:\Users\Isaac\Downloads";
+            string possibleChars = "abcdef";
             
-            List<Vector<double>> xTest = 
-                data.XValues.Skip((int)Math.Floor(trainSplit * data.XValues.Count)).Take(Int32.MaxValue).ToList();
-            List<Vector<double>> yTest = 
-                data.YValues.Skip((int)Math.Floor(trainSplit * data.XValues.Count)).Take(Int32.MaxValue).ToList();
+            List<Vector<double>> xTrain = new List<Vector<double>>();
+            List<Vector<double>> yTrain = new List<Vector<double>>();
+           
+            foreach (string file in Directory.EnumerateFiles(path, "*.txt"))
+            {
+                Vector<double> x = Vector<double>.Build.DenseOfEnumerable(
+                   File.ReadAllText(file).Split(",").Select(x => double.Parse(x))
+                );
+                
+                string character = file.Replace(path + @"\", "")[0].ToString();
+                Vector<double> y = Vector<double>.Build.Dense(possibleChars.Length);
+                y[possibleChars.IndexOf(character)] = 1;
+                
+                xTrain.Add(x);
+                yTrain.Add(y);
+            }
 
             Network network = new Network(xTrain[0].Count);
-            network.Add(new ConvolutionalLayer(kernel: 2, filters: 64, stride: 1, channels: 1));
+            /*network.Add(new ConvolutionalLayer(kernel: 2, filters: 16, stride: 1, channels: 1));
+            network.Add(new ActivationLayer(ActivationType.ReLu));
+            network.Add(new MaxPoolingLayer(poolSize: 2));*/
+            network.Add(new ConvolutionalLayer(kernel: 2, filters: 16, stride: 2, channels: 1));
             network.Add(new ActivationLayer(ActivationType.ReLu));
             network.Add(new MaxPoolingLayer(poolSize: 2));
-            network.Add(new ConvolutionalLayer(kernel: 2, filters: 32, stride: 2, channels: 64));
+            network.Add(new ConvolutionalLayer(kernel: 2, filters: 4, stride: 1, channels: 16));
             network.Add(new ActivationLayer(ActivationType.ReLu));
-            network.Add(new MaxPoolingLayer(poolSize: 2));
-            network.Add(new ConvolutionalLayer(kernel: 2, filters: 16, stride: 1, channels: 32));
-            network.Add(new ActivationLayer(ActivationType.ReLu));
-            network.Add(new FullyConnectedLayer(512));
+           /* network.Add(new FullyConnectedLayer(512));
             network.Add(new ActivationLayer(ActivationType.Tanh));
             network.Add(new FullyConnectedLayer(256));
-            network.Add(new ActivationLayer(ActivationType.Tanh));
-            network.Add(new FullyConnectedLayer(128));
+            network.Add(new ActivationLayer(ActivationType.Tanh));*/
+            network.Add(new FullyConnectedLayer(196));
             network.Add(new ActivationLayer(ActivationType.Tanh));
             network.Add(new FullyConnectedLayer(64));
             network.Add(new ActivationLayer(ActivationType.Tanh));
@@ -57,9 +61,9 @@ namespace Trainer
             network.Train(xTrain, yTrain, epochs: epochs, TrainingConfiguration.Minibatch, OptimizerType.Adam, batchSize: 64, learningRate: 0.002f);
             
             string modelJson = network.SerializeToJSON();
-            File.WriteAllText(@"C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASM\wwwroot\NetworkModels\characters_model2.json", modelJson);
+            File.WriteAllText(@"C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASM\wwwroot\NetworkModels\characters_model.json", modelJson);
             
-            int i = 0;
+           /* int i = 0;
             int wrongCount = 0;
             foreach(var test in xTest)
             {
@@ -75,7 +79,7 @@ namespace Trainer
                 i++;
             }
             double acc = (1d - ((double)wrongCount) / i);
-            Console.WriteLine("Accuracy: " + acc);
+            Console.WriteLine("Accuracy: " + acc);*/
         }
     }
 }

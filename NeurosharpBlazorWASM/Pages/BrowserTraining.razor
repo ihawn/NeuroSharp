@@ -1,0 +1,194 @@
+﻿@inject IJSRuntime JsRuntime;
+
+<div class="card dark-card">
+    <div class="card-body dark-card" style="height: 610px">
+        <div class="content">
+            <div class="left-content" style="width: 850px">
+                <div id="canvasHolder" class="main-content">
+                    <BECanvas Width="480" Height="480" @ref="CanvasRef"></BECanvas>
+                </div>
+                <div>
+                    <input class="button-main" type="button" value="@trainMessage" id="submit-btn" onclick="@(() => ToggleTraining())"/>
+                </div>
+            </div>
+            
+            <div class="right-content">
+                <div class="big-text">@epochMessage</div>
+                <div class="big-text">@lossMessage</div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+@code{
+    
+    [Parameter]
+    public Index _homePage { get; set; }
+    
+    public bool loaded { get; set; }
+    
+    private Field DataField = new Field(480, 480);
+    private Canvas2DContext ctx;
+    protected BECanvasComponent CanvasRef;
+    private DateTime LastRender;
+
+    Network network;
+    List<Vector<double>> xTrain;
+    List<Vector<double>> yTrain;
+    int epochs = 151;
+    int currentEpoch = 1;
+    int nextSample = 0;
+    int sampleFrequency = 3;
+    int frame = 0;
+    Vector<double> currentClassification;
+    List<(Vector<double>, Vector<double>)> data;
+
+    int sampleTileSize = 60;
+
+    bool train = false;
+    string trainMessage = "Train";
+    string lossMessage = "";
+    string epochMessage = "";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        this.ctx = await CanvasRef.CreateCanvas2DAsync();
+        await JsRuntime.InvokeAsync<object>("initRenderJS", DotNetObjectReference.Create(this));
+        await base.OnInitializedAsync();
+        _homePage.OnModelInitialization(0);
+    }
+
+    public void ToggleTraining()
+    {
+        train = !train;
+        trainMessage = train ? "Pause Training" : "Train";
+    }
+
+    [JSInvokable]
+    public void ResizeInBlazor(double width, double height) => DataField.Resize(width, height);
+
+    [JSInvokable]
+    public async ValueTask RenderInBlazor(float timeStamp)
+    {
+        if (DataField.DataPoints.Count == 0)
+        {
+            DataField.AddRandomDataPoints(50, 480, 480, 5, "#1a2238", "#ff6a3d");
+            DataField.AddDataSamplers(sampleTileSize);
+
+            Task initTask = Task.Run(() => InitializeNetwork());
+            initTask.Wait();
+        }
+
+        if (currentEpoch < epochs)
+        {
+            await this.ctx.BeginBatchAsync();
+            await this.ctx.SetStrokeStyleAsync("#FFFFFF");
+
+            @for (int i = 0; i < DataField.SampleDataPoints.Count; i++)
+            {
+                if (frame == sampleFrequency || frame == 0)
+                {
+                    frame = 0;
+                    if (train)
+                    {
+                        Task<Vector<double>> classificationTask = Task.Run(() => network.Predict(
+                            Vector<double>.Build.DenseOfArray(
+                                new double[]
+                                {
+                                    (DataField.SampleDataPoints[i].X + sampleTileSize / 2) / DataField.Width,
+                                    (DataField.SampleDataPoints[i].Y + sampleTileSize / 2) / DataField.Height
+                                })
+                            ));
+                        classificationTask.Wait();
+                        currentClassification = classificationTask.Result;
+                    }
+
+                    DataField.SampleDataPoints[i].Color = !train ? "#9daaf2" :
+                        currentClassification.ToList().IndexOf(currentClassification.Max()) == 0 ? "#9daaf2" : "#f4db7d";
+                }
+                frame++;
+
+                await this.ctx.BeginPathAsync();
+                await this.ctx.RectAsync(DataField.SampleDataPoints[i].X, DataField.SampleDataPoints[i].Y, sampleTileSize, sampleTileSize);
+                await this.ctx.SetFillStyleAsync(DataField.SampleDataPoints[i].Color);
+                await this.ctx.FillAsync();
+                await this.ctx.StrokeAsync();
+            }
+
+            @foreach (var ball in DataField.DataPoints)
+            {
+                await this.ctx.SetFillStyleAsync(ball.Color);
+                await this.ctx.FillRectAsync(ball.X, ball.Y, 20, 20);
+            }
+
+            await this.ctx.EndBatchAsync();
+
+            if (xTrain != null && train)
+            {
+                Task task = Task.Run(() => SGDTrainStep(xTrain, yTrain, epochs, OptimizerType.GradientDescent, currentEpoch));
+                task.Wait();
+            }
+        }
+        else
+        {
+            trainMessage = "Regenerate";
+            StateHasChanged();
+        }
+    }
+    
+    void SGDTrainStep(List<Vector<double>> xTrain, List<Vector<double>> yTrain, int epochs, OptimizerType optimizerType, int epoch, double learningRate = 0.005f)
+    {
+        int samples = xTrain.Count;
+        Console.WriteLine("\nEpoch: " + epoch);
+        epochMessage = "Epoch: " + epoch;
+
+        double err = 0;
+        int lastProgress = 0;
+        for (int j = 0; j < samples; j++)
+        {
+            Vector<double> output = network.Predict(xTrain[j]);
+            err += network.Loss(yTrain[j], output);
+            
+            Task task1 = Task.Run(() => network.BackPropagate(yTrain[j], output));
+            task1.Wait();
+            
+            Task task2 = Task.Run(() => network.UpdateParameters(optimizerType, j, learningRate));
+            task2.Wait();
+        }
+        
+        currentEpoch++;
+
+        err /= samples;
+        Console.WriteLine("Loss: " + err);
+        lossMessage = "Loss: " + err;
+    }
+
+    void InitializeNetwork()
+    {
+        network = new Network(2);
+        network.Add(new FullyConnectedLayer(16));
+        network.Add(new ActivationLayer(ActivationType.ReLu));
+        network.Add(new FullyConnectedLayer(80));
+        network.Add(new ActivationLayer(ActivationType.ReLu));
+        network.Add(new FullyConnectedLayer(16));
+        network.Add(new ActivationLayer(ActivationType.ReLu));
+        network.Add(new FullyConnectedLayer(2));
+        network.Add(new SoftmaxActivationLayer());
+        network.UseLoss(LossType.BinaryCrossentropy);
+            
+        network.ParameterizedLayers = network.Layers.Where(l => l is ParameterizedLayer).Select(l => (ParameterizedLayer)l).ToList();
+
+        xTrain = new List<Vector<double>>();
+        yTrain = new List<Vector<double>>();
+        foreach (DataPoint datapoint in DataField.DataPoints)
+        {
+            Vector<double> normalizedDatapoint = Vector<double>.Build.DenseOfArray(new double[] { datapoint.X / DataField.Width, datapoint.Y / DataField.Height });
+            xTrain.Add(normalizedDatapoint);
+            yTrain.Add(Vector<double>.Build.DenseOfArray(
+                datapoint.Color == "#1a2238" ? new double[] { 1, 0 } : new double[] { 0, 1 }
+            ));
+        }
+    }
+}

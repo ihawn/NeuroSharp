@@ -1,4 +1,5 @@
-﻿using MathNet.Numerics.LinearAlgebra;
+﻿using System.Text.Json.Serialization;
+using MathNet.Numerics.LinearAlgebra;
 using NeuroSharp.Enumerations;
 
 namespace NeuroSharp
@@ -7,8 +8,12 @@ namespace NeuroSharp
     {
         public Matrix<double>[] Weights { get; set; }
         public Vector<double>[] Biases { get; set; }
+        
+        [JsonIgnore]
         public Matrix<double>[] WeightGradients { get; set; }
+        [JsonIgnore]
         public Vector<double>[] BiasGradients { get; set; }
+        [JsonIgnore]
         public bool AccumulateGradients { get; set; }
 
         public abstract void InitializeParameters();
