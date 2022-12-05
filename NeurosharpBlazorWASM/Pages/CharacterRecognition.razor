@@ -4,7 +4,7 @@
 @inject HttpClient Http
 
 <div class="card dark-card">
-    <div class="card-body dark-card" style="height: 315px">
+    <div class="card-body" style="height: 315px">
         @if (!loaded)
         {
             <div style="display: flex; justify-content: center; margin-top: 35px">
@@ -86,10 +86,10 @@
 
     protected override async Task OnInitializedAsync()
     {
-        string rawModel = await Http.GetStringAsync("NetworkModels/characters_model.json");
+        /*string rawModel = await Http.GetStringAsync("NetworkModels/characters_model.json");
         Console.WriteLine("Model string loaded");
         _network = Network.DeserializeNetworkJSON(rawModel);
-        Console.WriteLine("Model deserialized");
+        Console.WriteLine("Model deserialized");*/
         
         await base.OnInitializedAsync();
         DoImageParsing = ParseImageData;

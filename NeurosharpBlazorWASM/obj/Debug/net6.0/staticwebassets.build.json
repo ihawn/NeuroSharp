@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "HrF1bPy4A0O/V2OtqVged9IbFxNnSED02E850wfhHq4=",
+  "Hash": "jOLh92sOebnHDuExo17fP2tqyLpoWzOJLhEuAcJoeSk=",
   "Source": "NeurosharpBlazorWASM",
   "BasePath": "/",
   "Mode": "Root",
@@ -10438,12 +10438,12 @@
       "OriginalItemSpec": "wwwroot\\NetworkModels\\characters_model.json"
     },
     {
-      "Identity": "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\NeurosharpBlazorWASM\\wwwroot\\NetworkModels\\characters_model_ab.json",
+      "Identity": "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\NeurosharpBlazorWASM\\wwwroot\\NetworkModels\\characters_model2.json",
       "SourceId": "NeurosharpBlazorWASM",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\NeurosharpBlazorWASM\\wwwroot\\",
       "BasePath": "/",
-      "RelativePath": "NetworkModels/characters_model_ab.json",
+      "RelativePath": "NetworkModels/characters_model2.json",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -10452,24 +10452,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\NetworkModels\\characters_model_ab.json"
-    },
-    {
-      "Identity": "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\NeurosharpBlazorWASM\\wwwroot\\NetworkModels\\characters_model_abcd.json",
-      "SourceId": "NeurosharpBlazorWASM",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\NeurosharpBlazorWASM\\wwwroot\\",
-      "BasePath": "/",
-      "RelativePath": "NetworkModels/characters_model_abcd.json",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\NetworkModels\\characters_model_abcd.json"
+      "OriginalItemSpec": "wwwroot\\NetworkModels\\characters_model2.json"
     },
     {
       "Identity": "C:\\Users\\Isaac\\Documents\\C#\\NeuroSharp\\NeurosharpBlazorWASM\\wwwroot\\sample-data\\weather.json",

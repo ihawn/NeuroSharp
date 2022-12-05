@@ -40,15 +40,8 @@
         window.requestAnimationFrame(renderJS);
     }
 
-    function resizeCanvasToFitWindow() {
-        var holder = document.getElementById('canvasHolder');
-        var canvas = holder.querySelector('canvas');
-    }
-
     window.initRenderJS = (instance) => {
         window.theInstance = instance;
-        window.addEventListener("resize", resizeCanvasToFitWindow);
-        resizeCanvasToFitWindow();
         window.requestAnimationFrame(renderJS);
     };
 </script>
