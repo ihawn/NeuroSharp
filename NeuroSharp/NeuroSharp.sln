@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeurosharpBlazorWASM", "..\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrainerWhoTrains", "..\TrainerWhoTrains\TrainerWhoTrains.csproj", "{E35D64CB-FED3-42E2-9BA3-C73ACA144C66}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeurosharpBlazorWasm.Server", "..\NeurosharpBlazorWASMServer\NeurosharpBlazorWasm.Server.csproj", "{60055D4B-8710-45C1-9A8E-983C0EC6B79A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,12 @@ Global
 		{E35D64CB-FED3-42E2-9BA3-C73ACA144C66}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E35D64CB-FED3-42E2-9BA3-C73ACA144C66}.Release2|Any CPU.ActiveCfg = Debug|Any CPU
 		{E35D64CB-FED3-42E2-9BA3-C73ACA144C66}.Release2|Any CPU.Build.0 = Debug|Any CPU
+		{60055D4B-8710-45C1-9A8E-983C0EC6B79A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60055D4B-8710-45C1-9A8E-983C0EC6B79A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60055D4B-8710-45C1-9A8E-983C0EC6B79A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60055D4B-8710-45C1-9A8E-983C0EC6B79A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60055D4B-8710-45C1-9A8E-983C0EC6B79A}.Release2|Any CPU.ActiveCfg = Debug|Any CPU
+		{60055D4B-8710-45C1-9A8E-983C0EC6B79A}.Release2|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

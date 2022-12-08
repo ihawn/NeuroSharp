@@ -1,7 +1,5 @@
-﻿using System.Net;
-using System.Runtime.CompilerServices;
+﻿
 using NeuroSharp.Training;
-using System.Net.Http.Json;
 
 namespace NeurosharpBlazorWASM.Models;
 
@@ -15,7 +13,11 @@ public class NetworkStorage
         get
         {
             if (_instance == null)
+            {
                 _instance = new NetworkStorage();
+                _instance._settings = new Dictionary<string, Network>();
+            }
+
             return _instance;
         }
     }
@@ -25,7 +27,7 @@ public class NetworkStorage
     public void LoadAllNetworkModels()
     {
         _settings["CharacterRecognition"] = Network.DeserializeNetworkJSON(
-            File.ReadAllText($"{System.IO.Directory.GetCurrentDirectory()}{@"NetworkModels/characters_model_ab.json"}")
+            File.ReadAllText($"{System.IO.Directory.GetCurrentDirectory()}{@"/NetworkModels/characters_model.json"}")
         );
     }
 }

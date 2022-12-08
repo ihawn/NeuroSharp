@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <RestoreSuccess Condition=" '$(RestoreSuccess)' == '' ">True</RestoreSuccess>
+    <RestoreTool Condition=" '$(RestoreTool)' == '' ">NuGet</RestoreTool>
+    <ProjectAssetsFile Condition=" '$(ProjectAssetsFile)' == '' ">$(MSBuildThisFileDirectory)project.assets.json</ProjectAssetsFile>
+    <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">$(UserProfile)\.nuget\packages\</NuGetPackageRoot>
+    <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">C:\Users\Isaac\.nuget\packages\;C:\Program Files\dotnet\sdk\NuGetFallbackFolder</NuGetPackageFolders>
+    <NuGetProjectStyle Condition=" '$(NuGetProjectStyle)' == '' ">PackageReference</NuGetProjectStyle>
+    <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">6.2.0</NuGetToolVersion>
+  </PropertyGroup>
+  <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <SourceRoot Include="C:\Users\Isaac\.nuget\packages\" />
+    <SourceRoot Include="C:\Program Files\dotnet\sdk\NuGetFallbackFolder\" />
+  </ItemGroup>
+  <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)syncfusion.blazor\20.3.0.52\buildTransitive\Syncfusion.Blazor.props" Condition="Exists('$(NuGetPackageRoot)syncfusion.blazor\20.3.0.52\buildTransitive\Syncfusion.Blazor.props')" />
+    <Import Project="$(NuGetPackageRoot)blazor.extensions.canvas\1.1.1\buildTransitive\Blazor.Extensions.Canvas.props" Condition="Exists('$(NuGetPackageRoot)blazor.extensions.canvas\1.1.1\buildTransitive\Blazor.Extensions.Canvas.props')" />
+    <Import Project="$(NuGetPackageRoot)mobsites.blazor.signaturepad\2.0.0-preview1\buildTransitive\Mobsites.Blazor.SignaturePad.props" Condition="Exists('$(NuGetPackageRoot)mobsites.blazor.signaturepad\2.0.0-preview1\buildTransitive\Mobsites.Blazor.SignaturePad.props')" />
+    <Import Project="$(NuGetPackageRoot)matblazor\2.9.0-develop-042\buildTransitive\MatBlazor.props" Condition="Exists('$(NuGetPackageRoot)matblazor\2.9.0-develop-042\buildTransitive\MatBlazor.props')" />
+    <Import Project="$(NuGetPackageRoot)bootstrapblazor.signaturepad\6.2.1\buildTransitive\BootstrapBlazor.SignaturePad.props" Condition="Exists('$(NuGetPackageRoot)bootstrapblazor.signaturepad\6.2.1\buildTransitive\BootstrapBlazor.SignaturePad.props')" />
+    <Import Project="$(NuGetPackageRoot)blazorpro.spinkit\1.2.0\buildTransitive\BlazorPro.Spinkit.props" Condition="Exists('$(NuGetPackageRoot)blazorpro.spinkit\1.2.0\buildTransitive\BlazorPro.Spinkit.props')" />
+  </ImportGroup>
+</Project>

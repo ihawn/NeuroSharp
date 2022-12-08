@@ -5,7 +5,7 @@
 
 <div class="card dark-card">
     <div class="card-body" style="height: 315px">
-        @if (!loaded)
+        @if (false)//!loaded)
         {
             <div style="display: flex; justify-content: center; margin-top: 35px">
                 <Grid Color="#f4db7d" Size="200px"/>
@@ -86,11 +86,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        /*string rawModel = await Http.GetStringAsync("NetworkModels/characters_model.json");
-        Console.WriteLine("Model string loaded");
-        _network = Network.DeserializeNetworkJSON(rawModel);
-        Console.WriteLine("Model deserialized");*/
-        
         await base.OnInitializedAsync();
         DoImageParsing = ParseImageData;
         
@@ -121,7 +116,8 @@
         );
         
         currentImageValue = _scalingNetwork.Predict(rawImageVector);
-        Vector<double> prediction = _network.Predict(currentImageValue);
+        List<double> predictionResponse = await Http.GetFromJsonAsync<List<double>>($"NeurosharpNetworkRequests?delimitedPixelValues={string.Join(",", currentImageValue)}");
+        Vector<double> prediction = Vector<double>.Build.DenseOfEnumerable(predictionResponse);
 
         Dictionary<string, decimal> sortOrderStorage = new Dictionary<string, decimal>();
         resultsMessages = "abcdef".Select(x => x.ToString()).ToList();
