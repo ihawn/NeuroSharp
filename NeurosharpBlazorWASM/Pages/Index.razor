@@ -12,13 +12,16 @@
 <BrowserTraining @ref="_browserTraining" _homePage="this"/>
 <br/>
 <CharacterRecognition @ref="_characterRecognition" _homePage="this"/>
+<br/>
+<SentimentAnalysis @ref="_sentimentAnalysis" _homePage="this"/>
 
 @code {
 
     private BrowserTraining _browserTraining;
     private CharacterRecognition _characterRecognition;
+    private SentimentAnalysis _sentimentAnalysis;
     
-    private List<bool> loaded = new List<bool> { false, false };
+    private List<bool> loaded = new List<bool> { false, false, false };
     bool hidden = true;
     
     public void OnModelInitialization(int pageId)

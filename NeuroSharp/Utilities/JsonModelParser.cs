@@ -22,17 +22,7 @@ namespace NeuroSharp.Utilities
 
             List<Layer> layers = jo["Layers"].Select(layer => 
                 GetLayerType(layer) == LayerType.FullyConnected ? 
-                    new FullyConnectedLayer(
-                        weight: JsonArrayToMatrix(layer["Weights"][0]),
-                        bias: JsonArrayToVector(layer["Biases"][0]),
-                        weightGradient: null,//JsonArrayToMatrix(layer["WeightGradients"][0]),
-                        biasGradient: null,//JsonArrayToVector(layer["BiasGradients"][0]),
-                        inputSize: Int32.Parse((string)layer["InputSize"]),
-                        outputSize: Int32.Parse((string)layer["OutputSize"]),
-                        adam: null,//AdamFromJson(layer["_adam"]),
-                        accumulateGradients: bool.Parse((string)layer["AccumulateGradients"]),
-                        id: Int32.Parse((string)layer["Id"])
-                    ) : 
+                    FullyConnectedLayerFromJSON(layer) : 
                 GetLayerType(layer) == LayerType.Convolutional ?
                     new ConvolutionalLayer(
                         operators: layer["ChannelOperators"]
@@ -92,7 +82,24 @@ namespace NeuroSharp.Utilities
                         stride: Int32.Parse((string)layer["_stride"]),
                         filters: Int32.Parse((string)layer["_filters"]),
                         id: Int32.Parse((string)layer["Id"])
-                    ) : null
+                    ) : 
+                GetLayerType(layer) == LayerType.LSTM ?
+                    new LSTMLayer(
+                        hiddenUnits: Int32.Parse((string)layer["_hiddenUnits"]),
+                        vocabSize: Int32.Parse((string)layer["_vocabSize"]),
+                        sequenceLength: Int32.Parse((string)layer["_sequenceLength"]),
+                        inputSize: Int32.Parse((string)layer["InputSize"]),
+                        outputSize: Int32.Parse((string)layer["OutputSize"]),
+                        lstmGates: new []
+                        {
+                            FullyConnectedLayerFromJSON(layer["LSTMGates"][0]),
+                            FullyConnectedLayerFromJSON(layer["LSTMGates"][1]),
+                            FullyConnectedLayerFromJSON(layer["LSTMGates"][2]),
+                            FullyConnectedLayerFromJSON(layer["LSTMGates"][3]),
+                            FullyConnectedLayerFromJSON(layer["LSTMGates"][4]),
+                        }
+                    ) :
+                    null
             ).ToList();
 
             //todo: add support for lstm layer
@@ -156,6 +163,18 @@ namespace NeuroSharp.Utilities
                 beta1: Double.Parse((string)obj["_beta1"]),
                 beta2: Double.Parse((string)obj["_beta2"]),
                 epsilon: Double.Parse((string)obj["_epsilon"])
+            );
+        }
+
+        public FullyConnectedLayer FullyConnectedLayerFromJSON(JToken layer)
+        {
+            return new FullyConnectedLayer(
+                weight: JsonArrayToMatrix(layer["Weights"][0]),
+                bias: JsonArrayToVector(layer["Biases"][0]),
+                inputSize: Int32.Parse((string)layer["InputSize"]),
+                outputSize: Int32.Parse((string)layer["OutputSize"]),
+                accumulateGradients: bool.Parse((string)layer["AccumulateGradients"]),
+                id: Int32.Parse((string)layer["Id"])
             );
         }
 

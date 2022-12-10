@@ -31,12 +31,13 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
                         int vocabSize = i;
                         int sequenceLength = j;
                         int hiddenSize = n;
+                        bool bidirectional = false; //new Random().NextDouble() > 0.5;
 
-                        Vector<double> truthY = Vector<double>.Build.Random(vocabSize);
+                        Vector<double> truthY = Vector<double>.Build.Random(vocabSize * (bidirectional ? 2 : 1));
                         Vector<double> testX = Vector<double>.Build.Random(sequenceLength * vocabSize);
 
                         Network network = new Network(27 * 12);
-                        network.Add(new LongShortTermMemoryLayer(vocabSize, hiddenSize, sequenceLength));
+                        network.Add(new LSTMLayer(vocabSize, hiddenSize, sequenceLength, bidirectional));
                         network.Add(new ActivationLayer(ActivationType.Tanh));
                         network.Add(new SoftmaxActivationLayer());
                         network.UseLoss(LossType.CategoricalCrossentropy);
@@ -76,21 +77,22 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
                             int vocabSize = i;
                             int sequenceLength = j;
                             int hiddenSize = n;
+                            bool bidirectional = false; //new Random().NextDouble() > 0.5;
 
-                            Vector<double> truthY = Vector<double>.Build.Random(vocabSize);
+                            Vector<double> truthY = Vector<double>.Build.Random(vocabSize * (bidirectional ? 2 : 1));
                             Vector<double> testX = Vector<double>.Build.Random(sequenceLength * vocabSize);
                             Vector<double> testWeight =
                                 Vector<double>.Build.Random((vocabSize + hiddenSize) * hiddenSize);
 
                             Network network = new Network(27 * 12);
-                            network.Add(new LongShortTermMemoryLayer(vocabSize, hiddenSize, sequenceLength));
+                            network.Add(new LSTMLayer(vocabSize, hiddenSize, sequenceLength, bidirectional));
                             network.Add(new ActivationLayer(ActivationType.Tanh));
                             network.Add(new SoftmaxActivationLayer());
                             network.UseLoss(LossType.CategoricalCrossentropy);
 
                             double networkLossHWeightInput(Vector<double> x)
                             {
-                                LongShortTermMemoryLayer lstm = (LongShortTermMemoryLayer)network.Layers[0];
+                                LSTMLayer lstm = (LSTMLayer)network.Layers[0];
                                 lstm.LSTMGates[(int)LSTMParameter.F].Weights[0] =
                                     MathUtils.Unflatten(x, vocabSize + hiddenSize, hiddenSize);
                                 x = network.Predict(testX);
@@ -107,7 +109,7 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
                                 testGradient = network.Layers[k].BackPropagation(testGradient);
                                 if (k == 0)
                                 {
-                                    LongShortTermMemoryLayer lstm = (LongShortTermMemoryLayer)network.Layers[0];
+                                    LSTMLayer lstm = (LSTMLayer)network.Layers[0];
                                     explicitWeightGradient = MathUtils.Flatten(lstm.LSTMGates[(int)LSTMParameter.F]
                                         .WeightGradients[0].Transpose());
                                 }
@@ -134,20 +136,21 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
                             int vocabSize = i;
                             int sequenceLength = j;
                             int hiddenSize = n;
+                            bool bidirectional = false; //new Random().NextDouble() > 0.5;
 
-                            Vector<double> truthY = Vector<double>.Build.Random(vocabSize);
+                            Vector<double> truthY = Vector<double>.Build.Random(vocabSize * (bidirectional ? 2 : 1));
                             Vector<double> testX = Vector<double>.Build.Random(sequenceLength * vocabSize);
                             Vector<double> testBias = Vector<double>.Build.Random(hiddenSize);
 
                             Network network = new Network(27 * 12);
-                            network.Add(new LongShortTermMemoryLayer(vocabSize, hiddenSize, sequenceLength));
+                            network.Add(new LSTMLayer(vocabSize, hiddenSize, sequenceLength, bidirectional));
                             network.Add(new ActivationLayer(ActivationType.Tanh));
                             network.Add(new SoftmaxActivationLayer());
                             network.UseLoss(LossType.CategoricalCrossentropy);
 
                             double networkLossHWeightInput(Vector<double> x)
                             {
-                                LongShortTermMemoryLayer lstm = (LongShortTermMemoryLayer)network.Layers[0];
+                                LSTMLayer lstm = (LSTMLayer)network.Layers[0];
                                 lstm.LSTMGates[lstmGateId].Biases[0] = x;
                                 x = network.Predict(testX);
                                 return network.Loss(truthY, x);
@@ -163,7 +166,7 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
                                 testGradient = network.Layers[k].BackPropagation(testGradient);
                                 if (k == 0)
                                 {
-                                    LongShortTermMemoryLayer lstm = (LongShortTermMemoryLayer)network.Layers[0];
+                                    LSTMLayer lstm = (LSTMLayer)network.Layers[0];
                                     explicitWeightGradient = lstm.LSTMGates[lstmGateId].BiasGradients[0];
                                 }
                             }

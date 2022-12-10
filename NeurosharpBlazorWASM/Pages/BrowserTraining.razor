@@ -37,7 +37,7 @@
     Network network;
     List<Vector<double>> xTrain;
     List<Vector<double>> yTrain;
-    int epochs = 151;
+    int epochs = 201;
     int currentEpoch = 1;
     int nextSample = 0;
     int sampleFrequency = 3;
@@ -64,6 +64,15 @@
 
     public void ToggleTraining()
     {
+        if (trainMessage == "Regenerate")
+        {
+            currentEpoch = 0;
+            DataField.DataPoints.Clear();
+            firstFrameRendered = false;
+            lastFrameRendered = false;
+            InitializeNetwork();
+        }
+        
         train = !train;
         trainMessage = train ? "Pause Training" : "Train";
     }
@@ -139,7 +148,7 @@
         }
     }
     
-    void SGDTrainStep(List<Vector<double>> xTrain, List<Vector<double>> yTrain, int epochs, OptimizerType optimizerType, int epoch, double learningRate = 0.005f)
+    void SGDTrainStep(List<Vector<double>> xTrain, List<Vector<double>> yTrain, int epochs, OptimizerType optimizerType, int epoch, double learningRate = 0.0075f)
     {
         int samples = xTrain.Count;
         Console.WriteLine("\nEpoch: " + epoch);

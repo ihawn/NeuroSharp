@@ -3,9 +3,9 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:46044",
+      "applicationUrl": "http://192.168.50.90:46044;https://*:46044",
       "sslPort": 44393
-    }
+    }                                            
   },
   "profiles": {
     "NeurosharpBlazorWASM.Server": {
@@ -13,7 +13,7 @@
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
-      "applicationUrl": "https://localhost:7166;http://localhost:5063",
+      "applicationUrl": "https://192.168.50.90:7166;http://192.168.50.90:5063;https://*:7166",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

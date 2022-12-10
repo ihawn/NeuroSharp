@@ -652,7 +652,7 @@ namespace NeuroSharp
             
             ///
             Network network = new Network(maxWordCount * maxReviewLength);
-            network.Add(new LongShortTermMemoryLayer(maxWordCount, 96, maxReviewLength));
+            network.Add(new LSTMLayer(maxWordCount, 96, maxReviewLength));
             network.Add(new ActivationLayer(ActivationType.Tanh));
             network.Add(new FullyConnectedLayer(2));
             network.Add(new SoftmaxActivationLayer());

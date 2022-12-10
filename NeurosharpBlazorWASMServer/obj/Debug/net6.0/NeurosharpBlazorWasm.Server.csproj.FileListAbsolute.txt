@@ -73,5 +73,4 @@ C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASMServer\obj\Debug\net6
 C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASMServer\obj\Debug\net6.0\NeurosharpBlazorWasm.Server.pdb
 C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASMServer\obj\Debug\net6.0\NeurosharpBlazorWasm.Server.genruntimeconfig.cache
 C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASMServer\bin\Debug\net6.0\NetworkModels\characters_model.json
-C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASMServer\bin\Debug\net6.0\NetworkModels\characters_model2.json
 C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASMServer\bin\Debug\net6.0\web.config

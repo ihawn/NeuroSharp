@@ -136,5 +136,35 @@ namespace UnitTests.ModelTests
                 Assert.AreEqual(pred1, pred2);
             }
         }
+        
+        [Test]
+        public void SerializeToJSON_NetworkSerializesToJsonAndDeserializes_LSTMAndDense()
+        {
+            List<Vector<double>> xTrain = new List<Vector<double>>();
+            List<Vector<double>> yTrain = new List<Vector<double>>();
+
+            for (int i = 0; i < 15; i++)
+            {
+                xTrain.Add(Vector<double>.Build.Random(8 * 16));
+                yTrain.Add(Vector<double>.Build.Random(4));
+            }
+
+            Network network = new Network(8 * 16);
+            network.Add(new LSTMLayer(8, 32, 16));
+            network.Add(new FullyConnectedLayer(4));
+            network.Add(new SoftmaxActivationLayer());
+            network.UseLoss(LossType.CategoricalCrossentropy);
+
+            network.MinibatchTrain(xTrain, yTrain, epochs: 2, OptimizerType.Adam, batchSize: 64, learningRate: 0.001f);
+            string modelJson = network.SerializeToJSON();
+            Network deserializedNetwork = Network.DeserializeNetworkJSON(modelJson);
+
+            foreach (Vector<double> x in xTrain)
+            {
+                Vector<double> pred1 = network.Predict(x);
+                Vector<double> pred2 = deserializedNetwork.Predict(x);
+                Assert.AreEqual(pred1, pred2);
+            }
+        }
     }
 }

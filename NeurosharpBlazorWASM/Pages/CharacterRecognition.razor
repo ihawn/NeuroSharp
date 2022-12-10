@@ -5,52 +5,43 @@
 
 <div class="card dark-card">
     <div class="card-body" style="height: 315px">
-        @if (false)//!loaded)
-        {
-            <div style="display: flex; justify-content: center; margin-top: 35px">
-                <Grid Color="#f4db7d" Size="200px"/>
-            </div>
-        }
-        else
-        {
-            <div class="content">
-                <div class="left-content">
-                    <div class="main-content">
-                        <MatDialogContent>
-                            <SignaturePad @ref="signature" MinWidth="@size" MinHeight="@size" MaxWidth="@size" MaxHeight="@size" OnSignatureChange="@(() => SignatureChangeEvent())">
-                                <SignaturePadFooter FooterDirective="@("Draw a letter or number")"/>
-                            </SignaturePad>
-                        </MatDialogContent>
-                        <MatDialogActions>
-                        </MatDialogActions>
-                    </div>
-
-                    <div>
-                        <input type="button" class="button-main" value="Clear" id="submit-btn" onclick="@(() => signature.Clear())"/>
-                    </div>
-                    <div>
-                        <select @bind="currentChar" class="button-main" style="margin-top: 9px;">
-                            @foreach (string s in possibleChars)
-                            {
-                                <option value="@s">@s</option>
-                            }
-                        </select>
-                    </div>
-                    <div>
-                        <input type="button" class="button-main" style="margin-top: 9px;" value="Download" id="submit-btn" onclick="@(() => DownloadDataPoint())"/>
-                    </div>
+        <div class="content">
+            <div class="left-content">
+                <div class="main-content">
+                    <MatDialogContent>
+                        <SignaturePad @ref="signature" MinWidth="@size" MinHeight="@size" MaxWidth="@size" MaxHeight="@size" OnSignatureChange="@(() => SignatureChangeEvent())">
+                            <SignaturePadFooter FooterDirective="@("Draw a letter or number")"/>
+                        </SignaturePad>
+                    </MatDialogContent>
+                    <MatDialogActions>
+                    </MatDialogActions>
                 </div>
 
-                <div style="float: right; margin-top: 60px; margin-right: 50px; display: inline">
-                    @for (int i = 0; i < resultsMessages.Count; i++)
-                    {
-                        <span class="big-text">@resultsMessages[i]</span>
-                    }
+                <div>
+                    <input type="button" class="button-main" value="Clear" id="submit-btn" onclick="@(() => signature.Clear())"/>
                 </div>
-
-                <canvas @ref="_canvasReference" style="display: none" width="@size" height="@size"></canvas>
+                <div>
+                    <select @bind="currentChar" class="button-main" style="margin-top: 9px;">
+                        @foreach (string s in possibleChars)
+                        {
+                            <option value="@s">@s</option>
+                        }
+                    </select>
+                </div>
+                <div>
+                    <input type="button" class="button-main" style="margin-top: 9px;" value="Download" id="submit-btn" onclick="@(() => DownloadDataPoint())"/>
+                </div>
             </div>
-        }
+
+            <div style="float: right; margin-top: 60px; margin-right: 50px; display: inline">
+                @for (int i = 0; i < resultsMessages.Count; i++)
+                {
+                    <span class="big-text">@resultsMessages[i]</span>
+                }
+            </div>
+
+            <canvas @ref="_canvasReference" style="display: none" width="@size" height="@size"></canvas>
+        </div>
     </div>
 </div>
 
@@ -64,7 +55,7 @@
     int size = 192;
     bool dialogIsOpen = false;
     List<string> possibleChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".Select(x => x.ToString()).ToList();
-    List<string> availableChars = "abcdef".Select(x => x.ToString()).ToList();
+    List<string> availableChars = "abcdefghijklmno".Select(x => x.ToString()).ToList();
     string currentChar;
 
     SignaturePad signature;
@@ -116,11 +107,13 @@
         );
         
         currentImageValue = _scalingNetwork.Predict(rawImageVector);
-        List<double> predictionResponse = await Http.GetFromJsonAsync<List<double>>($"NeurosharpNetworkRequests?delimitedPixelValues={string.Join(",", currentImageValue)}");
+        List<double> predictionResponse = await Http.GetFromJsonAsync<List<double>>(
+            $"NeurosharpNetworkRequests?delimitedPixelValues={string.Join(",", currentImageValue)}"
+        );
         Vector<double> prediction = Vector<double>.Build.DenseOfEnumerable(predictionResponse);
 
         Dictionary<string, decimal> sortOrderStorage = new Dictionary<string, decimal>();
-        resultsMessages = "abcdef".Select(x => x.ToString()).ToList();
+        resultsMessages = "abcdefghij".Select(x => x.ToString()).ToList();
         for (int i = 0; i < availableChars.Count; i++)
         {
             decimal percent = System.Math.Round((decimal)prediction[i] * 100, 2);

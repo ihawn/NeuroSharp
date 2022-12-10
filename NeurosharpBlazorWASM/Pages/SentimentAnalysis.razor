@@ -1,0 +1,42 @@
+﻿@inject IJSRuntime JsRuntime;
+@inject HttpClient Http
+
+<div class="card dark-card">
+    <div class="card-body" style="height: 610px">
+        <div class="content">
+            <div class="left-content" style="width: 850px">
+                <input @bind="statement"/>
+                
+                <div>
+                    <input type="button" class="button-main" value="Done" id="submit-btn" onclick="@(() => OnMessageSubmit())"/>
+                </div>
+            </div>
+            
+            <div class="right-content">
+                <div class="big-text">@sentimentMessage</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code{
+    [Parameter]
+    public Index _homePage { get; set; }
+    
+    string statement = "";
+    string sentimentMessage = "";
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _homePage.OnModelInitialization(2);
+    }
+
+    async void OnMessageSubmit()
+    {
+        List<double> predictionResponse = await Http.GetFromJsonAsync<List<double>>(
+            $"NeurosharpNetworkRequests/GetSentiment?delimitedPixelValues={string.Join(",", statement)}"
+        );
+    }
+}

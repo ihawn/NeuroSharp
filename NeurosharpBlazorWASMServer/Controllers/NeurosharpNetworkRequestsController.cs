@@ -22,4 +22,12 @@ public class NeurosharpNetworkRequestsController : ControllerBase
         
        return prediction.ToList();
     }
+
+    /*[HttpGet]
+    public List<double> GetSentiment(string fieldValue)
+    {
+        Network network = NetworkStorage.Networks["SentimentAnalysis"];
+
+        return new List<double>();
+    }*/
 }
