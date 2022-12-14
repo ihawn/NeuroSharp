@@ -91,7 +91,7 @@ namespace NeuroSharp
                 layer.SetGradientAccumulation(true);
             }
         }
-
+//todo: add support for inputs with varying sequence length
         public void CacheInit()
         {
             HiddenStates = new Vector<double>[_sequenceLength];

@@ -218,14 +218,14 @@
       "netstandard.dll": "sha256-+9Yr\/gSP3tCZAMbOdAcGhHGuMcyg\/AaxVKtt3tGsvao=",
       "System.Private.CoreLib.dll": "sha256-SnxOe5QK250duVAQOw0iWr1sODhUuVEUykExQyQ\/WSk=",
       "NeuroSharp.dll": "sha256-Xbwnx3y9CAVEZJnNibE2nZaRfDp2E0ayfYSFJNRBvnU=",
-      "NeurosharpBlazorWASM.dll": "sha256-UzOAQ91PHTc1ZB5VCudBrJdPlf62CPOLizTull2Shm0="
+      "NeurosharpBlazorWASM.dll": "sha256-rO944onKq0W0FPHaAXup2QeJp7FYgOJ1rcAf4z4OAa8="
     },
     "extensions": null,
     "lazyAssembly": null,
     "libraryInitializers": null,
     "pdb": {
       "NeuroSharp.pdb": "sha256-G7wXGn3Fd00cTCtygqgmdNtP4JqFA++R6zssGO2MRnY=",
-      "NeurosharpBlazorWASM.pdb": "sha256-h+2hBXUIw757nZ0yigSgXWm1s0u4HdaZshhIc6QwnsU="
+      "NeurosharpBlazorWASM.pdb": "sha256-gCv6WcEB4dG9IIyvxiZVhWI3u+3LwnQgRHCj2Fhuizs="
     },
     "runtime": {
       "dotnet.6.0.2.ypn1awvm6h.js": "sha256-wbTVn69TU0+WI83iB+kky8tf\/BjZdYJeM0rUP96ur\/c=",

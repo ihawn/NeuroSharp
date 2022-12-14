@@ -12,8 +12,8 @@ namespace Trainer
     {
         static void Main(string[] args)
         {
-            LetterIdentificationTraining(15);
-            //SentimentAnalysisTraining(12, trainingSize: 2500, testSize: 3000, maxWordCount: 100, maxReviewLength: 50);
+            //LetterIdentificationTraining(20);
+            SentimentAnalysisTraining(5, trainingSize: 5000, testSize: 500, maxWordCount: 3000, maxReviewLength: 40);
         }
 
         static void LetterIdentificationTraining(int epochs)
@@ -112,13 +112,13 @@ namespace Trainer
             string allowedChars = "abcdefghijklmnopqrstuvwxyz ";
             List<string> reviews = new List<string>();
             List<int> ratings = new List<int>();
-            List<int> order = new List<int>();
-            for(int n = 0; n < dataTable.Rows.Count; n++)
-                order.Add(n);
-            order = order.OrderBy(a => new Random().Next()).ToList();
-            foreach(int i in order)
+
+            
+            for(int i = 0; i < dataTable.Rows.Count; i++)
             {
                 reviews.Add(new string(dataTable.Rows[i].ItemArray[1].ToString().ToLower()
+                    .Replace(".", " ")
+                    .Replace(",", " ")
                     .Where(c => allowedChars.Contains(c)).ToArray()));
                 ratings.Add(Int32.Parse(dataTable.Rows[i].ItemArray[0].ToString()));
             }
@@ -128,7 +128,7 @@ namespace Trainer
             List<string> distinctWords = allWords.Distinct().ToList();
             Dictionary<string, int> wordFrequency = new Dictionary<string, int>();
 
-            foreach(string word in allWords)
+            foreach(string word in allWords.Where(x => x != ""))
             {
                 if (wordFrequency.ContainsKey(word))
                     wordFrequency[word]++;
@@ -159,6 +159,7 @@ namespace Trainer
 
                 List<string> reviewWords = reviews[i].Split(' ')
                     .Where(s => uniqueWordsUsedFrequently.Contains(s)).ToList();
+
                 processedReviews.Add(reviewWords);
                 
                 for (int j = 0; j < Math.Min(reviewWords.Count, maxReviewLength); j++)
@@ -184,15 +185,13 @@ namespace Trainer
             
 
             Network network = new Network(maxWordCount * maxReviewLength);
-            network.Add(new LSTMLayer(maxWordCount, 128, maxReviewLength));
-            network.Add(new ActivationLayer(ActivationType.Tanh));
-            network.Add(new FullyConnectedLayer(256));
+            network.Add(new LSTMLayer(maxWordCount, 64, maxReviewLength));
             network.Add(new ActivationLayer(ActivationType.Tanh));
             network.Add(new FullyConnectedLayer(2));
             network.Add(new SoftmaxActivationLayer());
             network.UseLoss(LossType.BinaryCrossentropy);
             
-            network.Train(xTrain, yTrain, epochs, TrainingConfiguration.Minibatch, OptimizerType.Adam, learningRate: 0.018);
+            network.Train(xTrain, yTrain, epochs, TrainingConfiguration.SGD, OptimizerType.Adam, learningRate: 0.0005);
             
             string modelJson = network.SerializeToJSON();
             File.WriteAllText(@"C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASMServer\NetworkModels\sentiment_analysis_model.json", modelJson);
