@@ -2,11 +2,13 @@
 @inject HttpClient Http
 
 <div class="card dark-card">
-    <div class="card-body" style="height: 610px">
+    <div class="card-body" style="height: 350px">
         <div class="content">
             <div class="left-content" style="width: 850px">
-                <input @bind="statement"/>
-                
+                <div class="main-content">
+                    <textarea @bind="statement" ></textarea>
+                </div>
+
                 <div>
                     <input type="button" class="button-main" value="Done" id="submit-btn" onclick="@(() => OnMessageSubmit())"/>
                 </div>
@@ -36,7 +38,12 @@
     async void OnMessageSubmit()
     {
         List<double> predictionResponse = await Http.GetFromJsonAsync<List<double>>(
-            $"NeurosharpNetworkRequests/GetSentiment?delimitedPixelValues={string.Join(",", statement)}"
+            $"SentimentAnalysis?fieldValue={statement}"
         );
+        Vector<double> prediction = Vector<double>.Build.DenseOfEnumerable(predictionResponse);
+        Console.WriteLine(prediction[0] + ", " + prediction[1]);
+
+        sentimentMessage = prediction[0] > prediction[1] ? "Negative statement" : "Positive statement";
+        StateHasChanged();
     }
 }

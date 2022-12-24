@@ -1,6 +1,6 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System;
 
 namespace NeuroSharp.Optimizers
 {

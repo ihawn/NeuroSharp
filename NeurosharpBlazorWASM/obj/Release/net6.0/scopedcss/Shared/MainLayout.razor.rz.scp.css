@@ -1,0 +1,26 @@
+.page[b-rb2fsh48xu] {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background-color: #212121;
+}
+
+main[b-rb2fsh48xu] {
+    flex: 1;
+}
+
+.sidebar[b-rb2fsh48xu] {
+    background-color: #141414;
+}
+
+@media (min-width: 641px) {
+    .page[b-rb2fsh48xu] {
+        flex-direction: row;
+    }
+
+    .sidebar[b-rb2fsh48xu] {
+        width: 250px;
+        height: 100vh;
+        top: 0;
+    }
+}

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="85ef6b24-9df7-40df-b372-1452bedf9c74" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Data/NLPDataUtils.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/Controllers/CharacterRecognitionController.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../TrainerWhoTrains/DatatablePreprocessor.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vs/NeuroSharp/DesignTimeBuild/.dtbcache.v2" beforeDir="false" afterPath="$PROJECT_DIR$/.vs/NeuroSharp/DesignTimeBuild/.dtbcache.v2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vs/NeuroSharp/v17/.futdcache.v1" beforeDir="false" afterPath="$PROJECT_DIR$/.vs/NeuroSharp/v17/.futdcache.v1" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vs/NeuroSharp/v17/.suo" beforeDir="false" afterPath="$PROJECT_DIR$/.vs/NeuroSharp/v17/.suo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vs/NeuroSharp/v17/HierarchyCache.v1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/.vs/NeuroSharp/v17/HierarchyCache.v1.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/DataTablePreprocessor.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Layers/LSTMLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Layers/LSTMLayer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/PathLabelModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/PathLabelModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/NeuroSharp.cs" beforeDir="false" afterPath="$PROJECT_DIR$/NetworkTests/NeuroSharp.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/bin/Debug/net6.0/MnistDigits/t10k-images.idx3-ubyte" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/bin/Debug/net6.0/MnistDigits/t10k-labels.idx1-ubyte" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/bin/Debug/net6.0/MnistDigits/train-images.idx3-ubyte" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/bin/Debug/net6.0/MnistDigits/train-labels.idx1-ubyte" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/bin/Debug/net6.0/NetworkTests.deps.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/bin/Debug/net6.0/NetworkTests.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/bin/Debug/net6.0/NetworkTests.pdb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/bin/Debug/net6.0/NetworkTests.runtimeconfig.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/bin/Debug/net6.0/NeuroSharp.pdb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/obj/Debug/net6.0/.NETCoreApp,Version=v6.0.AssemblyAttributes.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/obj/Debug/net6.0/NetworkTests.AssemblyInfo.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/obj/Debug/net6.0/NetworkTests.AssemblyInfoInputs.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/obj/Debug/net6.0/NetworkTests.GeneratedMSBuildEditorConfig.editorconfig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/obj/Debug/net6.0/NetworkTests.GlobalUsings.g.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/obj/Debug/net6.0/NetworkTests.assets.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/obj/Debug/net6.0/NetworkTests.csproj.AssemblyReference.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/obj/Debug/net6.0/NetworkTests.csproj.CopyComplete" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/obj/Debug/net6.0/NetworkTests.csproj.CoreCompileInputs.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/obj/Debug/net6.0/NetworkTests.csproj.FileListAbsolute.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/obj/Debug/net6.0/NetworkTests.genruntimeconfig.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/obj/Debug/net6.0/NetworkTests.pdb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/obj/Debug/net6.0/apphost.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/obj/NetworkTests.csproj.nuget.dgspec.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/obj/NetworkTests.csproj.nuget.g.props" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/obj/NetworkTests.csproj.nuget.g.targets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/obj/Release/net6.0/NetworkTests.AssemblyInfoInputs.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/obj/Release/net6.0/NetworkTests.GeneratedMSBuildEditorConfig.editorconfig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/obj/Release/net6.0/NetworkTests.GlobalUsings.g.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/obj/Release/net6.0/NetworkTests.assets.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/obj/Release/net6.0/NetworkTests.csproj.AssemblyReference.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/obj/project.assets.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/obj/project.nuget.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/obj/project.packagespec.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkTests/obj/rider.project.restore.info" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NeuroSharp.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/NeuroSharp.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NeuroSharp.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/NeuroSharp.sln.DotSettings.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Training/Network.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Training/Network.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utilities/JsonModelParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utilities/JsonModelParser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net6.0/MnistDigits/t10k-images.idx3-ubyte" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net6.0/MnistDigits/t10k-labels.idx1-ubyte" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net6.0/MnistDigits/train-images.idx3-ubyte" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net6.0/MnistDigits/train-labels.idx1-ubyte" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net6.0/MnistFashion/t10k-images-idx3-ubyte-fashion" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net6.0/MnistFashion/t10k-labels-idx1-ubyte-fashion" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net6.0/MnistFashion/train-images-idx3-ubyte-fashion" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net6.0/MnistFashion/train-labels-idx1-ubyte-fashion" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net6.0/NeuroSharp.dll" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/net6.0/NeuroSharp.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net6.0/NeuroSharp.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/net6.0/NeuroSharp.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net6.0/ref/NeuroSharp.dll" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/net6.0/ref/NeuroSharp.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Release/net6.0/MathNet.Numerics.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Release/net6.0/Microsoft.Win32.SystemEvents.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Release/net6.0/MnistDigits/t10k-images.idx3-ubyte" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Release/net6.0/MnistDigits/t10k-labels.idx1-ubyte" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Release/net6.0/MnistDigits/train-images.idx3-ubyte" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Release/net6.0/MnistDigits/train-labels.idx1-ubyte" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Release/net6.0/MnistFashion/t10k-images-idx3-ubyte-fashion" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Release/net6.0/MnistFashion/t10k-labels-idx1-ubyte-fashion" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Release/net6.0/MnistFashion/train-images-idx3-ubyte-fashion" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Release/net6.0/MnistFashion/train-labels-idx1-ubyte-fashion" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Release/net6.0/NeuroSharp.deps.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Release/net6.0/NeuroSharp.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Release/net6.0/NeuroSharp.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Release/net6.0/NeuroSharp.pdb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Release/net6.0/NeuroSharp.runtimeconfig.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Release/net6.0/System.Drawing.Common.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Release/net6.0/ref/NeuroSharp.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Release/net6.0/runtimes/unix/lib/net6.0/System.Drawing.Common.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Release/net6.0/runtimes/win/lib/net6.0/Microsoft.Win32.SystemEvents.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Release/net6.0/runtimes/win/lib/net6.0/System.Drawing.Common.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net6.0/NeuroSharp.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net6.0/NeuroSharp.csproj.AssemblyReference.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net6.0/NeuroSharp.csproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net6.0/NeuroSharp.csproj.CoreCompileInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net6.0/NeuroSharp.dll" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net6.0/NeuroSharp.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net6.0/NeuroSharp.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net6.0/NeuroSharp.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net6.0/ref/NeuroSharp.dll" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net6.0/ref/NeuroSharp.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/NeuroSharp.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/NeuroSharp.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/NeuroSharp.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/obj/NeuroSharp.csproj.nuget.g.props" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/NeuroSharp.csproj.nuget.g.targets" beforeDir="false" afterPath="$PROJECT_DIR$/obj/NeuroSharp.csproj.nuget.g.targets" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/project.assets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/project.packagespec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/obj/rider.project.restore.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASM/Pages/CharacterRecognition.razor" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASM/Pages/CharacterRecognition.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASM/Pages/SentimentAnalysis.razor" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASM/Pages/SentimentAnalysis.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASM/bin/Debug/net6.0/NeuroSharp.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASM/bin/Debug/net6.0/NeuroSharp.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASM/bin/Debug/net6.0/NeurosharpBlazorWASM.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASM/bin/Debug/net6.0/NeurosharpBlazorWASM.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASM/bin/Debug/net6.0/wwwroot/_framework/NeuroSharp.dll.gz" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASM/bin/Debug/net6.0/wwwroot/_framework/NeuroSharp.dll.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASM/bin/Debug/net6.0/wwwroot/_framework/NeuroSharp.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASM/bin/Debug/net6.0/wwwroot/_framework/NeuroSharp.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASM/bin/Debug/net6.0/wwwroot/_framework/NeuroSharp.pdb.gz" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASM/bin/Debug/net6.0/wwwroot/_framework/NeuroSharp.pdb.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASM/bin/Debug/net6.0/wwwroot/_framework/NeurosharpBlazorWASM.dll.gz" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASM/bin/Debug/net6.0/wwwroot/_framework/NeurosharpBlazorWASM.dll.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASM/bin/Debug/net6.0/wwwroot/_framework/NeurosharpBlazorWASM.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASM/bin/Debug/net6.0/wwwroot/_framework/NeurosharpBlazorWASM.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASM/bin/Debug/net6.0/wwwroot/_framework/NeurosharpBlazorWASM.pdb.gz" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASM/bin/Debug/net6.0/wwwroot/_framework/NeurosharpBlazorWASM.pdb.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASM/bin/Debug/net6.0/wwwroot/_framework/blazor.boot.json" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASM/bin/Debug/net6.0/wwwroot/_framework/blazor.boot.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASM/obj/Debug/net6.0/NeurosharpBlazorWASM.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASM/obj/Debug/net6.0/NeurosharpBlazorWASM.csproj.AssemblyReference.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASM/obj/Debug/net6.0/NeurosharpBlazorWASM.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASM/obj/Debug/net6.0/NeurosharpBlazorWASM.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASM/obj/Debug/net6.0/blazor.boot.json" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASM/obj/Debug/net6.0/blazor.boot.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASM/obj/Debug/net6.0/build-gz/+NyhZiWq.gz" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASM/obj/Debug/net6.0/build-gz/+NyhZiWq.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASM/obj/Debug/net6.0/build-gz/0zhcSboI.gz" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASM/obj/Debug/net6.0/build-gz/0zhcSboI.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASM/obj/Debug/net6.0/build-gz/lh8l0RdU.gz" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASM/obj/Debug/net6.0/build-gz/lh8l0RdU.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASM/obj/Debug/net6.0/build-gz/wnnjb+AG.gz" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASM/obj/Debug/net6.0/build-gz/wnnjb+AG.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASM/obj/NeurosharpBlazorWASM.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASM/obj/NeurosharpBlazorWASM.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASM/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASM/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASM/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASM/obj/rider.project.restore.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASM/obj/staticwebassets.pack.sentinel" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASM/obj/staticwebassets.pack.sentinel" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/Agents/NetworkStorage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/Agents/NetworkStorage.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/Controllers/NeurosharpNetworkRequestsController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/Controllers/SentimentAnalysisController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/NetworkModels/sentiment_analysis_model.json" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/NetworkModels/sentiment_analysis_model.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/bin/Debug/net6.0/NeuroSharp.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/bin/Debug/net6.0/NeuroSharp.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/bin/Debug/net6.0/NeurosharpBlazorWASM.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/bin/Debug/net6.0/NeurosharpBlazorWASM.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/bin/Debug/net6.0/NeurosharpBlazorWasm.Server.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/bin/Debug/net6.0/NeurosharpBlazorWasm.Server.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/obj/Debug/net6.0/NeurosharpBlazorWasm.Server.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/obj/Debug/net6.0/NeurosharpBlazorWasm.Server.csproj.AssemblyReference.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/obj/Debug/net6.0/NeurosharpBlazorWasm.Server.csproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/obj/Debug/net6.0/NeurosharpBlazorWasm.Server.csproj.CoreCompileInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/obj/Debug/net6.0/NeurosharpBlazorWasm.Server.csproj.FileListAbsolute.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/obj/Debug/net6.0/NeurosharpBlazorWasm.Server.csproj.FileListAbsolute.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/obj/Debug/net6.0/NeurosharpBlazorWasm.Server.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/obj/Debug/net6.0/NeurosharpBlazorWasm.Server.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/obj/NeurosharpBlazorWasm.Server.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/obj/NeurosharpBlazorWasm.Server.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/obj/rider.project.restore.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/obj/staticwebassets.pack.sentinel" beforeDir="false" afterPath="$PROJECT_DIR$/../NeurosharpBlazorWASMServer/obj/staticwebassets.pack.sentinel" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TrainerWhoTrains/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../TrainerWhoTrains/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TrainerWhoTrains/bin/Debug/net6.0/NeuroSharp.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../TrainerWhoTrains/bin/Debug/net6.0/NeuroSharp.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TrainerWhoTrains/bin/Debug/net6.0/TrainerWhoTrains.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../TrainerWhoTrains/bin/Debug/net6.0/TrainerWhoTrains.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TrainerWhoTrains/obj/Debug/net6.0/TrainerWhoTrains.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../TrainerWhoTrains/obj/Debug/net6.0/TrainerWhoTrains.csproj.AssemblyReference.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TrainerWhoTrains/obj/Debug/net6.0/TrainerWhoTrains.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../TrainerWhoTrains/obj/Debug/net6.0/TrainerWhoTrains.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TrainerWhoTrains/obj/TrainerWhoTrains.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/../TrainerWhoTrains/obj/TrainerWhoTrains.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TrainerWhoTrains/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../TrainerWhoTrains/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TrainerWhoTrains/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/../TrainerWhoTrains/obj/rider.project.restore.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnitTests/LayerTests/ParameterizedLayerTests/LSTMTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../UnitTests/LayerTests/ParameterizedLayerTests/LSTMTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnitTests/ModelTests/JSONModelTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../UnitTests/ModelTests/JSONModelTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnitTests/bin/Debug/net6.0/NeuroSharp.dll" beforeDir="false" afterPath="$PROJECT_DIR$/../UnitTests/bin/Debug/net6.0/NeuroSharp.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnitTests/bin/Debug/net6.0/NeuroSharp.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../UnitTests/bin/Debug/net6.0/NeuroSharp.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnitTests/bin/Debug/net6.0/UnitTests.dll" beforeDir="false" afterPath="$PROJECT_DIR$/../UnitTests/bin/Debug/net6.0/UnitTests.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnitTests/bin/Debug/net6.0/UnitTests.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../UnitTests/bin/Debug/net6.0/UnitTests.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnitTests/obj/Debug/net6.0/UnitTests.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../UnitTests/obj/Debug/net6.0/UnitTests.csproj.AssemblyReference.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnitTests/obj/Debug/net6.0/UnitTests.dll" beforeDir="false" afterPath="$PROJECT_DIR$/../UnitTests/obj/Debug/net6.0/UnitTests.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnitTests/obj/Debug/net6.0/UnitTests.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../UnitTests/obj/Debug/net6.0/UnitTests.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnitTests/obj/UnitTests.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/../UnitTests/obj/UnitTests.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnitTests/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../UnitTests/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnitTests/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/../UnitTests/obj/rider.project.restore.info" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ProjectId" id="2JKlNnwKKdgvVt3E6TjbMnsTBzi" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="85ef6b24-9df7-40df-b372-1452bedf9c74" name="Changes" comment="" />
+      <created>1671834617855</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1671834617855</updated>
+      <workItem from="1671834624267" duration="3000" />
+      <workItem from="1671834752204" duration="13000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
+  <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
+  <component name="VcsManagerConfiguration">
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+</project>

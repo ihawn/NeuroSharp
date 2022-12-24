@@ -1,6 +1,6 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using NeuroSharp.Enumerations;
-using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace NeuroSharp
 {
@@ -30,20 +30,16 @@ namespace NeuroSharp
         }
         
         //json constructor
-        public ConvolutionalLayer(ConvolutionalOperator[] operators, Vector<double>[] channelOutputs,
-            Vector<double>[] channelInputs, Vector<double>[] channelBackpropagationOutputs, int channelCount,
-            int channelInputSize, bool accumulateGradients, int inputSize, int outputSize, int id)
+        public ConvolutionalLayer(ConvolutionalOperator[] operators, int channelCount,
+            int channelInputSize, int inputSize, int outputSize, int id)
         {
             ChannelOperators = operators;
             Id = id;
-            _channelOutputs = new Vector<double>[channelCount]; // channelOutputs;
-            _channelInputs = channelInputs;
-            _channelBackpropagationOutputs = channelBackpropagationOutputs;
+            _channelOutputs = new Vector<double>[channelCount];
             ChannelCount = channelCount;
             ChannelInputSize = channelInputSize;
             InputSize = inputSize;
             OutputSize = outputSize;
-            SetGradientAccumulation(accumulateGradients);
         }
 
         public override Vector<double> ForwardPropagation(Vector<double> input)

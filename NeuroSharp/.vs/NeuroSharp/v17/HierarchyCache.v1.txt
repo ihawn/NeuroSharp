@@ -1,13 +1,101 @@
-﻿++Solution 'NeuroSharp' ‎(5 of 5 projects)
+﻿++Solution 'NeuroSharp' ‎(6 of 6 projects)
 i:{00000000-0000-0000-0000-000000000000}:NeuroSharp.sln
+++NetworkTests
+i:{00000000-0000-0000-0000-000000000000}:NetworkTests
+i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\documents\c#\neurosharp\unittests\networktests\
+i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\
+++Dependencies
+i:{832416da-9872-4efe-9a8e-21b2596c670d}:>9007
+i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:>9005
+i:{7e783010-cc4c-460f-b640-e6e922909fdf}:>9006
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:>9809
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>15929
+i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:>2038
+++Analyzers
+i:{832416da-9872-4efe-9a8e-21b2596c670d}:analyzers
+i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:analyzers
+i:{7e783010-cc4c-460f-b640-e6e922909fdf}:analyzers
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:analyzers
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:analyzers
+i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:analyzers
+++Microsoft.AspNetCore.Components.Analyzers
+i:{832416da-9872-4efe-9a8e-21b2596c670d}:c:\users\isaac\.nuget\packages\microsoft.aspnetcore.components.analyzers\3.1.5\analyzers\dotnet\cs\microsoft.aspnetcore.components.analyzers.dll
+i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:c:\users\isaac\.nuget\packages\microsoft.aspnetcore.components.analyzers\3.1.5\analyzers\dotnet\cs\microsoft.aspnetcore.components.analyzers.dll
+i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\.nuget\packages\microsoft.aspnetcore.components.analyzers\3.1.5\analyzers\dotnet\cs\microsoft.aspnetcore.components.analyzers.dll
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk.web\analyzers\cs\microsoft.aspnetcore.components.analyzers.dll
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\microsoft.aspnetcore.components.analyzers\6.0.5\analyzers\dotnet\cs\microsoft.aspnetcore.components.analyzers.dll
+i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\.nuget\packages\microsoft.aspnetcore.components.analyzers\3.1.5\analyzers\dotnet\cs\microsoft.aspnetcore.components.analyzers.dll
+++Microsoft.CodeAnalysis.CSharp.NetAnalyzers
+i:{832416da-9872-4efe-9a8e-21b2596c670d}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.csharp.netanalyzers.dll
+i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.csharp.netanalyzers.dll
+i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.csharp.netanalyzers.dll
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.csharp.netanalyzers.dll
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.csharp.netanalyzers.dll
+i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.csharp.netanalyzers.dll
+++Microsoft.CodeAnalysis.NetAnalyzers
+i:{832416da-9872-4efe-9a8e-21b2596c670d}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.netanalyzers.dll
+i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.netanalyzers.dll
+i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.netanalyzers.dll
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.netanalyzers.dll
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.netanalyzers.dll
+i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.netanalyzers.dll
+++System.Text.Json.SourceGeneration
+i:{832416da-9872-4efe-9a8e-21b2596c670d}:c:\program files\dotnet\packs\microsoft.netcore.app.ref\6.0.2\analyzers\dotnet\cs\system.text.json.sourcegeneration.dll
+i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:c:\program files\dotnet\packs\microsoft.netcore.app.ref\6.0.2\analyzers\dotnet\cs\system.text.json.sourcegeneration.dll
+i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\program files\dotnet\packs\microsoft.netcore.app.ref\6.0.2\analyzers\dotnet\cs\system.text.json.sourcegeneration.dll
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\program files\dotnet\packs\microsoft.netcore.app.ref\6.0.2\analyzers\dotnet\cs\system.text.json.sourcegeneration.dll
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\program files\dotnet\packs\microsoft.netcore.app.ref\6.0.2\analyzers\dotnet\cs\system.text.json.sourcegeneration.dll
+i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\program files\dotnet\packs\microsoft.netcore.app.ref\6.0.2\analyzers\dotnet\cs\system.text.json.sourcegeneration.dll
+++Frameworks
+i:{832416da-9872-4efe-9a8e-21b2596c670d}:frameworks
+i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:frameworks
+i:{7e783010-cc4c-460f-b640-e6e922909fdf}:frameworks
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:frameworks
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:frameworks
+i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:frameworks
+++Packages
+i:{832416da-9872-4efe-9a8e-21b2596c670d}:packages
+i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:packages
+i:{7e783010-cc4c-460f-b640-e6e922909fdf}:packages
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:packages
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:packages
+i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:packages
+++Projects
+i:{832416da-9872-4efe-9a8e-21b2596c670d}:projects
+i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:projects
+i:{7e783010-cc4c-460f-b640-e6e922909fdf}:projects
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:projects
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:projects
+++NeuroSharp.cs
+i:{832416da-9872-4efe-9a8e-21b2596c670d}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\neurosharp.cs
+i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\neurosharp.cs
+++Microsoft.NETCore.App
+i:{832416da-9872-4efe-9a8e-21b2596c670d}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\microsoft.netcore.app
+i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:c:\users\isaac\documents\c#\neurosharp\trainerwhotrains\microsoft.netcore.app
+i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\documents\c#\neurosharp\unittests\microsoft.netcore.app
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasmserver\microsoft.netcore.app
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\microsoft.netcore.app
+i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\microsoft.netcore.app
+++System.Runtime (4.3.1)
+i:{832416da-9872-4efe-9a8e-21b2596c670d}:>15982
+i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:>15952
+i:{7e783010-cc4c-460f-b640-e6e922909fdf}:>15971
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>16014
+i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:>15969
+++NeuroSharp
+i:{832416da-9872-4efe-9a8e-21b2596c670d}:c:\users\isaac\documents\c#\neurosharp\neurosharp\neurosharp.csproj
+i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:c:\users\isaac\documents\c#\neurosharp\neurosharp\neurosharp.csproj
+i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\documents\c#\neurosharp\neurosharp\neurosharp.csproj
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharp\neurosharp.csproj
+i:{00000000-0000-0000-0000-000000000000}:NeuroSharp
+++TrainerWhoTrains
+i:{00000000-0000-0000-0000-000000000000}:TrainerWhoTrains
+++Program.cs
+i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:c:\users\isaac\documents\c#\neurosharp\trainerwhotrains\program.cs
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasmserver\program.cs
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\program.cs
 ++UnitTests
 i:{00000000-0000-0000-0000-000000000000}:UnitTests
-++Dependencies
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:>3679
-i:{832416da-9872-4efe-9a8e-21b2596c670d}:>3681
-i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:>3680
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>15617
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:>1887
 ++DataStructureTests
 i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\documents\c#\neurosharp\unittests\datastructuretests\
 ++LayerTests
@@ -16,37 +104,30 @@ i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\documents\c#\neurosharp\
 i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\documents\c#\neurosharp\unittests\losstests\
 ++ModelTests
 i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\documents\c#\neurosharp\unittests\modeltests\
-++NetworkTests
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\documents\c#\neurosharp\unittests\networktests\
-i:{00000000-0000-0000-0000-000000000000}:NetworkTests
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\
 ++OptimizerTests
 i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\documents\c#\neurosharp\unittests\optimizertests\
 ++UtilityTests
 i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\documents\c#\neurosharp\unittests\utilitytests\
-++Analyzers
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:analyzers
-i:{832416da-9872-4efe-9a8e-21b2596c670d}:analyzers
-i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:analyzers
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:analyzers
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:analyzers
-++Frameworks
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:frameworks
-i:{832416da-9872-4efe-9a8e-21b2596c670d}:frameworks
-i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:frameworks
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:frameworks
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:frameworks
-++Packages
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:packages
-i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:packages
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:packages
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:packages
-i:{832416da-9872-4efe-9a8e-21b2596c670d}:packages
-++Projects
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:projects
-i:{832416da-9872-4efe-9a8e-21b2596c670d}:projects
-i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:projects
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:projects
+++coverlet.collector (3.1.0)
+i:{7e783010-cc4c-460f-b640-e6e922909fdf}:>15972
+++MathNet.Numerics (5.0.0)
+i:{7e783010-cc4c-460f-b640-e6e922909fdf}:>15954
+i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:>15957
+++MathNet.Numerics.MKL.Win-x64 (3.0.0)
+i:{7e783010-cc4c-460f-b640-e6e922909fdf}:>15970
+i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:>15968
+++MathNet.Numerics.Providers.CUDA (5.0.0)
+i:{7e783010-cc4c-460f-b640-e6e922909fdf}:>15964
+i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:>15965
+++Microsoft.NET.Test.Sdk (16.11.0)
+i:{7e783010-cc4c-460f-b640-e6e922909fdf}:>15955
+++Newtonsoft.Json (13.0.1)
+i:{7e783010-cc4c-460f-b640-e6e922909fdf}:>15958
+i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:>15963
+++NUnit (3.13.2)
+i:{7e783010-cc4c-460f-b640-e6e922909fdf}:>15962
+++NUnit3TestAdapter (4.0.0)
+i:{7e783010-cc4c-460f-b640-e6e922909fdf}:>15966
 ++ParameterizedLayerTests
 i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\documents\c#\neurosharp\unittests\layertests\parameterizedlayertests\
 ++PassThroughLayerTests
@@ -61,68 +142,14 @@ i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\documents\c#\neurosharp\
 i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\documents\c#\neurosharp\unittests\modeltests\jsonmodeltests.cs
 ++ConvolutionalNetworkTests.cs
 i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\documents\c#\neurosharp\unittests\networktests\convolutionalnetworktests.cs
+++LSTMNetworkTests.cs
+i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\documents\c#\neurosharp\unittests\networktests\lstmnetworktests.cs
 ++RecurrentNetworkTests.cs
 i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\documents\c#\neurosharp\unittests\networktests\recurrentnetworktests.cs
 ++AdamTests.cs
 i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\documents\c#\neurosharp\unittests\optimizertests\adamtests.cs
 ++UtilTests.cs
 i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\documents\c#\neurosharp\unittests\utilitytests\utiltests.cs
-++Microsoft.AspNetCore.Components.Analyzers
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\.nuget\packages\microsoft.aspnetcore.components.analyzers\3.1.5\analyzers\dotnet\cs\microsoft.aspnetcore.components.analyzers.dll
-i:{832416da-9872-4efe-9a8e-21b2596c670d}:c:\users\isaac\.nuget\packages\microsoft.aspnetcore.components.analyzers\3.1.5\analyzers\dotnet\cs\microsoft.aspnetcore.components.analyzers.dll
-i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:c:\users\isaac\.nuget\packages\microsoft.aspnetcore.components.analyzers\3.1.5\analyzers\dotnet\cs\microsoft.aspnetcore.components.analyzers.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\.nuget\packages\microsoft.aspnetcore.components.analyzers\3.1.5\analyzers\dotnet\cs\microsoft.aspnetcore.components.analyzers.dll
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\microsoft.aspnetcore.components.analyzers\6.0.5\analyzers\dotnet\cs\microsoft.aspnetcore.components.analyzers.dll
-++Microsoft.CodeAnalysis.CSharp.NetAnalyzers
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.csharp.netanalyzers.dll
-i:{832416da-9872-4efe-9a8e-21b2596c670d}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.csharp.netanalyzers.dll
-i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.csharp.netanalyzers.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.csharp.netanalyzers.dll
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.csharp.netanalyzers.dll
-++Microsoft.CodeAnalysis.NetAnalyzers
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.netanalyzers.dll
-i:{832416da-9872-4efe-9a8e-21b2596c670d}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.netanalyzers.dll
-i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.netanalyzers.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.netanalyzers.dll
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.netanalyzers.dll
-++System.Text.Json.SourceGeneration
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\program files\dotnet\packs\microsoft.netcore.app.ref\6.0.2\analyzers\dotnet\cs\system.text.json.sourcegeneration.dll
-i:{832416da-9872-4efe-9a8e-21b2596c670d}:c:\program files\dotnet\packs\microsoft.netcore.app.ref\6.0.2\analyzers\dotnet\cs\system.text.json.sourcegeneration.dll
-i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:c:\program files\dotnet\packs\microsoft.netcore.app.ref\6.0.2\analyzers\dotnet\cs\system.text.json.sourcegeneration.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\program files\dotnet\packs\microsoft.netcore.app.ref\6.0.2\analyzers\dotnet\cs\system.text.json.sourcegeneration.dll
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\program files\dotnet\packs\microsoft.netcore.app.ref\6.0.2\analyzers\dotnet\cs\system.text.json.sourcegeneration.dll
-++Microsoft.NETCore.App
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\documents\c#\neurosharp\unittests\microsoft.netcore.app
-i:{832416da-9872-4efe-9a8e-21b2596c670d}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\microsoft.netcore.app
-i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:c:\users\isaac\documents\c#\neurosharp\trainerwhotrains\microsoft.netcore.app
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\microsoft.netcore.app
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\microsoft.netcore.app
-++coverlet.collector (3.1.0)
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:>15662
-++MathNet.Numerics (5.0.0)
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:>15645
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:>15650
-++MathNet.Numerics.MKL.Win-x64 (3.0.0)
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:>15660
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:>15661
-++MathNet.Numerics.Providers.CUDA (5.0.0)
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:>15655
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:>15658
-++Microsoft.NET.Test.Sdk (16.11.0)
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:>15648
-++Newtonsoft.Json (13.0.1)
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:>15651
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:>15656
-++NUnit (3.13.2)
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:>15653
-++NUnit3TestAdapter (4.0.0)
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:>15657
-++NeuroSharp
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\documents\c#\neurosharp\neurosharp\neurosharp.csproj
-i:{832416da-9872-4efe-9a8e-21b2596c670d}:c:\users\isaac\documents\c#\neurosharp\neurosharp\neurosharp.csproj
-i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:c:\users\isaac\documents\c#\neurosharp\neurosharp\neurosharp.csproj
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharp\neurosharp.csproj
-i:{00000000-0000-0000-0000-000000000000}:NeuroSharp
 ++ConvolutionalLayerTests.cs
 i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\documents\c#\neurosharp\unittests\layertests\parameterizedlayertests\convolutionallayertests.cs
 ++DenseLayerTests.cs
@@ -139,38 +166,79 @@ i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\documents\c#\neurosharp\
 i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\documents\c#\neurosharp\unittests\layertests\passthroughlayertests\passthroughlayerconnectiontests.cs
 ++SoftmaxActivationLayerTests.cs
 i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\documents\c#\neurosharp\unittests\layertests\passthroughlayertests\softmaxactivationlayertests.cs
-++NeuroSharp.cs
-i:{832416da-9872-4efe-9a8e-21b2596c670d}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\neurosharp.cs
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\neurosharp.cs
-++TrainerWhoTrains
-i:{00000000-0000-0000-0000-000000000000}:TrainerWhoTrains
-++Program.cs
-i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:c:\users\isaac\documents\c#\neurosharp\trainerwhotrains\program.cs
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\program.cs
-++Microsoft.EntityFrameworkCore.Analyzers
-i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:c:\users\isaac\.nuget\packages\microsoft.entityframeworkcore.analyzers\7.0.0\analyzers\dotnet\cs\microsoft.entityframeworkcore.analyzers.dll
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\microsoft.entityframeworkcore.analyzers\7.0.0\analyzers\dotnet\cs\microsoft.entityframeworkcore.analyzers.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\.nuget\packages\microsoft.entityframeworkcore.analyzers\7.0.0\analyzers\dotnet\cs\microsoft.entityframeworkcore.analyzers.dll
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\.nuget\packages\microsoft.entityframeworkcore.analyzers\7.0.0\analyzers\dotnet\cs\microsoft.entityframeworkcore.analyzers.dll
-i:{832416da-9872-4efe-9a8e-21b2596c670d}:c:\users\isaac\.nuget\packages\microsoft.entityframeworkcore.analyzers\7.0.0\analyzers\dotnet\cs\microsoft.entityframeworkcore.analyzers.dll
-++Microsoft.Extensions.Logging.Generators
-i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:c:\users\isaac\.nuget\packages\microsoft.extensions.logging.abstractions\7.0.0\analyzers\dotnet\roslyn4.0\cs\microsoft.extensions.logging.generators.dll
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\microsoft.extensions.logging.abstractions\7.0.0\analyzers\dotnet\roslyn4.0\cs\microsoft.extensions.logging.generators.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\.nuget\packages\microsoft.extensions.logging.abstractions\7.0.0\analyzers\dotnet\roslyn4.0\cs\microsoft.extensions.logging.generators.dll
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:c:\users\isaac\.nuget\packages\microsoft.extensions.logging.abstractions\7.0.0\analyzers\dotnet\roslyn4.0\cs\microsoft.extensions.logging.generators.dll
-i:{832416da-9872-4efe-9a8e-21b2596c670d}:c:\users\isaac\.nuget\packages\microsoft.extensions.logging.abstractions\7.0.0\analyzers\dotnet\roslyn4.0\cs\microsoft.extensions.logging.generators.dll
-++Microsoft.EntityFrameworkCore (7.0.0)
-i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:>15716
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>15676
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:>17780
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:>17779
-i:{832416da-9872-4efe-9a8e-21b2596c670d}:>17781
-++NeurosharpBlazorWASM
-i:{00000000-0000-0000-0000-000000000000}:NeurosharpBlazorWASM
+++NeurosharpBlazorWasm.Server
+i:{00000000-0000-0000-0000-000000000000}:NeurosharpBlazorWasm.Server
 ++Connected Services 
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>15618
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:>11869
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>15930
 ++Properties
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasmserver\properties\
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\properties\
+++Agents
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasmserver\agents\
+++Controllers
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasmserver\controllers\
+++NetworkModels
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasmserver\networkmodels\
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\wwwroot\networkmodels\
+++Pages
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasmserver\pages\
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\pages\
+++appsettings.json
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasmserver\appsettings.json
+++web.config
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasmserver\web.config
+++No service dependencies discovered
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:>12853
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>15931
+++launchSettings.json
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasmserver\properties\launchsettings.json
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\properties\launchsettings.json
+++NetworkStorage.cs
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasmserver\agents\networkstorage.cs
+++CharacterRecognitionController.cs
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasmserver\controllers\characterrecognitioncontroller.cs
+++SentimentAnalysisController.cs
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasmserver\controllers\sentimentanalysiscontroller.cs
+++characters_model.json
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasmserver\networkmodels\characters_model.json
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\wwwroot\networkmodels\characters_model.json
+++sentiment_analysis_model.json
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasmserver\networkmodels\sentiment_analysis_model.json
+++Error.cshtml
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasmserver\pages\error.cshtml
+++appsettings.Development.json
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasmserver\appsettings.development.json
+++Microsoft.AspNetCore.Analyzers
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk.web\analyzers\cs\microsoft.aspnetcore.analyzers.dll
+++Microsoft.AspNetCore.App.Analyzers
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\program files\dotnet\packs\microsoft.aspnetcore.app.ref\6.0.2\analyzers\dotnet\cs\microsoft.aspnetcore.app.analyzers.dll
+++Microsoft.AspNetCore.App.CodeFixes
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\program files\dotnet\packs\microsoft.aspnetcore.app.ref\6.0.2\analyzers\dotnet\cs\microsoft.aspnetcore.app.codefixes.dll
+++Microsoft.AspNetCore.Mvc.Analyzers
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk.web\analyzers\cs\microsoft.aspnetcore.mvc.analyzers.dll
+++Microsoft.AspNetCore.Razor.Internal.SourceGenerator.Transport
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk.razor\source-generators\microsoft.aspnetcore.razor.internal.sourcegenerator.transport.dll
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk.razor\source-generators\microsoft.aspnetcore.razor.internal.sourcegenerator.transport.dll
+++Microsoft.Extensions.Logging.Generators
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\users\isaac\.nuget\packages\microsoft.extensions.logging.abstractions\6.0.1\analyzers\dotnet\roslyn4.0\cs\microsoft.extensions.logging.generators.dll
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\microsoft.extensions.logging.abstractions\6.0.1\analyzers\dotnet\roslyn4.0\cs\microsoft.extensions.logging.generators.dll
+++Microsoft.NET.Sdk.Razor.SourceGenerators
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk.razor\source-generators\microsoft.net.sdk.razor.sourcegenerators.dll
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk.razor\source-generators\microsoft.net.sdk.razor.sourcegenerators.dll
+++Microsoft.AspNetCore.App
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasmserver\microsoft.aspnetcore.app
+++Microsoft.AspNetCore.Components.WebAssembly.Server (6.0.2)
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:>16000
+++NeurosharpBlazorWASM
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\neurosharpblazorwasm.csproj
+i:{00000000-0000-0000-0000-000000000000}:NeurosharpBlazorWASM
+++Error.cshtml.cs
+i:{60055d4b-8710-45c1-9a8e-983c0ec6b79a}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasmserver\pages\error.cshtml.cs
+++ILLink.CodeFixProvider
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\illink.codefixprovider.dll
+++ILLink.RoslynAnalyzer
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\illink.roslynanalyzer.dll
 ++wwwroot
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\wwwroot\
 ++css
@@ -178,8 +246,6 @@ i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\wwwroot\css\open-iconic\font\css\
 ++js
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\wwwroot\js\
-++NetworkModels
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\wwwroot\networkmodels\
 ++sample-data
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\wwwroot\sample-data\
 ++favicon.ico
@@ -195,45 +261,71 @@ i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\
 ++Models
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\models\
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\models\
-++Pages
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\pages\
+++BrowserTraining.razor
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\pages\browsertraining.razor
 ++CharacterRecognition.razor
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\pages\characterrecognition.razor
-++Counter.razor
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\pages\counter.razor
-++FetchData.razor
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\pages\fetchdata.razor
 ++Index.razor
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\pages\index.razor
+++SentimentAnalysis.razor
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\pages\sentimentanalysis.razor
 ++Shared
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\shared\
 ++_Imports.razor
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\_imports.razor
 ++App.razor
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\app.razor
+++libman.json
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\blazorpro.spinkit\1.2.0\contentfiles\any\netstandard2.1\libman.json
 ++package.json
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\mobsites.blazor.signaturepad\2.0.0-preview1\contentfiles\any\netstandard2.0\package.json
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\jslib\package.json
-++No service dependencies discovered
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>15619
-++launchSettings.json
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\properties\launchsettings.json
+++BlazorPro.Spinkit (1.2.0)
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>16008
+++bootstrap (5.2.2)
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>16006
+++BootstrapBlazor.SignaturePad (6.2.1)
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>16007
+++MatBlazor (2.9.0-develop-042)
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>16015
+++Microsoft.AspNetCore.Components.WebAssembly (6.0.2)
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>16009
+++Microsoft.AspNetCore.Components.WebAssembly.DevServer (6.0.2)
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>16013
+++Mobsites.Blazor.BaseComponents (1.0.4)
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>16012
+++Mobsites.Blazor.SignaturePad (2.0.0-preview1)
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>16010
+++SimplexNoise (2.0.0)
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>16011
+++Syncfusion.Blazor (20.3.0.52)
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>16016
 ++bootstrap
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\wwwroot\css\bootstrap\
 ++open-iconic
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\wwwroot\css\open-iconic\
 ++app.css
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\wwwroot\css\app.css
+++bootstrap.css
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap.css
+++bootstrap-grid.css
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap-grid.css
+++bootstrap-reboot.css
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap-reboot.css
+++bootstrap-utilities.css
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap-utilities.css
+++bootstrap.js
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\js\bootstrap.js
 ++image_processor.js
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\wwwroot\js\image_processor.js
 ++sharp.js
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\wwwroot\js\sharp.js
-++characters_model.json
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\wwwroot\networkmodels\characters_model.json
 ++characters_model2.json
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\wwwroot\networkmodels\characters_model2.json
 ++weather.json
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\wwwroot\sample-data\weather.json
+++FileUtil.cs
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\helpers\fileutil.cs
 ++src
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\jslib\src\
 ++webpack.config.js
@@ -242,49 +334,16 @@ i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\models\datapoint.cs
 ++Field.cs
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\models\field.cs
-++NetworkStorage.cs
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\models\networkstorage.cs
 ++MainLayout.razor
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\shared\mainlayout.razor
 ++NavMenu.razor
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\shared\navmenu.razor
-++SurveyPrompt.razor
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\shared\surveyprompt.razor
 ++package-lock.json
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\mobsites.blazor.signaturepad\2.0.0-preview1\contentfiles\any\netstandard2.0\package-lock.json
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\jslib\package-lock.json
-++ILLink.CodeFixProvider
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\illink.codefixprovider.dll
-++ILLink.RoslynAnalyzer
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk\analyzers\illink.roslynanalyzer.dll
-++Microsoft.AspNetCore.Razor.Internal.SourceGenerator.Transport
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk.razor\source-generators\microsoft.aspnetcore.razor.internal.sourcegenerator.transport.dll
-++Microsoft.NET.Sdk.Razor.SourceGenerators
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\program files\dotnet\sdk\6.0.102\sdks\microsoft.net.sdk.razor\source-generators\microsoft.net.sdk.razor.sourcegenerators.dll
-++BootstrapBlazor.SignaturePad (6.2.1)
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>15675
-++MatBlazor (2.9.0-develop-042)
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>15683
-++Microsoft.AspNetCore.Components.WebAssembly (6.0.2)
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>15677
-++Microsoft.AspNetCore.Components.WebAssembly.DevServer (6.0.2)
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>15681
-++Microsoft.EntityFrameworkCore.Tools (7.0.0)
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>15682
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:>17792
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:>17793
-i:{832416da-9872-4efe-9a8e-21b2596c670d}:>17795
-i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:>17794
-++Mobsites.Blazor.BaseComponents (1.0.4)
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>15680
-++Mobsites.Blazor.SignaturePad (2.0.0-preview1)
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>15678
-++SimplexNoise (2.0.0)
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>15679
-++Syncfusion.Blazor (20.3.0.52)
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>15684
 ++bootstrap.min.css
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\wwwroot\css\bootstrap\bootstrap.min.css
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap.min.css
 ++font
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\wwwroot\css\open-iconic\font\
 ++FONT-LICENSE
@@ -293,6 +352,36 @@ i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\wwwroot\css\open-iconic\icon-license
 ++README.md
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\wwwroot\css\open-iconic\readme.md
+++bootstrap.css.map
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap.css.map
+++bootstrap.rtl.css
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap.rtl.css
+++bootstrap-grid.css.map
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap-grid.css.map
+++bootstrap-grid.min.css
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap-grid.min.css
+++bootstrap-grid.rtl.css
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap-grid.rtl.css
+++bootstrap-reboot.css.map
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap-reboot.css.map
+++bootstrap-reboot.min.css
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap-reboot.min.css
+++bootstrap-reboot.rtl.css
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap-reboot.rtl.css
+++bootstrap-utilities.css.map
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap-utilities.css.map
+++bootstrap-utilities.min.css
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap-utilities.min.css
+++bootstrap-utilities.rtl.css
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap-utilities.rtl.css
+++bootstrap.bundle.js
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\js\bootstrap.bundle.js
+++bootstrap.esm.js
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\js\bootstrap.esm.js
+++bootstrap.js.map
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\js\bootstrap.js.map
+++bootstrap.min.js
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\js\bootstrap.min.js
 ++CanvasPixelReader.js
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\jslib\src\canvaspixelreader.js
 ++index.js
@@ -305,8 +394,41 @@ i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\shared\navmenu.razor.css
 ++bootstrap.min.css.map
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\wwwroot\css\bootstrap\bootstrap.min.css.map
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap.min.css.map
 ++fonts
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\wwwroot\css\open-iconic\font\fonts\
+++bootstrap.rtl.css.map
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap.rtl.css.map
+++bootstrap.rtl.min.css
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap.rtl.min.css
+++bootstrap-grid.min.css.map
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap-grid.min.css.map
+++bootstrap-grid.rtl.css.map
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap-grid.rtl.css.map
+++bootstrap-grid.rtl.min.css
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap-grid.rtl.min.css
+++bootstrap-reboot.min.css.map
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap-reboot.min.css.map
+++bootstrap-reboot.rtl.css.map
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap-reboot.rtl.css.map
+++bootstrap-reboot.rtl.min.css
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap-reboot.rtl.min.css
+++bootstrap-utilities.min.css.map
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap-utilities.min.css.map
+++bootstrap-utilities.rtl.css.map
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap-utilities.rtl.css.map
+++bootstrap-utilities.rtl.min.css
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap-utilities.rtl.min.css
+++bootstrap.bundle.js.map
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\js\bootstrap.bundle.js.map
+++bootstrap.bundle.min.js
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\js\bootstrap.bundle.min.js
+++bootstrap.esm.js.map
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\js\bootstrap.esm.js.map
+++bootstrap.esm.min.js
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\js\bootstrap.esm.min.js
+++bootstrap.min.js.map
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\js\bootstrap.min.js.map
 ++open-iconic-bootstrap.min.css
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\wwwroot\css\open-iconic\font\css\open-iconic-bootstrap.min.css
 ++open-iconic.eot
@@ -319,6 +441,22 @@ i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\wwwroot\css\open-iconic\font\fonts\open-iconic.ttf
 ++open-iconic.woff
 i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\documents\c#\neurosharp\neurosharpblazorwasm\wwwroot\css\open-iconic\font\fonts\open-iconic.woff
+++bootstrap.rtl.min.css.map
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap.rtl.min.css.map
+++bootstrap-grid.rtl.min.css.map
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap-grid.rtl.min.css.map
+++bootstrap-reboot.rtl.min.css.map
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap-reboot.rtl.min.css.map
+++bootstrap-utilities.rtl.min.css.map
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\css\bootstrap-utilities.rtl.min.css.map
+++bootstrap.bundle.min.js.map
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\js\bootstrap.bundle.min.js.map
+++bootstrap.esm.min.js.map
+i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:c:\users\isaac\.nuget\packages\bootstrap\5.2.2\contentfiles\any\any\wwwroot\js\bootstrap.esm.min.js.map
+++Assemblies
+i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:assemblies
+++COM
+i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:com
 ++Data
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\data\
 ++Datatypes
@@ -337,10 +475,16 @@ i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\utilities\
 ++var.txt
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\var.txt
-++Assemblies
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:assemblies
-++COM
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:com
+++Microsoft.JSInterop
+i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\microsoft.jsinterop
+++{d37e2a3e-8545-3a39-9f4f-31827c9124ab}
+i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\{d37e2a3e-8545-3a39-9f4f-31827c9124ab}
+++Blazor.Extensions.Canvas (1.1.1)
+i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:>15961
+++CsvHelper (30.0.0)
+i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:>15967
+++System.Drawing.Common (6.0.0)
+i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:>15959
 ++DataTablePreprocessor.cs
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\data\datatablepreprocessor.cs
 ++DataUtils.cs
@@ -349,6 +493,8 @@ i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\data\imagepreprocessor.cs
 ++MnistReader.cs
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\data\mnistreader.cs
+++NLPDataUtils.cs
+i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\data\nlpdatautils.cs
 ++ImageDataAggregate.cs
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\datatypes\imagedataaggregate.cs
 ++NetworkFormattedImage.cs
@@ -377,8 +523,8 @@ i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\layers\fullyconnectedlayer.cs
 ++Layer.cs
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\layers\layer.cs
-++LongShortTermMemoryLayer.cs
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\layers\longshorttermmemorylayer.cs
+++LSTMLayer.cs
+i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\layers\lstmlayer.cs
 ++MaxPoolingLayer.cs
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\layers\maxpoolinglayer.cs
 ++ParameterizedLayer.cs
@@ -409,16 +555,6 @@ i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\utilities\mathutils.cs
 ++PCA.cs
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\utilities\pca.cs
-++Microsoft.JSInterop
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\microsoft.jsinterop
-++{d37e2a3e-8545-3a39-9f4f-31827c9124ab}
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\{d37e2a3e-8545-3a39-9f4f-31827c9124ab}
-++Blazor.Extensions.Canvas (1.1.1)
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:>15654
-++CsvHelper (30.0.0)
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:>15659
-++System.Drawing.Common (6.0.0)
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:>15652
 ++Debug
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\obj\debug\
@@ -444,7 +580,6 @@ i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\obj\release\net6.0\
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\unix\lib\net6.0\
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\win\lib\net6.0\
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\browser\lib\net6.0\
 ++MnistDigits
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\mnistdigits\
 ++ref
@@ -474,22 +609,12 @@ i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.aspnetcore.components.web.dll
 ++Microsoft.AspNetCore.Metadata.dll
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.aspnetcore.metadata.dll
-++Microsoft.EntityFrameworkCore.Abstractions.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.entityframeworkcore.abstractions.dll
-++Microsoft.EntityFrameworkCore.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.entityframeworkcore.dll
-++Microsoft.Extensions.Caching.Abstractions.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.extensions.caching.abstractions.dll
-++Microsoft.Extensions.Caching.Memory.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.extensions.caching.memory.dll
 ++Microsoft.Extensions.DependencyInjection.Abstractions.dll
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.extensions.dependencyinjection.abstractions.dll
 ++Microsoft.Extensions.DependencyInjection.dll
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.extensions.dependencyinjection.dll
 ++Microsoft.Extensions.Logging.Abstractions.dll
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.extensions.logging.abstractions.dll
-++Microsoft.Extensions.Logging.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.extensions.logging.dll
 ++Microsoft.Extensions.Options.dll
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.extensions.options.dll
 ++Microsoft.Extensions.Primitives.dll
@@ -569,116 +694,9 @@ i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\
 ++lib
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\unix\lib\
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\win\lib\
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\browser\lib\
 ++native
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\win-x64\native\
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\win-arm\native\
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\win-arm64\native\
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\win-x86\native\
 ++libiomp5md.dll
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\win-x64\native\libiomp5md.dll
 ++libMathNetNumericsMKL.dll
 i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\win-x64\native\libmathnetnumericsmkl.dll
-++Microsoft.EntityFrameworkCore.SqlServer (7.0.0)
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>15767
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:>17788
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:>17789
-i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:>17790
-i:{832416da-9872-4efe-9a8e-21b2596c670d}:>17791
-++System.Runtime (4.3.1)
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:>15939
-i:{7e783010-cc4c-460f-b640-e6e922909fdf}:>15940
-i:{832416da-9872-4efe-9a8e-21b2596c670d}:>15943
-i:{e35d64cb-fed3-42e2-9ba3-c73aca144c66}:>15941
-i:{6aed5f46-f6f0-4b06-ab62-1ec429051190}:>15944
-++C:\Program Files\dotnet\sdk\6.0.102\Sdks\Microsoft.NET.Sdk\targets\..\analyzers\ILLink.CodeFixProvider.dll
-++C:\Program Files\dotnet\sdk\6.0.102\Sdks\Microsoft.NET.Sdk\targets\..\analyzers\ILLink.RoslynAnalyzer.dll
-++C:\Program Files\dotnet\sdk\6.0.102\Sdks\Microsoft.NET.Sdk\targets\..\analyzers\Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll
-++C:\Program Files\dotnet\sdk\6.0.102\Sdks\Microsoft.NET.Sdk\targets\..\analyzers\Microsoft.CodeAnalysis.NetAnalyzers.dll
-++Humanizer.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\humanizer.dll
-++Microsoft.Bcl.AsyncInterfaces.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.bcl.asyncinterfaces.dll
-++Azure.Core.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\azure.core.dll
-++Microsoft.Extensions.DependencyModel.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.extensions.dependencymodel.dll
-++Microsoft.Identity.Client.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.identity.client.dll
-++Microsoft.Identity.Client.Extensions.Msal.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.identity.client.extensions.msal.dll
-++Microsoft.IdentityModel.Abstractions.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.identitymodel.abstractions.dll
-++Microsoft.IdentityModel.JsonWebTokens.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.identitymodel.jsonwebtokens.dll
-++Microsoft.IdentityModel.Logging.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.identitymodel.logging.dll
-++Microsoft.SqlServer.Server.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.sqlserver.server.dll
-++Mono.TextTemplating.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\mono.texttemplating.dll
-++System.CodeDom.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\system.codedom.dll
-++System.Configuration.ConfigurationManager.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\system.configuration.configurationmanager.dll
-++System.IdentityModel.Tokens.Jwt.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\system.identitymodel.tokens.jwt.dll
-++System.Memory.Data.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\system.memory.data.dll
-++System.Runtime.Caching.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\system.runtime.caching.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\win\lib\netstandard2.0\system.runtime.caching.dll
-++System.Security.Cryptography.ProtectedData.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\system.security.cryptography.protecteddata.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\win\lib\netstandard2.0\system.security.cryptography.protecteddata.dll
-++System.Security.Permissions.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\system.security.permissions.dll
-++netcoreapp3.1
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\unix\lib\netcoreapp3.1\
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\win\lib\netcoreapp3.1\
-++Microsoft.Data.SqlClient.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\unix\lib\netcoreapp3.1\microsoft.data.sqlclient.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.data.sqlclient.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\win\lib\netcoreapp3.1\microsoft.data.sqlclient.dll
-++win-arm
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\win-arm\
-++Microsoft.Data.SqlClient.SNI.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\win-arm\native\microsoft.data.sqlclient.sni.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\win-arm64\native\microsoft.data.sqlclient.sni.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\win-x64\native\microsoft.data.sqlclient.sni.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\win-x86\native\microsoft.data.sqlclient.sni.dll
-++win-arm64
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\win-arm64\
-++win-x86
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\win-x86\
-++browser
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\browser\
-++System.Text.Encodings.Web.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\browser\lib\net6.0\system.text.encodings.web.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\system.text.encodings.web.dll
-++netcoreapp3.0
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\win\lib\netcoreapp3.0\
-++System.Windows.Extensions.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\win\lib\netcoreapp3.0\system.windows.extensions.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\system.windows.extensions.dll
-++Azure.Identity.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\azure.identity.dll
-++Microsoft.EntityFrameworkCore.Design.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.entityframeworkcore.design.dll
-++Microsoft.IdentityModel.Protocols.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.identitymodel.protocols.dll
-++Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.identitymodel.protocols.openidconnect.dll
-++Microsoft.IdentityModel.Tokens.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.identitymodel.tokens.dll
-++System.Text.Json.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\system.text.json.dll
-++netstandard2.0
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\runtimes\win\lib\netstandard2.0\
-++Microsoft.EntityFrameworkCore.Relational.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.entityframeworkcore.relational.dll
-++Microsoft.EntityFrameworkCore.SqlServer.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.entityframeworkcore.sqlserver.dll
-++Microsoft.Extensions.Configuration.Abstractions.dll
-i:{0a671abc-1b57-4382-b6ca-a19fa118d542}:c:\users\isaac\documents\c#\neurosharp\neurosharp\networktests\bin\debug\net6.0\microsoft.extensions.configuration.abstractions.dll
-++NeuroSharpNetworkStorageContext.cs

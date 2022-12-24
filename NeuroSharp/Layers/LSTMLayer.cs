@@ -1,7 +1,9 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
-using NeuroSharp.Optimizers;
 using NeuroSharp.Enumerations;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Linq;
+
 
 namespace NeuroSharp
 {
@@ -14,21 +16,19 @@ namespace NeuroSharp
         [JsonIgnore] public Vector<double>[] PreviousCellStates { get; set; }
         public FullyConnectedLayer[] LSTMGates { get; set; }
         [JsonIgnore]public ActivationLayer[][] ActivationGates { get; set; }
-        public bool Bidirectional { get; set; }
-        
+
         private Vector<double> _nextCellStateGradient;
         
         [JsonProperty] private int _hiddenUnits;
         [JsonProperty] private int _vocabSize;
         [JsonProperty] private int _sequenceLength;
 
-        public LSTMLayer(int vocabSize, int hiddenUnits, int sequenceLength, bool bidirectional = false)
+        public LSTMLayer(int vocabSize, int hiddenUnits, int sequenceLength)
         {
             LayerType = LayerType.LSTM;
             _hiddenUnits = hiddenUnits;
             _vocabSize = vocabSize;
             _sequenceLength = sequenceLength;
-            Bidirectional = bidirectional;
             ActivationGateInit();
         }
         
@@ -50,27 +50,13 @@ namespace NeuroSharp
         public override Vector<double> ForwardPropagation(Vector<double> input)
         {
             Input = input;
-            /*return Vector<double>.Build.DenseOfEnumerable(
-                Bidirectional
-                ? LSTMPass(input).Concat(
-                    LSTMPass(Vector<double>.Build.DenseOfEnumerable(input.Reverse()))
-                ) : LSTMPass(input)
-            );*/
             return LSTMPass(input);
         }
 
         public override Vector<double> BackPropagation(Vector<double> outputError)
         {
             if(!AccumulateGradients) DrainGradients();
-           /* return Vector<double>.Build.DenseOfEnumerable(
-                Bidirectional
-                    ? LSTMBackPass(outputError.SubVector(outputError.Count / 2, outputError.Count / 2)).Concat(
-                        LSTMBackPass(Vector<double>.Build.DenseOfEnumerable(
-                            outputError.SubVector(0, outputError.Count / 2))
-                        )
-                    ) : LSTMBackPass(outputError)
-            );*/
-           return LSTMBackPass(outputError);
+            return LSTMBackPass(outputError);
         }
         
         public override void InitializeParameters()
@@ -78,11 +64,11 @@ namespace NeuroSharp
             CacheInit();
             LSTMGates = new FullyConnectedLayer[]
             {
-                new (inputSize: _vocabSize + _hiddenUnits, outputSize: _hiddenUnits),
-                new (inputSize: _vocabSize + _hiddenUnits, outputSize: _hiddenUnits),
-                new (inputSize: _vocabSize + _hiddenUnits, outputSize: _hiddenUnits),
-                new (inputSize: _vocabSize + _hiddenUnits, outputSize: _hiddenUnits),
-                new (inputSize: _hiddenUnits, outputSize: _vocabSize)
+                new FullyConnectedLayer(inputSize: _vocabSize + _hiddenUnits, outputSize: _hiddenUnits),
+                new FullyConnectedLayer(inputSize: _vocabSize + _hiddenUnits, outputSize: _hiddenUnits),
+                new FullyConnectedLayer(inputSize: _vocabSize + _hiddenUnits, outputSize: _hiddenUnits),
+                new FullyConnectedLayer(inputSize: _vocabSize + _hiddenUnits, outputSize: _hiddenUnits),
+                new FullyConnectedLayer(inputSize: _hiddenUnits, outputSize: _vocabSize)
             };
 
             foreach (var layer in LSTMGates)
@@ -112,7 +98,7 @@ namespace NeuroSharp
         public override void SetSizeIO()
         {
             InputSize = _vocabSize * _sequenceLength;
-            OutputSize = _vocabSize * (Bidirectional ? 2 : 1); //todo: add option for sequence to sequence lstm
+            OutputSize = _vocabSize;
         }
 
         public override void SetGradientAccumulation(bool acc)
@@ -242,11 +228,11 @@ namespace NeuroSharp
             for (int i = 0; i < _sequenceLength; i++)
                 ActivationGates[i] = new ActivationLayer[]
                 {
-                    new (ActivationType.Sigmoid),
-                    new (ActivationType.Sigmoid),
-                    new (ActivationType.Tanh),
-                    new (ActivationType.Sigmoid),
-                    new (ActivationType.Tanh),
+                    new ActivationLayer(ActivationType.Sigmoid),
+                    new ActivationLayer(ActivationType.Sigmoid),
+                    new ActivationLayer(ActivationType.Tanh),
+                    new ActivationLayer(ActivationType.Sigmoid),
+                    new ActivationLayer(ActivationType.Tanh),
                 };
         }
     }

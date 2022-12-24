@@ -1,0 +1,48 @@
+{
+  "name": "com.unity.2d.spriteshape",
+  "version": "8.0.1",
+  "unity": "2022.1",
+  "displayName": "2D SpriteShape",
+  "description": "SpriteShape Runtime & Editor Package contains the tooling and the runtime component that allows you to create very organic looking spline based 2D worlds. It comes with intuitive configurator and a highly performant renderer.",
+  "keywords": [
+    "2d",
+    "shape",
+    "spriteshape",
+    "smartsprite",
+    "spline",
+    "terrain2d"
+  ],
+  "category": "2D",
+  "dependencies": {
+    "com.unity.mathematics": "1.1.0",
+    "com.unity.2d.common": "7.0.1",
+    "com.unity.modules.physics2d": "1.0.0"
+  },
+  "samples": [
+    {
+      "displayName": "Sprite Shape Samples",
+      "description": "Samples to get started with SpriteShape",
+      "path": "Samples~/Samples"
+    },
+    {
+      "displayName": "Sprite Shape Extras",
+      "description": "This sample has utility scripts that has various use-cases of SpriteShape",
+      "path": "Samples~/Extras"
+    }
+  ],
+  "relatedPackages": {
+    "com.unity.2d.spriteshape.tests": "8.0.1",
+    "com.unity.2d.common.tests": "7.0.1"
+  },
+  "_upm": {
+    "changelog": "### Changed\n- Refactored internal triangulation and tessellation APIs."
+  },
+  "upmCi": {
+    "footprint": "d660819aa6d463f8b83f25702850e19a250b86d2"
+  },
+  "repository": {
+    "url": "https://github.cds.internal.unity3d.com/unity/2d.git",
+    "type": "git",
+    "revision": "6efabf98e011c774ea92b1bdece8b2339dba79fd"
+  }
+}

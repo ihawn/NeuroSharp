@@ -39,14 +39,6 @@
         }
       },
       "coverlet.collector/3.1.0": {},
-      "CsvHelper/30.0.0": {
-        "runtime": {
-          "lib/net6.0/CsvHelper.dll": {
-            "assemblyVersion": "30.0.0.0",
-            "fileVersion": "30.0.0.0"
-          }
-        }
-      },
       "MathNet.Numerics/5.0.0": {
         "runtime": {
           "lib/net6.0/MathNet.Numerics.dll": {
@@ -472,22 +464,6 @@
           }
         }
       },
-      "Microsoft.Win32.SystemEvents/6.0.0": {
-        "runtime": {
-          "lib/net6.0/Microsoft.Win32.SystemEvents.dll": {
-            "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.0.21.52210"
-          }
-        },
-        "runtimeTargets": {
-          "runtimes/win/lib/net6.0/Microsoft.Win32.SystemEvents.dll": {
-            "rid": "win",
-            "assetType": "runtime",
-            "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.0.21.52210"
-          }
-        }
-      },
       "NETStandard.Library/2.0.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.1.1"
@@ -521,31 +497,6 @@
         }
       },
       "NUnit3TestAdapter/4.0.0": {},
-      "System.Drawing.Common/6.0.0": {
-        "dependencies": {
-          "Microsoft.Win32.SystemEvents": "6.0.0"
-        },
-        "runtime": {
-          "lib/net6.0/System.Drawing.Common.dll": {
-            "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.0.21.52210"
-          }
-        },
-        "runtimeTargets": {
-          "runtimes/unix/lib/net6.0/System.Drawing.Common.dll": {
-            "rid": "unix",
-            "assetType": "runtime",
-            "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.0.21.52210"
-          },
-          "runtimes/win/lib/net6.0/System.Drawing.Common.dll": {
-            "rid": "win",
-            "assetType": "runtime",
-            "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.0.21.52210"
-          }
-        }
-      },
       "System.Reflection.Metadata/1.6.0": {},
       "System.Runtime/4.3.1": {
         "dependencies": {
@@ -556,12 +507,10 @@
       "NeuroSharp/1.0.0": {
         "dependencies": {
           "Blazor.Extensions.Canvas": "1.1.1",
-          "CsvHelper": "30.0.0",
           "MathNet.Numerics": "5.0.0",
           "MathNet.Numerics.MKL.Win-x64": "3.0.0",
           "MathNet.Numerics.Providers.CUDA": "5.0.0",
           "Newtonsoft.Json": "13.0.1",
-          "System.Drawing.Common": "6.0.0",
           "System.Runtime": "4.3.1"
         },
         "runtime": {
@@ -589,13 +538,6 @@
       "sha512": "sha512-YzYqSRrjoP5lULBhTDcTOjuM4IDPPi6PhFsl4w8EI4WdZhE6llt7E38Tg4CHyrS+QKwyu1+9OwkdDgluOdoBTw==",
       "path": "coverlet.collector/3.1.0",
       "hashPath": "coverlet.collector.3.1.0.nupkg.sha512"
-    },
-    "CsvHelper/30.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-0VXyouC1g43bXtEJRReJfB5C3RwxZOUSk9FnNv8/47PptzrVYKrEi/H3PP14+MvP+mLCnDiAtOXbIwvnEMSPxw==",
-      "path": "csvhelper/30.0.0",
-      "hashPath": "csvhelper.30.0.0.nupkg.sha512"
     },
     "MathNet.Numerics/5.0.0": {
       "type": "package",
@@ -751,13 +693,6 @@
       "path": "microsoft.testplatform.testhost/16.11.0",
       "hashPath": "microsoft.testplatform.testhost.16.11.0.nupkg.sha512"
     },
-    "Microsoft.Win32.SystemEvents/6.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-hqTM5628jSsQiv+HGpiq3WKBl2c8v1KZfby2J6Pr7pEPlK9waPdgEO6b8A/+/xn/yZ9ulv8HuqK71ONy2tg67A==",
-      "path": "microsoft.win32.systemevents/6.0.0",
-      "hashPath": "microsoft.win32.systemevents.6.0.0.nupkg.sha512"
-    },
     "NETStandard.Library/2.0.0": {
       "type": "package",
       "serviceable": true,
@@ -792,13 +727,6 @@
       "sha512": "sha512-5gCkytgQWL93M5s9Rnl4CfSUhn95VsuMVLYjmZe8K7dNRF7kzrBMPsBTyLNCga5qLW7RM/o591J+HVrV1QMaVQ==",
       "path": "nunit3testadapter/4.0.0",
       "hashPath": "nunit3testadapter.4.0.0.nupkg.sha512"
-    },
-    "System.Drawing.Common/6.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-NfuoKUiP2nUWwKZN6twGqXioIe1zVD0RIj2t976A+czLHr2nY454RwwXs6JU9Htc6mwqL6Dn/nEL3dpVf2jOhg==",
-      "path": "system.drawing.common/6.0.0",
-      "hashPath": "system.drawing.common.6.0.0.nupkg.sha512"
     },
     "System.Reflection.Metadata/1.6.0": {
       "type": "package",

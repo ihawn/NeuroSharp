@@ -1,5 +1,6 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using System.Linq;
+using System;
 
 namespace NeuroSharp
 {

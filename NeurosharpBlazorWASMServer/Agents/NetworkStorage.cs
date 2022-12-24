@@ -29,8 +29,8 @@ public class NetworkStorage
         _networks["CharacterRecognition"] = Network.DeserializeNetworkJSON(
             File.ReadAllText($"{System.IO.Directory.GetCurrentDirectory()}{@"/NetworkModels/characters_model.json"}")
         );
-       /* _networks["SentimentAnalysis"] = Network.DeserializeNetworkJSON(
+        _networks["SentimentAnalysis"] = Network.DeserializeNetworkJSON(
             File.ReadAllText($"{System.IO.Directory.GetCurrentDirectory()}{@"/NetworkModels/sentiment_analysis_model.json"}")
-        );*/
+        );
     }
 }

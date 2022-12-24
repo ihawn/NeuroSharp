@@ -23,7 +23,7 @@ namespace NeuroSharp
         
         //json constructor
         public FullyConnectedLayer(Matrix<double> weight, Vector<double> bias,
-            int inputSize, int outputSize, bool accumulateGradients, int id)
+            int inputSize, int outputSize, int id)
         {
             LayerType = LayerType.FullyConnected;
             Id = id;
@@ -31,7 +31,6 @@ namespace NeuroSharp
             Biases = new Vector<double>[] { bias };
             InputSize = inputSize;
             OutputSize = outputSize;
-            SetGradientAccumulation(accumulateGradients);
         }
 
         public override Vector<double> ForwardPropagation(Vector<double> input)

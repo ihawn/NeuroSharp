@@ -1,10 +1,13 @@
-﻿using System.Text.Json.Nodes;
-using MathNet.Numerics.LinearAlgebra;
+﻿using MathNet.Numerics.LinearAlgebra;
 using NeuroSharp.Enumerations;
 using NeuroSharp.Training;
 using NeuroSharp.Optimizers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 
 namespace NeuroSharp.Utilities
 {
@@ -20,91 +23,112 @@ namespace NeuroSharp.Utilities
         {
             JObject jo = JObject.Load(reader);
 
-            List<Layer> layers = jo["Layers"].Select(layer => 
-                GetLayerType(layer) == LayerType.FullyConnected ? 
-                    FullyConnectedLayerFromJSON(layer) : 
-                GetLayerType(layer) == LayerType.Convolutional ?
-                    new ConvolutionalLayer(
-                        operators: layer["ChannelOperators"]
-                            .Select(conv => ConvolutionalOperatorFromJson(conv)).ToArray(),
-                        channelOutputs: null,//JsonToArrayOfVectors(layer["_channelOutputs"]),
-                        channelInputs: null,//JsonToArrayOfVectors(layer["_channelInputs"]),
-                        channelBackpropagationOutputs: null,//JsonToArrayOfVectors(layer["_channelBackpropagationOutputs"]),
-                        channelCount: Int32.Parse((string)layer["ChannelCount"]),
-                        channelInputSize: Int32.Parse((string)layer["ChannelInputSize"]),
-                        accumulateGradients: false,//bool.Parse((string)layer["AccumulateGradients"]),
-                        inputSize: Int32.Parse((string)layer["InputSize"]),
-                        outputSize: Int32.Parse((string)layer["OutputSize"]),
-                        id: Int32.Parse((string)layer["Id"])
-                    ) :
-                GetLayerType(layer) == LayerType.Recurrent ?
-                    new RecurrentLayer(
-                        sequenceLength: Int32.Parse((string)layer["_sequenceLength"]),
-                        vocabSize: Int32.Parse((string)layer["_vocabSize"]),
-                        hiddenSize: Int32.Parse((string)layer["_hiddenSize"]),
-                        stateActivationType: (ActivationType)Int32.Parse((string)layer["_stateActivationType"]),
-                        stateInput: JsonToArrayOfVectors(layer["StateInput"]),
-                        states: JsonToArrayOfVectors(layer["States"]),
-                        outputs: JsonArrayToVector(layer["Outputs"]),
-                        recurrentGradient: JsonArrayToVector(layer["RecurrentGradient"]),
-                        weights: JsonToArrayOfMatrices(layer["Weights"]),
-                        biases: JsonToArrayOfVectors(layer["Biases"]),
-                        adam: null,//AdamFromJson(layer["_adam"]),
-                        inputSize: Int32.Parse((string)layer["InputSize"]),
-                        outputSize: Int32.Parse((string)layer["OutputSize"]),
-                        accumulateGradients: bool.Parse((string)layer["AccumulateGradients"]),
-                        id: Int32.Parse((string)layer["Id"])
-                    ) :
-                GetLayerType(layer) == LayerType.Activation ?
-                    new ActivationLayer(
-                        type: (ActivationType)Int32.Parse((string)layer["ActivationType"]),
-                        inputSize: Int32.Parse((string)layer["InputSize"]),
-                        outputSize: Int32.Parse((string)layer["OutputSize"]),
-                        id: Int32.Parse((string)layer["Id"])
-                    ) as Layer : 
-                GetLayerType(layer) == LayerType.SoftmaxActivation ?
-                    new SoftmaxActivationLayer(
-                        inputSize: Int32.Parse((string)layer["InputSize"]),
-                        outputSize: Int32.Parse((string)layer["OutputSize"]),
-                        id: Int32.Parse((string)layer["Id"])
-                    ) :
-                GetLayerType(layer) == LayerType.MaxPooling ? 
-                    new MaxPoolingLayer(
-                        maxPoolPositions: layer["MaxPoolPositions"]
-                            .Select(x =>
-                                x.Select(y =>
-                                    new XYPair(Int32.Parse((string)y["x"]), Int32.Parse((string)y["y"]))
-                                ).ToList()
-                            ).ToList(),
-                        inputSize: Int32.Parse((string)layer["InputSize"]),
-                        outputSize: Int32.Parse((string)layer["OutputSize"]),
-                        poolSize: Int32.Parse((string)layer["_poolSize"]),
-                        stride: Int32.Parse((string)layer["_stride"]),
-                        filters: Int32.Parse((string)layer["_filters"]),
-                        id: Int32.Parse((string)layer["Id"])
-                    ) : 
-                GetLayerType(layer) == LayerType.LSTM ?
-                    new LSTMLayer(
-                        hiddenUnits: Int32.Parse((string)layer["_hiddenUnits"]),
-                        vocabSize: Int32.Parse((string)layer["_vocabSize"]),
-                        sequenceLength: Int32.Parse((string)layer["_sequenceLength"]),
-                        inputSize: Int32.Parse((string)layer["InputSize"]),
-                        outputSize: Int32.Parse((string)layer["OutputSize"]),
-                        lstmGates: new []
-                        {
-                            FullyConnectedLayerFromJSON(layer["LSTMGates"][0]),
-                            FullyConnectedLayerFromJSON(layer["LSTMGates"][1]),
-                            FullyConnectedLayerFromJSON(layer["LSTMGates"][2]),
-                            FullyConnectedLayerFromJSON(layer["LSTMGates"][3]),
-                            FullyConnectedLayerFromJSON(layer["LSTMGates"][4]),
-                        }
-                    ) :
-                    null
-            ).ToList();
+            List<Layer> layers = new List<Layer>();
+            foreach (var layer in jo["Layers"])
+            {
+                LayerType layerType = GetLayerType(layer);
 
-            //todo: add support for lstm layer
-            //todo: support model saving without the intention to train further (will reduce model size)
-            
+                switch (layerType)
+                {
+                    case LayerType.FullyConnected:
+                        layers.Add(FullyConnectedLayerFromJSON(layer));
+                        break;
+                    
+                    case LayerType.Convolutional:
+                        layers.Add(
+                            new ConvolutionalLayer(
+                                operators: layer["ChannelOperators"]
+                                    .Select(conv => ConvolutionalOperatorFromJson(conv)).ToArray(),
+                                channelCount: Int32.Parse((string)layer["ChannelCount"]),
+                                channelInputSize: Int32.Parse((string)layer["ChannelInputSize"]),
+                                inputSize: Int32.Parse((string)layer["InputSize"]),
+                                outputSize: Int32.Parse((string)layer["OutputSize"]),
+                                id: Int32.Parse((string)layer["Id"])
+                            )
+                        );
+                        break;
+                    
+                    case LayerType.Recurrent:
+                        layers.Add(
+                            new RecurrentLayer(
+                                sequenceLength: Int32.Parse((string)layer["_sequenceLength"]),
+                                vocabSize: Int32.Parse((string)layer["_vocabSize"]),
+                                hiddenSize: Int32.Parse((string)layer["_hiddenSize"]),
+                                stateActivationType: (ActivationType)Int32.Parse((string)layer["_stateActivationType"]),
+                                stateInput: JsonToArrayOfVectors(layer["StateInput"]),
+                                states: JsonToArrayOfVectors(layer["States"]),
+                                outputs: JsonArrayToVector(layer["Outputs"]),
+                                weights: JsonToArrayOfMatrices(layer["Weights"]),
+                                biases: JsonToArrayOfVectors(layer["Biases"]),
+                                inputSize: Int32.Parse((string)layer["InputSize"]),
+                                outputSize: Int32.Parse((string)layer["OutputSize"]),
+                                id: Int32.Parse((string)layer["Id"])
+                            )
+                        );
+                        break;
+                    
+                    case LayerType.Activation:
+                        layers.Add(
+                            new ActivationLayer(
+                                type: (ActivationType)Int32.Parse((string)layer["ActivationType"]),
+                                inputSize: Int32.Parse((string)layer["InputSize"]),
+                                outputSize: Int32.Parse((string)layer["OutputSize"]),
+                                id: Int32.Parse((string)layer["Id"])
+                            ) 
+                        );
+                        break;
+                    
+                    case LayerType.SoftmaxActivation:
+                        layers.Add(
+                            new SoftmaxActivationLayer(
+                                inputSize: Int32.Parse((string)layer["InputSize"]),
+                                outputSize: Int32.Parse((string)layer["OutputSize"]),
+                                id: Int32.Parse((string)layer["Id"])
+                            ) 
+                        );
+                        break;
+                    
+                    case LayerType.MaxPooling:
+                        layers.Add(
+                            new MaxPoolingLayer(
+                                maxPoolPositions: layer["MaxPoolPositions"]
+                                    .Select(x =>
+                                        x.Select(y =>
+                                            new XYPair(Int32.Parse((string)y["x"]), Int32.Parse((string)y["y"]))
+                                        ).ToList()
+                                    ).ToList(),
+                                inputSize: Int32.Parse((string)layer["InputSize"]),
+                                outputSize: Int32.Parse((string)layer["OutputSize"]),
+                                poolSize: Int32.Parse((string)layer["_poolSize"]),
+                                stride: Int32.Parse((string)layer["_stride"]),
+                                filters: Int32.Parse((string)layer["_filters"]),
+                                id: Int32.Parse((string)layer["Id"])
+                            )
+                        );
+                        break;
+                    
+                    case LayerType.LSTM:
+                        layers.Add(
+                            new LSTMLayer(
+                                hiddenUnits: Int32.Parse((string)layer["_hiddenUnits"]),
+                                vocabSize: Int32.Parse((string)layer["_vocabSize"]),
+                                sequenceLength: Int32.Parse((string)layer["_sequenceLength"]),
+                                inputSize: Int32.Parse((string)layer["InputSize"]),
+                                outputSize: Int32.Parse((string)layer["OutputSize"]),
+                                lstmGates: new []
+                                {
+                                    FullyConnectedLayerFromJSON(layer["LSTMGates"][0]),
+                                    FullyConnectedLayerFromJSON(layer["LSTMGates"][1]),
+                                    FullyConnectedLayerFromJSON(layer["LSTMGates"][2]),
+                                    FullyConnectedLayerFromJSON(layer["LSTMGates"][3]),
+                                    FullyConnectedLayerFromJSON(layer["LSTMGates"][4]),
+                                }
+                            )
+                        );
+                        break;
+                }
+            }
+
             foreach (Layer layer in layers)
             {
                 if (layer is ConvolutionalLayer)
@@ -120,8 +144,12 @@ namespace NeuroSharp.Utilities
             string name = (string)jo["Name"];
             LossType lossType = (LossType)Int32.Parse((string)jo["LossType"]);
             int entrySize = Int32.Parse((string)jo["EntrySize"]);
+            var rawData = jo["Data"];
+            List<string> data = new List<string>();
+            if (rawData != null)
+                data = rawData.Select(x => (string)x).ToList();
             
-            return new Network(layers, lossType, name, entrySize);
+            return new Network(layers, lossType, name, entrySize, data);
         }
 
         public override bool CanWrite
@@ -152,20 +180,7 @@ namespace NeuroSharp.Utilities
         {
             return obj.Select(x => JsonArrayToMatrix(x)).ToArray();
         }
-
-        public Adam AdamFromJson(JToken obj)
-        {
-            return new Adam(
-                meanWeightGradient: JsonToArrayOfMatrices(obj["_meanWeightGradient"]),
-                meanBiasGradient: JsonToArrayOfVectors(obj["_meanBiasGradient"]),
-                varianceWeightGradient: JsonToArrayOfMatrices(obj["_varianceWeightGradient"]),
-                varianceBiasGradient: JsonToArrayOfVectors(obj["_varianceBiasGradient"]),
-                beta1: Double.Parse((string)obj["_beta1"]),
-                beta2: Double.Parse((string)obj["_beta2"]),
-                epsilon: Double.Parse((string)obj["_epsilon"])
-            );
-        }
-
+        
         public FullyConnectedLayer FullyConnectedLayerFromJSON(JToken layer)
         {
             return new FullyConnectedLayer(
@@ -173,7 +188,6 @@ namespace NeuroSharp.Utilities
                 bias: JsonArrayToVector(layer["Biases"][0]),
                 inputSize: Int32.Parse((string)layer["InputSize"]),
                 outputSize: Int32.Parse((string)layer["OutputSize"]),
-                accumulateGradients: bool.Parse((string)layer["AccumulateGradients"]),
                 id: Int32.Parse((string)layer["Id"])
             );
         }
@@ -187,14 +201,11 @@ namespace NeuroSharp.Utilities
         {
             return new ConvolutionalOperator(
                 weights: JsonToArrayOfMatrices(layer["Weights"]),
-                weightGradients: JsonToArrayOfMatrices(layer["WeightGradients"]),
                 kernelSize: Int32.Parse((string)layer["_kernelSize"]),
                 stride: Int32.Parse((string)layer["_stride"]),
                 inputSize: Int32.Parse((string)layer["InputSize"]),
                 outputSize: Int32.Parse((string)layer["OutputSize"]),
-                filters: Int32.Parse((string)layer["_filters"]),
-                adam: null,//AdamFromJson(layer["_adam"]),
-                accumulateGradients: bool.Parse((string)layer["AccumulateGradients"])
+                filters: Int32.Parse((string)layer["_filters"])
             );
         }
     }

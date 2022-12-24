@@ -1,7 +1,8 @@
-﻿namespace NeuroSharp.Models;
-
-public class PathLabelModel
+﻿namespace NeuroSharp.Models
 {
-    public string Path { get; set; }
-    public string Label { get; set; }
+    public class PathLabelModel
+    {
+        public string Path { get; set; }
+        public string Label { get; set; }
+    }
 }

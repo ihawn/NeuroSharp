@@ -2,7 +2,6 @@
 using MathNet.Numerics.LinearAlgebra;
 using NeuroSharp;
 using NeuroSharp.Data;
-using NeuroSharp.Datatypes;
 using NeuroSharp.Enumerations;
 using NeuroSharp.Training;
 
@@ -13,13 +12,13 @@ namespace Trainer
         static void Main(string[] args)
         {
             //LetterIdentificationTraining(20);
-            SentimentAnalysisTraining(5, trainingSize: 5000, testSize: 500, maxWordCount: 3000, maxReviewLength: 40);
+            SentimentAnalysisTraining(15, trainingSize: 3000, testSize: 300, maxWordCount: 700, maxReviewLength: 20);
         }
 
         static void LetterIdentificationTraining(int epochs)
         {
             string path = @"C:\Users\Isaac\Documents\C#\NeuroSharp\Data\CharacterRecognition";
-            string possibleChars = "abcdefghijklmno";
+            string possibleChars = "abcdefghijklmnopqrst";
             
             List<(Vector<double>, Vector<double>)> data = new List<(Vector<double>, Vector<double>)>();
            
@@ -106,24 +105,23 @@ namespace Trainer
         {
             Random rand = new Random();
             
-            string dataPath = @"C:\Users\Isaac\Desktop\reviews\train.csv";
+            string dataPath = @"C:\Users\Isaac\Desktop\reviews\train_shorter.csv";
             DataTable dataTable = DataTablePreprocessor.GetDataTableFromCSV(dataPath);
 
             string allowedChars = "abcdefghijklmnopqrstuvwxyz ";
-            List<string> reviews = new List<string>();
-            List<int> ratings = new List<int>();
-
+            List<string> statements = new List<string>();
+            List<string> ratings = new List<string>();
             
             for(int i = 0; i < dataTable.Rows.Count; i++)
             {
-                reviews.Add(new string(dataTable.Rows[i].ItemArray[1].ToString().ToLower()
+                statements.Add(new string(dataTable.Rows[i].ItemArray[1].ToString().ToLower()
                     .Replace(".", " ")
                     .Replace(",", " ")
                     .Where(c => allowedChars.Contains(c)).ToArray()));
-                ratings.Add(Int32.Parse(dataTable.Rows[i].ItemArray[0].ToString()));
+                ratings.Add(dataTable.Rows[i].ItemArray[0].ToString());
             }
             
-            List<string> allWords = reviews.Select(r => r.Split(' ')
+            List<string> allWords = statements.Select(r => r.Split(' ')
                 .ToList()).SelectMany(x => x).ToList();
             List<string> distinctWords = allWords.Distinct().ToList();
             Dictionary<string, int> wordFrequency = new Dictionary<string, int>();
@@ -157,7 +155,7 @@ namespace Trainer
                 Vector<double> x = Vector<double>.Build.Dense(maxWordCount * maxReviewLength);
                 Vector<double> y = Vector<double>.Build.Dense(2);
 
-                List<string> reviewWords = reviews[i].Split(' ')
+                List<string> reviewWords = statements[i].Split(' ')
                     .Where(s => uniqueWordsUsedFrequently.Contains(s)).ToList();
 
                 processedReviews.Add(reviewWords);
@@ -168,7 +166,16 @@ namespace Trainer
                     x[j * maxWordCount + wordIndex] = 1;
                 }
 
-                y[ratings[i] - 1] = 1;
+                switch (ratings[i])
+                {
+                    case "1":
+                        y = Vector<double>.Build.DenseOfArray(new double[] { 1, 0 });
+                        break;
+                    
+                    case "2":
+                        y = Vector<double>.Build.DenseOfArray(new double[] { 0, 1 });
+                        break;
+                }
 
                 if (i < trainingSize)
                 {
@@ -185,27 +192,31 @@ namespace Trainer
             
 
             Network network = new Network(maxWordCount * maxReviewLength);
-            network.Add(new LSTMLayer(maxWordCount, 64, maxReviewLength));
+            network.Add(new LSTMLayer(maxWordCount, 128, maxReviewLength));
             network.Add(new ActivationLayer(ActivationType.Tanh));
             network.Add(new FullyConnectedLayer(2));
             network.Add(new SoftmaxActivationLayer());
             network.UseLoss(LossType.BinaryCrossentropy);
             
-            network.Train(xTrain, yTrain, epochs, TrainingConfiguration.SGD, OptimizerType.Adam, learningRate: 0.0005);
+            network.Train(xTrain, yTrain, epochs, TrainingConfiguration.SGD, OptimizerType.Adam, learningRate: 0.0015);
+            network.Data = uniqueWordsUsedFrequently;
             
             string modelJson = network.SerializeToJSON();
             File.WriteAllText(@"C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASMServer\NetworkModels\sentiment_analysis_model.json", modelJson);
+         
 
             int wrongCount = 0;
             for (int i = 0; i < xTest.Count; i++)
             {
                 Vector<double> pred = network.Predict(xTest[i]);
-                int predNum = pred.ToList().IndexOf(pred.Max()) + 1;
-                int actualNum = yTest[i].ToList().IndexOf(1) + 1;
-                Console.WriteLine("Prediction: " + predNum);
-                Console.WriteLine("Actual: " + actualNum);
+                string predString = pred[0] - pred[1] > 0 ? "Negative" : "Positive";
 
-                if (predNum != actualNum)
+                string actString = yTest[i][0] == 1 ? "Negative" : "Positive";
+                
+                Console.WriteLine("Prediction: " + predString);
+                Console.WriteLine("Actual: " + actString);
+
+                if (predString != actString)
                     wrongCount++;
             }
 

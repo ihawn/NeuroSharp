@@ -1,8 +1,7 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.Distributions;
-using System.Linq;
-using System.Drawing.Imaging;
-using System.Drawing;
+using System;
+using System.Collections.Generic;
 
 namespace NeuroSharp.Utilities
 {

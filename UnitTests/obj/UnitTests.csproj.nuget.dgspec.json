@@ -21,15 +21,15 @@
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net6.0"
+          "netstandard2.1"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net6.0": {
-            "targetAlias": "net6.0",
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
             "projectReferences": {}
           }
         },
@@ -40,16 +40,12 @@
         }
       },
       "frameworks": {
-        "net6.0": {
-          "targetAlias": "net6.0",
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
           "dependencies": {
             "Blazor.Extensions.Canvas": {
               "target": "Package",
               "version": "[1.1.1, )"
-            },
-            "CsvHelper": {
-              "target": "Package",
-              "version": "[30.0.0, )"
             },
             "MathNet.Numerics": {
               "target": "Package",
@@ -67,10 +63,6 @@
               "target": "Package",
               "version": "[13.0.1, )"
             },
-            "System.Drawing.Common": {
-              "target": "Package",
-              "version": "[6.0.0, )"
-            },
             "System.Runtime": {
               "target": "Package",
               "version": "[4.3.1, )"
@@ -87,7 +79,7 @@
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
-            "Microsoft.NETCore.App": {
+            "NETStandard.Library": {
               "privateAssets": "all"
             }
           },

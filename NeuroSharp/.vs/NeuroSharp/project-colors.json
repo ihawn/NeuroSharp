@@ -30,7 +30,12 @@
       "ProjectGuid": "6aed5f46-f6f0-4b06-ab62-1ec429051190",
       "DisplayName": "NeurosharpBlazorWASM",
       "ColorIndex": 4
+    },
+    "e35d64cb-fed3-42e2-9ba3-c73aca144c66": {
+      "ProjectGuid": "e35d64cb-fed3-42e2-9ba3-c73aca144c66",
+      "DisplayName": "TrainerWhoTrains",
+      "ColorIndex": 5
     }
   },
-  "NextColorIndex": 5
+  "NextColorIndex": 6
 }

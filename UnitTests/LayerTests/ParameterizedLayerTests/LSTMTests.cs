@@ -6,7 +6,6 @@ using MathNet.Numerics.LinearAlgebra;
 using System.Collections.Generic;
 using System.Linq;
 using System;
-using NeuroSharp.Datatypes;
 using NeuroSharp.Training;
 
 namespace UnitTests.LayerTests.ParameterizedLayerTests
@@ -31,13 +30,12 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
                         int vocabSize = i;
                         int sequenceLength = j;
                         int hiddenSize = n;
-                        bool bidirectional = false; //new Random().NextDouble() > 0.5;
 
-                        Vector<double> truthY = Vector<double>.Build.Random(vocabSize * (bidirectional ? 2 : 1));
+                        Vector<double> truthY = Vector<double>.Build.Random(vocabSize);
                         Vector<double> testX = Vector<double>.Build.Random(sequenceLength * vocabSize);
 
                         Network network = new Network(27 * 12);
-                        network.Add(new LSTMLayer(vocabSize, hiddenSize, sequenceLength, bidirectional));
+                        network.Add(new LSTMLayer(vocabSize, hiddenSize, sequenceLength));
                         network.Add(new ActivationLayer(ActivationType.Tanh));
                         network.Add(new SoftmaxActivationLayer());
                         network.UseLoss(LossType.CategoricalCrossentropy);
@@ -77,15 +75,14 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
                             int vocabSize = i;
                             int sequenceLength = j;
                             int hiddenSize = n;
-                            bool bidirectional = false; //new Random().NextDouble() > 0.5;
 
-                            Vector<double> truthY = Vector<double>.Build.Random(vocabSize * (bidirectional ? 2 : 1));
+                            Vector<double> truthY = Vector<double>.Build.Random(vocabSize);
                             Vector<double> testX = Vector<double>.Build.Random(sequenceLength * vocabSize);
                             Vector<double> testWeight =
                                 Vector<double>.Build.Random((vocabSize + hiddenSize) * hiddenSize);
 
                             Network network = new Network(27 * 12);
-                            network.Add(new LSTMLayer(vocabSize, hiddenSize, sequenceLength, bidirectional));
+                            network.Add(new LSTMLayer(vocabSize, hiddenSize, sequenceLength));
                             network.Add(new ActivationLayer(ActivationType.Tanh));
                             network.Add(new SoftmaxActivationLayer());
                             network.UseLoss(LossType.CategoricalCrossentropy);
@@ -143,7 +140,7 @@ namespace UnitTests.LayerTests.ParameterizedLayerTests
                             Vector<double> testBias = Vector<double>.Build.Random(hiddenSize);
 
                             Network network = new Network(27 * 12);
-                            network.Add(new LSTMLayer(vocabSize, hiddenSize, sequenceLength, bidirectional));
+                            network.Add(new LSTMLayer(vocabSize, hiddenSize, sequenceLength));
                             network.Add(new ActivationLayer(ActivationType.Tanh));
                             network.Add(new SoftmaxActivationLayer());
                             network.UseLoss(LossType.CategoricalCrossentropy);

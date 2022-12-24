@@ -1,0 +1,6 @@
+C:\Users\Isaac\Documents\C#\NeuroSharp\NeuroSharp\obj\Debug\netstandard2.0\NeuroSharp.csproj.AssemblyReference.cache
+C:\Users\Isaac\Documents\C#\NeuroSharp\NeuroSharp\obj\Debug\netstandard2.0\NeuroSharp.csproj.ResolveComReference.cache
+C:\Users\Isaac\Documents\C#\NeuroSharp\NeuroSharp\obj\Debug\netstandard2.0\NeuroSharp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Isaac\Documents\C#\NeuroSharp\NeuroSharp\obj\Debug\netstandard2.0\NeuroSharp.AssemblyInfoInputs.cache
+C:\Users\Isaac\Documents\C#\NeuroSharp\NeuroSharp\obj\Debug\netstandard2.0\NeuroSharp.AssemblyInfo.cs
+C:\Users\Isaac\Documents\C#\NeuroSharp\NeuroSharp\obj\Debug\netstandard2.0\NeuroSharp.csproj.CoreCompileInputs.cache

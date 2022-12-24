@@ -1,8 +1,8 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
-using NeuroSharp.Utilities;
 using NeuroSharp.Enumerations;
-using NeuroSharp.Training;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 
 namespace NeuroSharp
 {

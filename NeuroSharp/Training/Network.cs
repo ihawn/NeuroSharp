@@ -1,8 +1,12 @@
-﻿using System.Diagnostics;
-using MathNet.Numerics.LinearAlgebra;
+﻿using MathNet.Numerics.LinearAlgebra;
 using NeuroSharp.Enumerations;
 using NeuroSharp.Utilities;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
 
 namespace NeuroSharp.Training
 {
@@ -21,20 +25,24 @@ namespace NeuroSharp.Training
         
         public LossType LossType { get; set; }
         public string Name { get; set; }
+        
+        public List<string> Data { get; set; }
 
         public Network(int entrySize, string name = "")
         {
             Layers = new List<Layer>();
             Name = name;
             EntrySize = entrySize;
+            Data = new List<string>();
         }
         
         //json constructor
-        public Network(List<Layer> layers, LossType lossType, string name, int entrySize)
+        public Network(List<Layer> layers, LossType lossType, string name, int entrySize, List<string> data)
         {
             Name = name;
             Layers = new List<Layer>();
             EntrySize = entrySize;
+            Data = data;
             foreach (Layer layer in layers)
             {
                 layer.ParentNetwork = this;

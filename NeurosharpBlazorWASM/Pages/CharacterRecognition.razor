@@ -108,7 +108,7 @@
         
         currentImageValue = _scalingNetwork.Predict(rawImageVector);
         List<double> predictionResponse = await Http.GetFromJsonAsync<List<double>>(
-            $"NeurosharpNetworkRequests?delimitedPixelValues={string.Join(",", currentImageValue)}"
+            $"CharacterRecognition?delimitedPixelValues={string.Join(",", currentImageValue)}"
         );
         Vector<double> prediction = Vector<double>.Build.DenseOfEnumerable(predictionResponse);
 

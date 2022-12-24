@@ -1,10 +1,9 @@
-﻿using System.Runtime.CompilerServices;
-using MathNet.Numerics.LinearAlgebra;
+﻿using MathNet.Numerics.LinearAlgebra;
 using NeuroSharp.Optimizers;
 using NeuroSharp.Enumerations;
-using NeuroSharp.Training;
 using NeuroSharp.Utilities;
 using Newtonsoft.Json;
+using System;
 
 namespace NeuroSharp
 {
@@ -37,25 +36,21 @@ namespace NeuroSharp
         //json constructor
         public RecurrentLayer(int sequenceLength, int vocabSize, int hiddenSize, ActivationType stateActivationType,
             Vector<double>[] stateInput, Vector<double>[] states, Vector<double> outputs,
-            Vector<double> recurrentGradient, Matrix<double>[] weights, Vector<double>[] biases, Adam adam,
-            int inputSize, int outputSize, bool accumulateGradients, int id)
+            Matrix<double>[] weights, Vector<double>[] biases, int inputSize, int outputSize, int id)
         {
             _sequenceLength = sequenceLength;
             _vocabSize = vocabSize;
             _hiddenSize = hiddenSize;
             _stateActivation = new ActivationLayer(stateActivationType);
             _stateActivationType = stateActivationType;
-            _adam = adam;
 
             Id = id;
-            AccumulateGradients = accumulateGradients;
             InputSize = inputSize;
             OutputSize = outputSize;
 
             StateInput = stateInput;
             States = states;
             Outputs = outputs;
-            RecurrentGradient = recurrentGradient;
             Weights = weights;
             Biases = biases;
         }

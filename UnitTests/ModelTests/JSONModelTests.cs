@@ -156,6 +156,7 @@ namespace UnitTests.ModelTests
             network.UseLoss(LossType.CategoricalCrossentropy);
 
             network.MinibatchTrain(xTrain, yTrain, epochs: 2, OptimizerType.Adam, batchSize: 64, learningRate: 0.001f);
+            network.Data = new List<string> { "hi", "how", "are", "you " };
             string modelJson = network.SerializeToJSON();
             Network deserializedNetwork = Network.DeserializeNetworkJSON(modelJson);
 
@@ -165,6 +166,8 @@ namespace UnitTests.ModelTests
                 Vector<double> pred2 = deserializedNetwork.Predict(x);
                 Assert.AreEqual(pred1, pred2);
             }
+            
+            Assert.AreEqual(network.Data, deserializedNetwork.Data);
         }
     }
 }

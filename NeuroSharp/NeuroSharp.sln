@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuroSharp", "NeuroSharp.cs
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "..\UnitTests\UnitTests.csproj", "{7E783010-CC4C-460F-B640-E6E922909FDF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetworkTests", "NetworkTests\NetworkTests.csproj", "{832416DA-9872-4EFE-9A8E-21B2596C670D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeurosharpBlazorWASM", "..\NeurosharpBlazorWASM\NeurosharpBlazorWASM.csproj", "{6AED5F46-F6F0-4B06-AB62-1EC429051190}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrainerWhoTrains", "..\TrainerWhoTrains\TrainerWhoTrains.csproj", "{E35D64CB-FED3-42E2-9BA3-C73ACA144C66}"
@@ -34,12 +32,6 @@ Global
 		{7E783010-CC4C-460F-B640-E6E922909FDF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7E783010-CC4C-460F-B640-E6E922909FDF}.Release2|Any CPU.ActiveCfg = Release2|Any CPU
 		{7E783010-CC4C-460F-B640-E6E922909FDF}.Release2|Any CPU.Build.0 = Release2|Any CPU
-		{832416DA-9872-4EFE-9A8E-21B2596C670D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{832416DA-9872-4EFE-9A8E-21B2596C670D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{832416DA-9872-4EFE-9A8E-21B2596C670D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{832416DA-9872-4EFE-9A8E-21B2596C670D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{832416DA-9872-4EFE-9A8E-21B2596C670D}.Release2|Any CPU.ActiveCfg = Debug|Any CPU
-		{832416DA-9872-4EFE-9A8E-21B2596C670D}.Release2|Any CPU.Build.0 = Debug|Any CPU
 		{6AED5F46-F6F0-4B06-AB62-1EC429051190}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6AED5F46-F6F0-4B06-AB62-1EC429051190}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6AED5F46-F6F0-4B06-AB62-1EC429051190}.Release|Any CPU.ActiveCfg = Release|Any CPU

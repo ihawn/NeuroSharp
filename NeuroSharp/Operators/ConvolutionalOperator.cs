@@ -1,9 +1,10 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.Distributions;
 using NeuroSharp.Optimizers;
 using NeuroSharp.Enumerations;
 using NeuroSharp.Utilities;
 using Newtonsoft.Json;
+using System;
+
 
 namespace NeuroSharp
 {
@@ -39,20 +40,17 @@ namespace NeuroSharp
         }
         
         //json constructor
-        public ConvolutionalOperator(Matrix<double>[] weights, Matrix<double>[] weightGradients, int kernelSize,
-            int stride, int inputSize, int outputSize, int filters, Adam adam, bool accumulateGradients)
+        public ConvolutionalOperator(Matrix<double>[] weights, int kernelSize,
+            int stride, int inputSize, int outputSize, int filters)
         {
             Weights = weights;
-            WeightGradients = weightGradients;
             _kernelSize = kernelSize;
             _stride = stride;
             InputSize = inputSize;
             OutputSize = outputSize;
             _filters = filters;
-            _adam = adam;
             
             StoreConvolutionDimensionParameters();
-            SetGradientAccumulation(accumulateGradients);
         }
 
         public override Vector<double> ForwardPropagation(Vector<double> input)
