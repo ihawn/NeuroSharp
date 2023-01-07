@@ -26,6 +26,8 @@ namespace NeuroSharp.Training
         public LossType LossType { get; set; }
         public string Name { get; set; }
         
+        public double NetworkLoss { get; set; }
+        
         public List<string> Data { get; set; }
 
         public Network(int entrySize, string name = "")
@@ -154,6 +156,7 @@ namespace NeuroSharp.Training
                 }
 
                 err /= samples;
+                NetworkLoss = err;
                 Console.WriteLine("\nLoss: " + err + "\n");
             }
         }
@@ -197,6 +200,7 @@ namespace NeuroSharp.Training
                 }
 
                 err /= errCount;
+                NetworkLoss = err;
                 Console.WriteLine("Loss: " + err + "\n");
             }
         }

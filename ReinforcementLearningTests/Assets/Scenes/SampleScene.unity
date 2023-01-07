@@ -322,12 +322,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SnakeGame: {fileID: 0}
   SquareObject: {fileID: 1775167609445672356, guid: aec9189670313ec4e923220f5b6e4063, type: 3}
+  QLearner: {fileID: 0}
   GameSizeX: 6
   GameSizeY: 6
-  SnakeStartLength: 3
+  SnakeStartLength: 5
+  PositiveMoveReward: 1
+  NeutralMoveReward: 0.2
+  NegativeMoveReward: -1
+  CurrentMoveReward: 0
   TimeStep: 1
   MoveTimer: 0
-  GameTick: 0.25
+  GameTick: 0
 --- !u!4 &2087392770
 Transform:
   m_ObjectHideFlags: 0

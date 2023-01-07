@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using MathNet.Numerics.LinearAlgebra;
+using Microsoft.VisualBasic.CompilerServices;
 using NeuroSharp;
 using NeuroSharp.Data;
 using NeuroSharp.Enumerations;
@@ -12,7 +13,7 @@ namespace Trainer
         static void Main(string[] args)
         {
             //LetterIdentificationTraining(20);
-            SentimentAnalysisTraining(15, trainingSize: 3000, testSize: 300, maxWordCount: 700, maxReviewLength: 20);
+            SentimentAnalysisTraining(15, trainingSize: 50000, testSize: 5000, maxWordCount: 1500, maxReviewLength: 20);
         }
 
         static void LetterIdentificationTraining(int epochs)
@@ -105,7 +106,7 @@ namespace Trainer
         {
             Random rand = new Random();
             
-            string dataPath = @"C:\Users\Isaac\Desktop\reviews\train_shorter.csv";
+            string dataPath = @"C:\Users\Isaac\Desktop\reviews\train.csv";
             DataTable dataTable = DataTablePreprocessor.GetDataTableFromCSV(dataPath);
 
             string allowedChars = "abcdefghijklmnopqrstuvwxyz ";
@@ -191,7 +192,7 @@ namespace Trainer
             
             
 
-            Network network = new Network(maxWordCount * maxReviewLength);
+          /*  Network network = new Network(maxWordCount * maxReviewLength);
             network.Add(new LSTMLayer(maxWordCount, 128, maxReviewLength));
             network.Add(new ActivationLayer(ActivationType.Tanh));
             network.Add(new FullyConnectedLayer(2));
@@ -202,8 +203,10 @@ namespace Trainer
             network.Data = uniqueWordsUsedFrequently;
             
             string modelJson = network.SerializeToJSON();
-            File.WriteAllText(@"C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASMServer\NetworkModels\sentiment_analysis_model.json", modelJson);
-         
+            File.WriteAllText(@"C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASMServer\NetworkModels\sentiment_analysis_model.json", modelJson);*/
+            
+            string text = File.ReadAllText(@"C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASMServer\NetworkModels\sentiment_analysis_model.json");
+            Network network = Network.DeserializeNetworkJSON(text);
 
             int wrongCount = 0;
             for (int i = 0; i < xTest.Count; i++)

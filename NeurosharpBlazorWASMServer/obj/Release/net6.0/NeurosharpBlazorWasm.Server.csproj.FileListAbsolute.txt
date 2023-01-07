@@ -69,3 +69,4 @@ C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASMServer\obj\Release\ne
 C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASMServer\obj\Release\net6.0\ref\NeurosharpBlazorWasm.Server.dll
 C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASMServer\obj\Release\net6.0\NeurosharpBlazorWasm.Server.pdb
 C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASMServer\obj\Release\net6.0\NeurosharpBlazorWasm.Server.genruntimeconfig.cache
+C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASMServer\bin\Release\net6.0\NetworkModels\sentiment_analysis_model - Copy.json
