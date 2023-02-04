@@ -325,14 +325,32 @@ MonoBehaviour:
   QLearner: {fileID: 0}
   GameSizeX: 6
   GameSizeY: 6
-  SnakeStartLength: 5
+  SnakeStartLength: 3
   PositiveMoveReward: 1
-  NeutralMoveReward: 0.2
-  NegativeMoveReward: -1
+  NeutralMoveReward: 0.01
+  NegativeMoveReward: -3
   CurrentMoveReward: 0
   TimeStep: 1
   MoveTimer: 0
   GameTick: 0
+  MovesWithoutEating: 0
+  MovesWithoutEatingLimit: 40
+  Score: 0
+  LastMoveResult: 0
+  ObstacleLeft: 0
+  ObstacleStraight: 0
+  ObstacleRight: 0
+  Up: 0
+  Right: 0
+  Down: 0
+  Left: 0
+  FoodUp: 0
+  FoodRight: 0
+  FoodDown: 0
+  FoodLeft: 0
+  FoodDirectlyLeft: 0
+  FoodDirectlyStraight: 0
+  FoodDirectlyRight: 0
 --- !u!4 &2087392770
 Transform:
   m_ObjectHideFlags: 0

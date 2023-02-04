@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class SnakeGame : MonoBehaviour
 {
@@ -9,6 +10,13 @@ public class SnakeGame : MonoBehaviour
     public GameObject SquareObject;
     public Snake Snake;
     int SnakeStartLength;
+    public bool FoodExists
+    {
+        get
+        {
+            return GameSpaceMatrix.Cast<SnakeGameSquare>().Any(x => x.ContainsFood);
+        }
+    }
 
     public SnakeGameSquare[,] GameSpaceMatrix { get; private set; }
 
@@ -37,6 +45,18 @@ public class SnakeGame : MonoBehaviour
         foreach(SnakeGameSquare segment in Snake.Segments)
             Destroy(segment.GameSpaceObject);
         Snake = new Snake(SnakeStartLength, this);
+        Snake.RenderSnake();
+    }
+
+    public void SpawnFood()
+    {
+        List<Coord> foodPlacementCandidates = 
+            GameSpaceMatrix.Cast<SnakeGameSquare>()
+            .Where(x => !x.ContainsSnakeSegment).Select(x => x.Position).ToList();
+
+        Coord nextFoodPosition = foodPlacementCandidates[Random.Range(0, foodPlacementCandidates.Count)];
+        GameSpaceMatrix[nextFoodPosition.X, nextFoodPosition.Y].ContainsFood = true;
+        GameSpaceMatrix[nextFoodPosition.X, nextFoodPosition.Y].SetColor(Color.green);
     }
 }
 
@@ -44,4 +64,11 @@ public struct Coord
 {
     public int X { get; set; }
     public int Y { get; set; }
+}
+
+public enum MoveResult
+{
+    Nothing = 0,
+    Death = 1,
+    Eat = 2
 }
