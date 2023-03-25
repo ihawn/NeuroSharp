@@ -1,0 +1,11 @@
+﻿<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>NeuroSharp</id>
+    <version>1.0.0</version>
+    <authors>Isaac Hawn</authors>
+    <owners>Isaac Hawn</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A lightweight neural network tool written natively in C#</description>
+  </metadata>
+</package>
