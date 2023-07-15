@@ -4,7 +4,7 @@ NeuroSharp is a C# neural network framework designed for building and training n
 Getting Started
 
 To get started with NeuroSharp, you can follow the example code provided below:
-```
+```csharp
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -144,7 +144,7 @@ You can add layers to the network using the Add method of the Network class.
 NeuroSharp provides three training configurations: SGD (Stochastic Gradient Descent), Mini-batch, and Batch training. You can choose the training configuration by passing the appropriate TrainingConfiguration enum value to the Train method of the Network class.
 
 
-```
+```csharp
 // Example: Training using mini-batch with Adam optimizer
 network.Train(xTrain, yTrain, epochs: epochs, TrainingConfiguration.Minibatch, OptimizerType.Adam, batchSize: 64, learningRate: 0.002f);
 ```
@@ -153,14 +153,14 @@ network.Train(xTrain, yTrain, epochs: epochs, TrainingConfiguration.Minibatch, O
 
 You can save a trained model using the SerializeToJSON method of the Network class and save it to a JSON file.
 
-```
+```csharp
 string modelJson = network.SerializeToJSON();
 File.WriteAllText("model.json", modelJson);
 ```
 
 To load a saved model, you can use the DeserializeNetworkJSON method of the Network class.
 
-```
+```csharp
 string modelJson = File.ReadAllText("model.json");
 Network network = Network.DeserializeNetworkJSON(modelJson);
 ```
