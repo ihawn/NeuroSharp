@@ -1,7 +1,8 @@
 # NeuroSharp
 
 NeuroSharp is a C# neural network framework designed for building and training neural networks. It provides a set of flexible and extensible classes for constructing various types of neural networks, including activation layers, convolutional layers, fully connected (dense) layers, LSTM layers, max pooling layers, parameterized layers, recurrent layers, and softmax activation layers.
-Getting Started
+
+# Getting Started
 
 To get started with NeuroSharp, you can follow the example code provided below:
 ```csharp
