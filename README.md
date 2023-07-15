@@ -92,7 +92,7 @@ namespace Trainer
 
             // Save the trained model
             string modelJson = network.SerializeToJSON();
-            File.WriteAllText(@"C:\Users\Isaac\Documents\C#\NeuroSharp\NeurosharpBlazorWASMServer\NetworkModels\characters_model.json", modelJson);
+            File.WriteAllText(@"path\characters_model.json", modelJson);
 
             if (trainSplit < 1)
             {
